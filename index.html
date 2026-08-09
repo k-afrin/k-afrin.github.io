@@ -17,41 +17,61 @@
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">About</a></li>
+      <li><a href="index.html">Home</a></li>
       <li><a href="projects.html">Projects</a></li>
       <li><a href="ai-experiments.html">AI Experiments</a></li>
-      <li><a href="pursuits.html">Pursuits of Happiness</a></li>
+      <li><a href="pursuits.html">Happiness of Other Pursuits</a></li>
       <li><a href="#contact-footer" class="nav-cta">Contact</a></li>
     </ul>
   </div>
 </nav>
 
-<section class="hero container">
-  <div class="hero-text">
-    <p class="eyebrow">Hi, I'm</p>
-    <h1>Your Name</h1>
-    <h2 class="subtitle">AI / Product Professional</h2>
-    <p>
-      Placeholder bio text. Write 3–4 sentences about your background, the kind
-      of problems you like solving, the tools you work with, and what you're
-      looking for next. Replace this with your real story.
-    </p>
-    <div class="hero-actions">
-      <a href="#" class="btn btn-primary">Download Resume</a>
-      <a href="projects.html" class="btn btn-secondary">View Projects</a>
-    </div>
-    <div class="social-icons">
-      <a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="mailto:you@example.com">Email</a>
-    </div>
-  </div>
-  <div class="hero-photo">
-    <!-- Replace this div with <img src="your-photo.jpg" alt="Your Name" class="circle-photo"> later -->
-    <div class="img-placeholder circle"></div>
+<!-- ===== Feed: recent highlights, Bourke-style scrolling tiles ===== -->
+<section class="container feed-section">
+  <p class="eyebrow">Recently</p>
+  <h1 class="feed-heading">A few things I've been working on</h1>
+
+  <div class="feed-list" id="home-feed">
+    <!-- Dummy feed items — replace text/links with real highlights later -->
+    <a href="project-detail.html?id=project-1" class="feed-item">
+      <div class="img-placeholder feed-img"></div>
+      <div class="feed-caption">
+        <span class="feed-tag">Project</span>
+        <h3>Placeholder headline about Project One</h3>
+        <p>One or two lines teasing what this project is about and why it mattered to you.</p>
+      </div>
+    </a>
+
+    <a href="experiment-detail.html?id=experiment-1" class="feed-item">
+      <div class="img-placeholder feed-img"></div>
+      <div class="feed-caption">
+        <span class="feed-tag">AI Experiment</span>
+        <h3>Placeholder headline about an AI experiment</h3>
+        <p>Short, personal-sounding line about what you tried and what you learned.</p>
+      </div>
+    </a>
+
+    <a href="blog-post.html?id=trip-1" class="feed-item">
+      <div class="img-placeholder feed-img"></div>
+      <div class="feed-caption">
+        <span class="feed-tag">Happiness of Other Pursuits</span>
+        <h3>Placeholder headline about a trip or a hobby</h3>
+        <p>A short, human line about a recent adventure or something outside of work.</p>
+      </div>
+    </a>
+
+    <a href="project-detail.html?id=project-2" class="feed-item">
+      <div class="img-placeholder feed-img"></div>
+      <div class="feed-caption">
+        <span class="feed-tag">Project</span>
+        <h3>Placeholder headline about Project Two</h3>
+        <p>Another short teaser line — keep these casual and personal, not just resume bullets.</p>
+      </div>
+    </a>
   </div>
 </section>
 
+<!-- ===== Quick links ===== -->
 <section class="container">
   <h2 style="margin-top:0;">Explore</h2>
   <div class="feature-grid">
@@ -64,9 +84,43 @@
       <p>Smaller explorations, prototypes, and proofs of concept in AI/ML.</p>
     </a>
     <a href="pursuits.html" class="feature-card">
-      <h3>Pursuits of Happiness</h3>
+      <h3>Happiness of Other Pursuits</h3>
       <p>Travel and life outside of work — because there's more to the story.</p>
     </a>
+  </div>
+</section>
+
+<!-- ===== About / Bio — placed near the bottom, like a personal sign-off ===== -->
+<section class="container about-section" id="about">
+  <div class="about-grid">
+    <div class="about-text">
+      <p class="eyebrow">About Me</p>
+      <h2 class="about-name">Your Name</h2>
+      <p class="subtitle">AI / Product Professional</p>
+      <p>
+        Placeholder bio text. Write 3–4 sentences about your background, the kind
+        of problems you like solving, the tools you work with, and what you're
+        looking for next. Keep it conversational — this is the "about the person
+        behind the work" section.
+      </p>
+      <p>
+        Optional second paragraph — talk about what you're doing outside of work,
+        curiosity-driven projects, or what got you into AI/product in the first place.
+      </p>
+      <div class="hero-actions">
+        <a href="#" class="btn btn-primary">Download Resume</a>
+        <a href="mailto:you@example.com" class="btn btn-secondary">Get in Touch</a>
+      </div>
+      <div class="social-icons">
+        <a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:you@example.com">Email</a>
+      </div>
+    </div>
+    <div class="about-photo">
+      <!-- Replace with <img src="your-photo.jpg" alt="Your Name" class="circle-photo"> later -->
+      <div class="img-placeholder circle"></div>
+    </div>
   </div>
 </section>
 
