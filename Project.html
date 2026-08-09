@@ -1,54 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Projects</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Projects — Your Name</title>
+<link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="nav-logo">Your Name</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About Me</a></li>
-      <li><a href="projects.html" class="active">Projects</a></li>
+<nav class="navbar">
+  <div class="container nav-container">
+    <a href="index.html" class="logo">Your Name</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="ai-experiments.html">AI Experiments</a></li>
+      <li><a href="pursuits.html">Pursuits of Happiness</a></li>
+      <li><a href="index.html#contact-footer" class="nav-cta">Contact</a></li>
     </ul>
-  </nav>
+  </div>
+</nav>
 
-  <main class="page-container">
-    <h1>My Projects</h1>
-    <div class="project-grid">
+<section class="container">
+  <p class="eyebrow">Portfolio</p>
+  <h1 style="margin-top:0;">Projects</h1>
+  <p>A selection of projects I've built. Click any card to view the full case study.</p>
+  <div class="cards-grid" id="projects-grid"></div>
+</section>
 
-      <a href="https://github.com/yourusername/repo1" target="_blank" class="project-tile">
-        <img src="assets/project1.png" alt="Project 1 thumbnail">
-        <div class="tile-overlay">
-          <h3>Project One</h3>
-          <p>Short one-line description.</p>
-        </div>
-      </a>
+<section class="container">
+  <h2>Live from GitHub</h2>
+  <p>Pulled automatically from my public GitHub repositories.</p>
+  <div class="repo-grid" id="github-repos"></div>
+</section>
 
-      <a href="https://github.com/yourusername/repo2" target="_blank" class="project-tile">
-        <img src="assets/project2.png" alt="Project 2 thumbnail">
-        <div class="tile-overlay">
-          <h3>Project Two</h3>
-          <p>Short one-line description.</p>
-        </div>
-      </a>
-
-      <a href="https://github.com/yourusername/repo3" target="_blank" class="project-tile">
-        <img src="assets/project3.png" alt="Project 3 thumbnail">
-        <div class="tile-overlay">
-          <h3>Project Three</h3>
-          <p>Short one-line description.</p>
-        </div>
-      </a>
-
-      <!-- Duplicate this <a class="project-tile"> block for each new project -->
-
+<footer class="site-footer">
+  <div class="container footer-container">
+    <p>© 2026 Your Name. Hosted on GitHub Pages.</p>
+    <div class="social-links">
+      <a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="mailto:you@example.com">Email</a>
     </div>
-  </main>
+  </div>
+</footer>
 
+<script src="js/data.js"></script>
+<script src="js/github-api.js"></script>
+<script src="js/main.js"></script>
+<script>
+  renderCards("projects-grid", projectsData, "project-detail.html");
+  loadGitHubRepos("github-repos", { limit: 6 });
+</script>
 </body>
 </html>
