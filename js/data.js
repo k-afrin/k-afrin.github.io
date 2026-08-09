@@ -1,4 +1,3 @@
-
 // ---------- Dummy data — replace with your real content ----------
 
 const projectsData = [
