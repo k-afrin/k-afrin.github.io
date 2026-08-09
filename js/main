@@ -1,1 +1,130 @@
+document.addEventListener("DOMContentLoaded", () => {
+  // Mobile nav toggle
+  const toggle = document.getElementById("navToggle");
+  const links = document.getElementById("navLinks");
+  if (toggle && links) {
+    toggle.addEventListener("click", () => links.classList.toggle("open"));
+  }
 
+  // Highlight active nav link
+  const current = window.location.pathname.split("/").pop() || "index.html";
+  document.querySelectorAll(".nav-links a").forEach((link) => {
+    if (link.getAttribute("href") === current) link.classList.add("active");
+  });
+});
+
+function getQueryParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+// Renders project / experiment cards into a grid container
+function renderCards(containerId, data, detailPage) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = data
+    .map(
+      (item) => `
+    <article class="card">
+      <a href="${detailPage}?id=${item.id}">
+        <div class="img-placeholder card-img"></div>
+      </a>
+      <div class="card-body">
+        <h3>${item.title}</h3>
+        <p>${item.description}</p>
+        <div class="tag-list">
+          &#36;{item.tags.map((t) => `<span class="tag">&#36;{t}</span>`).join("")}
+        </div>
+        <div class="card-links">
+          <a href="${detailPage}?id=${item.id}" class="link-case-study">View Case Study →</a>
+          <span class="card-icons">
+            <a href="${item.github}" target="_blank" rel="noopener">GitHub</a>
+            ${item.demo ? `<a href="&#36;{item.demo}" target="_blank" rel="noopener">Live Demo</a>` : ""}
+          </span>
+        </div>
+      </div>
+    </article>`
+    )
+    .join("");
+}
+
+// Renders travel tiles into a grid container
+function renderTravelTiles(containerId, data) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = data
+    .map(
+      (item) => `
+    <a class="travel-tile" href="blog-post.html?id=${item.id}">
+      <div class="img-placeholder travel-img"></div>
+      <div class="travel-tile-body">
+        <h3>${item.title}</h3>
+        <p class="travel-meta">${item.location} · ${item.date}</p>
+        <p>&#36;{item.teaser}</p>
+      </div>
+    </a>`
+    )
+    .join("");
+}
+
+// Renders a project/experiment case-study detail page
+function renderCaseStudyDetail(data, backHref, backLabel) {
+  const id = getQueryParam("id");
+  const item = data.find((p) => p.id === id);
+  const container = document.getElementById("detail-content");
+  if (!container) return;
+
+  if (!item) {
+    container.innerHTML = `<p>Not found. <a href="${backHref}">${backLabel}</a></p>`;
+    return;
+  }
+
+  document.title = `&#36;{item.title} — Portfolio`;
+  container.innerHTML = `
+    <a href="${backHref}" class="back-link">← ${backLabel}</a>
+    <h1>${item.title}</h1>
+    <div class="tag-list">${item.tags.map((t) => `<span class="tag">&#36;{t}</span>`).join("")}</div>
+    <div class="detail-links">
+      <a href="${item.github}" target="_blank" rel="noopener" class="btn btn-secondary">View Code on GitHub</a>
+      ${item.demo ? `<a href="&#36;{item.demo}" target="_blank" rel="noopener" class="btn btn-primary">Live Demo</a>` : ""}
+    </div>
+    <div class="img-placeholder detail-hero-img"></div>
+    <div class="detail-body">
+      <h2>Overview</h2><p>${item.overview}</p>
+      <h2>Problem</h2><p>${item.problem}</p>
+      <h2>Approach</h2><p>${item.approach}</p>
+      <h2>Tech Stack</h2>
+      <div class="tag-list">${item.stack.map((t) => `<span class="tag">&#36;{t}</span>`).join("")}</div>
+      <h2>Results & Learnings</h2><p>&#36;{item.results}</p>
+    </div>
+  `;
+}
+
+// Renders a travel blog post page
+function renderBlogPost(data) {
+  const id = getQueryParam("id");
+  const item = data.find((p) => p.id === id);
+  const container = document.getElementById("blog-content");
+  if (!container) return;
+
+  if (!item) {
+    container.innerHTML = `<p>Not found. <a href="pursuits.html">← Back to Pursuits of Happiness</a></p>`;
+    return;
+  }
+
+  document.title = `&#36;{item.title} — Portfolio`;
+  const gallery = Array.from({ length: item.photos || 3 })
+    .map(() => `<div class="img-placeholder gallery-img"></div>`)
+    .join("");
+
+  container.innerHTML = `
+    <a href="pursuits.html" class="back-link">← Back to Pursuits of Happiness</a>
+    <div class="img-placeholder detail-hero-img"></div>
+    <h1>${item.title}</h1>
+    <p class="travel-meta">${item.location} · ${item.date}</p>
+    <div class="detail-body"><p>${item.story}</p></div>
+    <h2>Gallery</h2>
+    <div class="gallery-grid">${gallery}</div>
+  `;
+}
