@@ -3,575 +3,639 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Kahkashan Afrin, Ph.D. | AI Product Manager</title>
-<meta name="description" content="Kahkashan Afrin, Ph.D. — AI Product Manager. Ceribell, ex-McKinsey. Building AI products from 0 to 1 in regulated, high-stakes environments." />
+<title>Kahkashan Afrin — AI Product Manager, Reader, Writer, Traveler</title>
+<meta name="description" content="Hi, I'm Afrin. AI Product Manager at Ceribell, ex-McKinsey, Ph.D. in Industrial Engineering. Machine learning projects, small AI experiments, and other pursuits." />
+
+<!-- Social preview (optional: add assets/social-card.jpg, 1200x630) -->
+<meta property="og:title" content="Kahkashan Afrin" />
+<meta property="og:description" content="AI Product Manager · Consultant · Ph.D. · Reader · Writer · Traveler · Dreamer" />
+<meta property="og:type" content="website" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+
 <style>
+/* ════════════════════════════════════════════════════════════
+   1. DESIGN TOKENS  — change colours/fonts in one place
+   ════════════════════════════════════════════════════════════ */
 :root{
-  --bg:#fcfcfd; --surface:#ffffff; --text:#101828; --muted:#5a6376;
-  --line:#e7e9ee; --accent:#0d6e6e; --accent-soft:#e6f4f3; --accent-2:#f0a02a;
-  --chip:#f4f5f7; --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 28px rgba(16,24,40,.06);
+  --bg:#fdfbf7;            /* warm cream */
+  --surface:#ffffff;
+  --text:#1c1a22;
+  --muted:#615c६b;
+  --muted:#615c6b;
+  --line:#e9e3da;
+  --accent:#7a5cc4;        /* soft lilac-purple */
+  --accent-soft:#f2eefb;
+  --accent-2:#e0a44f;      /* warm ochre */
+  --chip:#f5f1ea;
+  --radius:16px;
+  --shadow:0 1px 2px rgba(28,26,34,.04), 0 10px 30px rgba(28,26,34,.06);
+  --shadow-lift:0 2px 5px rgba(28,26,34,.06), 0 16px 40px rgba(28,26,34,.11);
 }
 html[data-theme="dark"]{
-  --bg:#0e1116; --surface:#161a21; --text:#e9ecf1; --muted:#9aa3b2;
-  --line:#252b34; --accent:#3fc0b8; --accent-soft:#122a2a; --accent-2:#f0a02a;
-  --chip:#1e232b; --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.4);
+  --bg:#151318; --surface:#1e1b23; --text:#efecf3; --muted:#a29cae;
+  --line:#2e2936; --accent:#b39bef; --accent-soft:#241f30; --accent-2:#e0a44f;
+  --chip:#262230;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+  --shadow-lift:0 2px 5px rgba(0,0,0,.35), 0 16px 40px rgba(0,0,0,.5);
 }
+
+/* ════════════════════════════════════════════════════════════
+   2. BASE
+   ════════════════════════════════════════════════════════════ */
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);
-  font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+  font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+  font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
 a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-.wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+img{max-width:100%;display:block}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px}
+.serif{font-family:Fraunces,Georgia,serif}
 
-/* Header */
-header.site{position:sticky;top:0;z-index:60;background:var(--surface);
-  border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
-.bar{display:flex;align-items:center;gap:14px;padding:13px 0;flex-wrap:wrap}
-.brand{font-family:Sora,sans-serif;font-weight:600;font-size:1.05rem;letter-spacing:-.01em;white-space:nowrap}
-.brand em{font-style:normal;color:var(--accent)}
-nav.tabs{display:flex;gap:3px;margin-left:auto;flex-wrap:wrap}
-nav.tabs button{font:inherit;font-size:.87rem;font-weight:500;cursor:pointer;background:transparent;
-  border:1px solid transparent;color:var(--muted);padding:8px 12px;border-radius:8px;transition:.16s;white-space:nowrap}
+/* ════════════════════════════════════════════════════════════
+   3. HEADER + TABS
+   ════════════════════════════════════════════════════════════ */
+header.site{position:sticky;top:0;z-index:60;background:color-mix(in srgb, var(--bg) 88%, transparent);
+  border-bottom:1px solid var(--line);backdrop-filter:blur(12px) saturate(1.4)}
+.bar{display:flex;align-items:center;gap:14px;padding:14px 0;flex-wrap:wrap}
+.brand{font-family:Fraunces,serif;font-weight:600;font-size:1.1rem;letter-spacing:-.01em;white-space:nowrap;cursor:pointer}
+.brand:hover{color:var(--accent)}
+nav.tabs{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+nav.tabs button{font:inherit;font-size:.9rem;font-weight:500;cursor:pointer;background:transparent;
+  border:1px solid transparent;color:var(--muted);padding:8px 13px;border-radius:10px;
+  transition:.18s;white-space:nowrap}
 nav.tabs button:hover{color:var(--text);background:var(--chip)}
-nav.tabs button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft);border-color:var(--line)}
+nav.tabs button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 18%,transparent)}
 #themeBtn{border:1px solid var(--line);background:var(--surface);color:var(--muted);
-  width:35px;height:35px;border-radius:8px;cursor:pointer;font-size:.95rem;flex-shrink:0}
+  width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:.95rem;flex-shrink:0}
+#themeBtn:hover{color:var(--accent);border-color:var(--accent)}
 
-/* Hero */
-.hero{padding:54px 0 8px;max-width:76ch}
-.eyebrow{display:inline-block;font-size:.74rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:5px 13px;margin-bottom:16px}
-.hero h1{font-family:Sora,sans-serif;font-size:clamp(2.1rem,5.4vw,3.15rem);line-height:1.1;
-  letter-spacing:-.03em;margin:0 0 12px;font-weight:600}
-.hero h1 .grad{color:var(--accent)}
-.tagline{font-size:1.1rem;color:var(--muted);margin:0 0 22px}
-.links{display:flex;gap:9px;flex-wrap:wrap}
-.links a{font-size:.86rem;font-weight:500;padding:8px 15px;border-radius:999px;
-  border:1px solid var(--line);background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
-.links a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
-.links a.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.links a.primary:hover{opacity:.9;color:#fff}
-.logos{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin:34px 0 0;
-  padding-top:22px;border-top:1px solid var(--line)}
-.logos span{font-family:Sora,sans-serif;font-weight:600;font-size:.95rem;color:var(--muted);letter-spacing:-.01em}
-.logos small{display:block;font-family:Inter;font-weight:400;font-size:.72rem;letter-spacing:0}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin:30px 0 6px}
-.stat{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:17px 19px;box-shadow:var(--shadow)}
-.stat b{display:block;font-family:Sora,sans-serif;font-size:1.6rem;line-height:1.15;color:var(--accent);letter-spacing:-.02em}
-.stat span{font-size:.79rem;color:var(--muted)}
+/* ════════════════════════════════════════════════════════════
+   4. HERO  (Home)
+   ════════════════════════════════════════════════════════════ */
+.hero{display:grid;grid-template-columns:1fr 230px;gap:52px;align-items:start;padding:58px 0 12px}
+.hello{font-family:Fraunces,serif;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.08;
+  letter-spacing:-.03em;margin:0 0 18px;font-weight:600}
+.hello .wave{display:inline-block;transform-origin:70% 70%;animation:wave 2.6s ease-in-out 1s 2}
+@keyframes wave{0%,60%,100%{transform:rotate(0)}10%,30%,50%{transform:rotate(14deg)}20%,40%{transform:rotate(-8deg)}}
+.identity{font-size:.93rem;color:var(--muted);margin:0 0 26px;letter-spacing:.01em}
+.identity b{color:var(--text);font-weight:500}
+.identity .dot{color:var(--accent-2);padding:0 6px}
 
-/* Panels */
-main{padding:6px 0 84px}
-.panel{display:none;animation:fade .3s ease}
+/* Circular profile photo */
+.portrait{position:relative;width:230px;aspect-ratio:1;justify-self:center}
+.portrait img{width:100%;height:100%;border-radius:50%;object-fit:cover;
+  border:5px solid var(--surface);box-shadow:var(--shadow-lift);position:relative;z-index:2}
+.portrait::before{content:"";position:absolute;inset:-11px;border-radius:50%;
+  background:conic-gradient(from 200deg,var(--accent),var(--accent-2),var(--accent-soft),var(--accent));
+  opacity:.5;z-index:1}
+.portrait .fallback{width:100%;height:100%;border-radius:50%;z-index:2;position:relative;
+  border:5px solid var(--surface);box-shadow:var(--shadow-lift);
+  background:var(--chip);display:none;place-items:center;text-align:center;
+  font-size:.72rem;color:var(--muted);padding:26px;line-height:1.5}
+.portrait.empty img{display:none}
+.portrait.empty .fallback{display:grid}
+
+.prose p{max-width:66ch}
+.prose p+p{margin-top:1.1em}
+.signoff{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:.85rem;color:var(--muted);font-style:italic}
+
+/* ════════════════════════════════════════════════════════════
+   5. SECTION FURNITURE
+   ════════════════════════════════════════════════════════════ */
+main{padding:6px 0 90px}
+.panel{display:none;animation:fade .34s ease}
 .panel.active{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-h2.sec{font-family:Sora,sans-serif;font-size:1.75rem;font-weight:600;letter-spacing:-.025em;margin:32px 0 8px}
-h3.sub{font-size:.75rem;text-transform:uppercase;letter-spacing:.11em;color:var(--accent);
-  margin:34px 0 14px;font-weight:600}
-p.lead{font-size:1.05rem;color:var(--muted);max-width:72ch}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
-  padding:22px 24px;box-shadow:var(--shadow);margin-bottom:15px}
-.card h4{font-family:Sora,sans-serif;margin:0 0 3px;font-size:1.03rem;font-weight:600;letter-spacing:-.01em}
-.meta{font-size:.87rem;color:var(--muted)}
-.role-head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:baseline;margin-bottom:12px}
-.when{font-size:.8rem;color:var(--muted);white-space:nowrap;background:var(--chip);
-  border:1px solid var(--line);border-radius:6px;padding:3px 10px}
-ul.bul{margin:10px 0 0;padding-left:20px}
-ul.bul li{padding:5px 0;font-size:.95rem}
-ul.bul li::marker{color:var(--accent)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.chip{background:var(--chip);border:1px solid var(--line);border-radius:999px;
-  padding:5px 13px;font-size:.79rem;color:var(--muted)}
-.chip.solid{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:500}
-ul.clean{list-style:none;padding:0;margin:0}
-ul.clean>li{padding:15px 0;border-bottom:1px solid var(--line)}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2.sec{font-family:Fraunces,serif;font-size:clamp(1.7rem,4vw,2.2rem);font-weight:600;
+  letter-spacing:-.025em;margin:38px 0 10px}
+.eyebrow{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+p.lead{font-size:1.06rem;color:var(--muted);max-width:70ch;margin:0 0 8px}
+.wip{margin:22px 0 4px;padding:14px 18px;background:var(--accent-soft);border-radius:12px;
+  border-left:3px solid var(--accent);font-size:.9rem;color:var(--text)}
+.wip b{font-family:Fraunces,serif}
+.divider{height:1px;background:var(--line);margin:44px 0}
+
+/* ════════════════════════════════════════════════════════════
+   6. PROJECT / EXPERIMENT / PURSUIT CARDS
+   ════════════════════════════════════════════════════════════ */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:22px;margin-top:26px}
+.cards.wide{grid-template-columns:repeat(auto-fill,minmax(420px,1fr))}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:.22s}
+.item:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
+a.item{color:inherit;text-decoration:none}
+a.item:hover{text-decoration:none}
+
+/* Image slot: shows a labelled dashed placeholder until the file exists */
+.shot{position:relative;aspect-ratio:16/10;background:var(--chip);overflow:hidden;border-bottom:1px solid var(--line)}
+.shot img{width:100%;height:100%;object-fit:cover}
+.shot .ph{display:none;position:absolute;inset:10px;border:2px dashed color-mix(in srgb,var(--accent) 35%,var(--line));
+  border-radius:10px;place-items:center;text-align:center;padding:16px;
+  font-size:.72rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);line-height:1.6}
+.shot.empty img{display:none}
+.shot.empty .ph{display:grid}
+.shot.tall{aspect-ratio:4/5}
+
+.body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1}
+.num{font-family:Fraunces,serif;font-size:.8rem;color:var(--accent-2);font-weight:600;letter-spacing:.06em;margin-bottom:6px}
+.item h3{font-family:Fraunces,serif;font-size:1.12rem;font-weight:600;letter-spacing:-.015em;margin:0 0 8px;line-height:1.3}
+.item p{font-size:.93rem;color:var(--muted);margin:0;flex:1}
+.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:16px}
+.tag{background:var(--chip);border:1px solid var(--line);border-radius:999px;
+  padding:4px 11px;font-size:.75rem;color:var(--muted)}
+.tag.accent{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:500}
+.cta{margin-top:16px;font-size:.85rem;font-weight:600;color:var(--accent);letter-spacing:.02em}
+.status{position:absolute;top:12px;right:12px;z-index:3;background:var(--surface);
+  border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:.7rem;
+  font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);box-shadow:var(--shadow)}
+
+/* ════════════════════════════════════════════════════════════
+   7. LISTS  (e.g. List 100, writing)
+   ════════════════════════════════════════════════════════════ */
+ul.clean{list-style:none;padding:0;margin:18px 0 0}
+ul.clean>li{padding:14px 0;border-bottom:1px solid var(--line);font-size:.96rem}
 ul.clean>li:last-child{border-bottom:0}
-.kpi{display:inline-block;font-family:Sora,sans-serif;font-weight:600;color:var(--accent)}
-.impact{margin-top:14px;padding:13px 16px;background:var(--accent-soft);border-radius:10px;
-  font-size:.9rem;border-left:3px solid var(--accent)}
-.impact b{font-family:Sora,sans-serif}
-table{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:8px}
-th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-.timeline{border-left:2px solid var(--line);padding-left:24px;margin-left:5px}
-.timeline .item{position:relative;padding-bottom:26px}
-.timeline .item::before{content:"";position:absolute;left:-31px;top:8px;width:12px;height:12px;
-  border-radius:50%;background:var(--accent-2);border:2.5px solid var(--surface)}
-footer{border-top:1px solid var(--line);padding:26px 0;font-size:.84rem;color:var(--muted);text-align:center}
-@media(max-width:760px){
-  nav.tabs{margin-left:0;width:100%;overflow-x:auto;padding-bottom:3px}
-  .grid2{grid-template-columns:1fr}
+ul.clean>li::before{content:"◦";color:var(--accent-2);font-weight:700;margin-right:12px}
+
+/* ════════════════════════════════════════════════════════════
+   8. FOOTER
+   ════════════════════════════════════════════════════════════ */
+footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:var(--muted)}
+.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
+.foot a{color:var(--muted)}
+.foot a:hover{color:var(--accent)}
+.disclaimer{margin-top:14px;font-size:.78rem;color:var(--muted);opacity:.85;max-width:70ch}
+
+/* ════════════════════════════════════════════════════════════
+   9. RESPONSIVE
+   ════════════════════════════════════════════════════════════ */
+@media(max-width:800px){
+  .hero{grid-template-columns:1fr;gap:30px;padding-top:40px}
+  .portrait{width:160px;justify-self:start;order:-1}
+  nav.tabs{margin-left:0;width:100%;overflow-x:auto;padding-bottom:4px;
+    scrollbar-width:none}
+  nav.tabs::-webkit-scrollbar{display:none}
+  .cards,.cards.wide{grid-template-columns:1fr}
 }
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 
+<!-- ══════════════════════════════════════════════════════════
+     HEADER — to add a tab: add a <button> here + a matching
+     <section class="panel" id="..."> below. The id must match
+     the data-tab value. That's the only wiring needed.
+     ══════════════════════════════════════════════════════════ -->
 <header class="site">
   <div class="wrap bar">
-    <div class="brand">Kahkashan <em>Afrin</em>, Ph.D.</div>
+    <div class="brand" data-jump="home">Kahkashan Afrin</div>
     <nav class="tabs" role="tablist" aria-label="Sections">
-      <button role="tab" data-tab="about"      aria-selected="true">About</button>
-      <button role="tab" data-tab="experience" aria-selected="false">Experience</button>
-      <button role="tab" data-tab="projects"   aria-selected="false">Projects</button>
-      <button role="tab" data-tab="research"   aria-selected="false">Patents &amp; Research</button>
-      <button role="tab" data-tab="awards"     aria-selected="false">Awards</button>
-      <button role="tab" data-tab="education"  aria-selected="false">Education</button>
-      <button role="tab" data-tab="skills"     aria-selected="false">Skills</button>
-      <button role="tab" data-tab="contact"    aria-selected="false">Contact</button>
+      <button role="tab" data-tab="home"        aria-selected="true">Home</button>
+      <button role="tab" data-tab="ml"          aria-selected="false">Machine Learning Projects</button>
+      <button role="tab" data-tab="experiments" aria-selected="false">AI Experiments</button>
+      <button role="tab" data-tab="pursuits"    aria-selected="false">Happiness of Other Pursuits</button>
     </nav>
-    <button id="themeBtn" title="Toggle theme" aria-label="Toggle theme">◐</button>
+    <button id="themeBtn" title="Toggle light / dark" aria-label="Toggle light or dark theme">◐</button>
   </div>
 </header>
 
-<div class="wrap">
-  <section class="hero">
-    <span class="eyebrow">AI Product Manager</span>
-    <h1>I take AI products from <span class="grad">blue-sky concept</span> to regulated reality.</h1>
-    <p class="tagline">
-      Senior Product Manager, AI at <strong>Ceribell</strong> · Ex-<strong>McKinsey</strong> Digital &amp; Analytics ·
-      Ph.D. in Industrial &amp; Systems Engineering with an AI/ML specialization.
-    </p>
-    <div class="links">
-      <a class="primary" href="mailto:k.afrin.iqbal@gmail.com">Get in touch</a>
-      <a href="https://www.linkedin.com/in/k-afrin/" target="_blank" rel="noopener">LinkedIn ↗</a>
-      <a href="#projects" data-jump="projects">See projects</a>
-    </div>
-    <div class="logos">
-      <span>Ceribell<small>TIME Best Inventions 2025</small></span>
-      <span>McKinsey &amp; Company<small>Digital &amp; Analytics</small></span>
-      <span>Texas A&amp;M University<small>Ph.D., ISE</small></span>
-    </div>
-  </section>
-
-  <div class="stats">
-    <div class="stat"><b>6+ yrs</b><span>Turning AI into business impact</span></div>
-    <div class="stat"><b>FDA</b><span>Breakthrough Device designation led</span></div>
-    <div class="stat"><b>2</b><span>Patents on AI-enabled devices</span></div>
-    <div class="stat"><b>10+</b><span>AI/ML publications</span></div>
-  </div>
-</div>
-
 <main class="wrap">
 
-<!-- ========== ABOUT ========== -->
-<section class="panel active" id="about" role="tabpanel">
-  <h2 class="sec">About</h2>
-  <p class="lead">
-    I'm an AI Product Manager with a Ph.D. in Industrial &amp; Systems Engineering, specializing in AI/ML.
-    Over the past six-plus years I've turned technical and AI-powered solutions into business impact — from
-    leading McKinsey's Gen AI Central Development Hub and Data &amp; AI transformations at acting Engagement
-    Manager scope, to taking an AI product from concept to <strong>FDA Breakthrough Device designation</strong>
-    at Ceribell as a Senior Product Manager.
-  </p>
-  <p class="lead">
-    What I bring is the combination: hands-on AI/ML fluency — patents on AI-enabled devices, 10+ AI/ML
-    publications — paired with 0-to-1 leadership of cross-functional teams in regulated, high-stakes
-    environments where the cost of getting it wrong is measured in patient outcomes.
-  </p>
+<!-- ══════════════════════════════════════════════════════════
+     TAB 1 · HOME
+     ══════════════════════════════════════════════════════════ -->
+<section class="panel active" id="home" role="tabpanel" aria-label="Home">
 
-  <h3 class="sub">How I work</h3>
-  <div class="grid2">
-    <div class="card">
-      <h4>Vision, then evidence</h4>
-      <p class="meta">I set product vision and strategy grounded in user needs and competitive insight, then
-      translate it into model performance targets a data science team can actually build against.</p>
-    </div>
-    <div class="card">
-      <h4>Fluent across functions</h4>
-      <p class="meta">Directing clinical teams on data collection strategy, aligning with data scientists on
-      use cases, and co-authoring formal FDA filings with regulatory — in the same week.</p>
-    </div>
-    <div class="card">
-      <h4>0-to-1 in regulated space</h4>
-      <p class="meta">Comfortable where there's no playbook: category-defining products, novel regulatory
-      pathways, and AI risk, safety, and ethics considerations built in from the start.</p>
-    </div>
-    <div class="card">
-      <h4>Adoption is the deliverable</h4>
-      <p class="meta">A launched product that no one uses is a failed product. I run change management,
-      Agile ways of working, and front-line enablement as first-class product work.</p>
-    </div>
-  </div>
+  <div class="hero">
+    <div>
+      <h1 class="hello">Hi, I'm Afrin! <span class="wave">👋</span></h1>
+      <p class="identity">
+        <b>AI Product Manager</b><span class="dot">·</span>Consultant<span class="dot">·</span>Ph.D.<span class="dot">·</span>Reader<span class="dot">·</span>Writer<span class="dot">·</span>Traveler<span class="dot">·</span>Dreamer
+      </p>
 
-  <div class="chips">
-    <span class="chip solid">AI/ML product strategy</span>
-    <span class="chip solid">Regulated healthcare</span>
-    <span class="chip">0-to-1 product</span>
-    <span class="chip">Go-to-market</span>
-    <span class="chip">Cross-functional leadership</span>
-    <span class="chip">Gen AI</span>
-  </div>
-</section>
-
-<!-- ========== EXPERIENCE ========== -->
-<section class="panel" id="experience" role="tabpanel">
-  <h2 class="sec">Experience</h2>
-
-  <div class="card">
-    <div class="role-head">
-      <div>
-        <h4>Senior Product Manager, AI Product</h4>
-        <div class="meta">Ceribell · AI and R&amp;D Team · Sunnyvale, CA</div>
+      <div class="prose">
+        <p>
+          I currently work as an <strong>AI Product Manager at Ceribell</strong>, building AI products for
+          stroke detection. Before that, I was a consultant in <strong>McKinsey's Digital &amp; Analytics</strong>
+          practice. And before that, I was a Ph.D. student in Industrial Engineering at
+          <strong>Texas A&amp;M</strong>, where I focused on AI and machine learning.
+        </p>
+        <p>
+          Somehow, through this fairly interdisciplinary — and not exactly planned — path, I've ended up
+          working at the intersection of technology, product, and business strategy. It turns out I like it here.
+        </p>
+        <p>
+          I love trying new things and collecting new experiences. Recently, that has included turning my love
+          for the written word into <a href="#experiments" data-jump="experiments"><strong>PoAIm</strong></a>,
+          a tiny AI poem-generating app, and going to candlelight concerts for the first time
+          (highly recommend).
+        </p>
+        <p>
+          I grew up in a small mining town in <strong>Jharkhand, India</strong>, dreaming about doing big
+          things and seeing the world. I've been chasing that dream ever since!
+        </p>
       </div>
-      <span class="when">May 2025 – Present</span>
+
+      <p class="signoff">Updated August 2026.</p>
     </div>
-    <p class="meta">
-      TIME Best Inventions 2025 · Fast Company Most Innovative Companies 2023
-    </p>
-    <ul class="bul">
-      <li>Lead a portfolio of <span class="kpi">4 AI products</span> — three for stroke detection plus a
-        next-generation concept for continuous AI monitoring of the brain in the ICU.</li>
-      <li>Set product vision and strategy, and provide cross-functional leadership: directing the clinical
-        team on data collection strategy, partnering with data scientists on use cases and model performance
-        targets driven by user needs and competitive insight, and co-authoring formal FDA filings with
-        regulatory.</li>
-      <li>Turned a blue-sky concept — detecting stroke from EEG signal using AI — into a category-defining
-        <strong>FDA Breakthrough Device designation</strong>.</li>
-      <li>Currently building the go-to-market implementation plan to carry the breakthrough device through
-        to market clearance.</li>
-      <li>Leading market research and proof-of-concept work for EMS stroke detection and vasospasm detection.</li>
-    </ul>
-    <div class="impact">
-      <b>Impact:</b> The Breakthrough Device designation drove an
-      <span class="kpi">8% jump in company stock price</span> —
-      <a href="https://za.investing.com/news/stock-market-news/ceribell-stock-climbs-after-fda-breakthrough-device-designation-93CH-4046945" target="_blank" rel="noopener">media coverage ↗</a>
+
+    <!-- ── PROFILE PHOTO ──
+         Drop your photo at: assets/afrin.jpg
+         Square-ish crop works best (e.g. 800×800). Until then a
+         placeholder ring shows automatically. -->
+    <div class="portrait" id="portrait">
+      <img src="assets/afrin.jpg" alt="Portrait of Kahkashan Afrin"
+           onerror="document.getElementById('portrait').classList.add('empty')">
+      <div class="fallback">add your photo at<br><code>assets/afrin.jpg</code></div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="role-head">
-      <div>
-        <h4>Associate, Digital &amp; Analytics Practice</h4>
-        <div class="meta">McKinsey &amp; Company · Los Angeles, CA · Rated <em>Very Strong</em>, multiple years</div>
+  <div class="divider"></div>
+
+  <!-- Quick doors into the other tabs -->
+  <span class="eyebrow">Wander around</span>
+  <div class="cards">
+    <a class="item" href="#ml" data-jump="ml">
+      <div class="body">
+        <div class="num">01</div>
+        <h3>Machine Learning Projects</h3>
+        <p>Research from my Ph.D. and beyond — survival analysis on messy real-world data, seizure prognosis,
+        and wearable physiological sensing.</p>
+        <div class="cta">Take a look →</div>
       </div>
-      <span class="when">Sept 2020 – Jan 2025</span>
-    </div>
-    <p class="meta">Operated at Engagement Manager scope across four large Digital, AI, and Gen AI engagements.</p>
-    <ul class="bul">
-      <li>Led McKinsey's <strong>Gen AI Central Development Hub</strong> and the Gen AI for MedTech service
-        line — developing two CXO Gen AI strategy guides and shaping 5+ AI/Gen AI proposals with healthcare
-        and MedTech clients.</li>
-      <li>Defined the data &amp; AI strategy and 1–5 year implementation roadmap for a
-        <span class="kpi">&#36;5B Medicaid program</span>, partnering with the agency's Chief Data Officer to
-        prioritize AI use cases against value and feasibility tradeoffs.</li>
-      <li>Accelerated cloud onboarding from <span class="kpi">6+ months to 1 week</span> for a federal
-        healthcare agency serving 150M+ Americans, leading a team of 10 client staff and 4 consultants
-        through process improvement and workflow automation.</li>
-      <li>Led product design and go-to-market strategy for a first-of-its-kind patient portal serving
-        <span class="kpi">~2M citizens</span>, defining the user journey and launch roadmap with designers,
-        engineers, and consultants.</li>
-      <li>Drove product rollout and adoption through change management — Agile ways of working, daily
-        stand-ups with front-line staff — for an AI product at a $20B+ global mining client,
-        increasing process yield by <span class="kpi">10%</span>.</li>
-    </ul>
+    </a>
+    <a class="item" href="#experiments" data-jump="experiments">
+      <div class="body">
+        <div class="num">02</div>
+        <h3>AI Experiments</h3>
+        <p>Small things I build for fun, usually pointed at whatever I already love — poetry, reading,
+        hiking, curiosity.</p>
+        <div class="cta">See the experiments →</div>
+      </div>
+    </a>
+    <a class="item" href="#pursuits" data-jump="pursuits">
+      <div class="body">
+        <div class="num">03</div>
+        <h3>Happiness of Other Pursuits</h3>
+        <p>List 100, a love for the written word, and the other non-work things that make life feel full.</p>
+        <div class="cta">Come along →</div>
+      </div>
+    </a>
   </div>
 </section>
 
-<!-- ========== PROJECTS ========== -->
-<section class="panel" id="projects" role="tabpanel">
-  <h2 class="sec">Selected Projects</h2>
-  <p class="lead">Case-by-case look at the products and programs I've led, and what changed as a result.</p>
 
-  <h3 class="sub">01 — AI stroke detection from EEG</h3>
-  <div class="card">
-    <div class="role-head">
-      <div><h4>Concept → FDA Breakthrough Device designation</h4>
-      <div class="meta">Ceribell · Senior Product Manager, AI Product</div></div>
-      <span class="when">2025 – present</span>
-    </div>
-    <p class="meta">
-      Took an unproven hypothesis — that stroke could be detected from EEG signal using AI — and shaped it
-      into a category-defining regulatory milestone. Directed the clinical data collection strategy, set
-      model performance targets with data scientists based on user needs and competitive benchmarking, and
-      co-authored the formal FDA submission with the regulatory team.
-    </p>
-    <div class="impact"><b>Outcome:</b> FDA Breakthrough Device designation; <span class="kpi">8%</span> jump in company stock price.
-      <a href="https://za.investing.com/news/stock-market-news/ceribell-stock-climbs-after-fda-breakthrough-device-designation-93CH-4046945" target="_blank" rel="noopener">Coverage ↗</a></div>
-    <div class="chips"><span class="chip">0-to-1</span><span class="chip">FDA filings</span><span class="chip">Clinical data strategy</span><span class="chip">EEG / signal AI</span></div>
-  </div>
+<!-- ══════════════════════════════════════════════════════════
+     TAB 2 · MACHINE LEARNING PROJECTS
 
-  <h3 class="sub">02 — Continuous AI brain monitoring in the ICU</h3>
-  <div class="card">
-    <div class="role-head">
-      <div><h4>Next-generation product concept</h4>
-      <div class="meta">Ceribell · Portfolio of 4 AI products</div></div>
-      <span class="when">Current</span>
-    </div>
-    <p class="meta">
-      Defining the vision for continuous, AI-driven monitoring of the brain in intensive care — plus market
-      research and proof-of-concept work for two adjacent opportunities: EMS-based stroke detection and
-      vasospasm detection. Concurrently developing the go-to-market implementation plan that carries the
-      breakthrough device from designation to market clearance.</p>
-    <div class="chips"><span class="chip">Product vision</span><span class="chip">Market research</span><span class="chip">Proof of concept</span><span class="chip">GTM planning</span></div>
-  </div>
-
-  <h3 class="sub">03 — Gen AI Central Development Hub</h3>
-  <div class="card">
-    <div class="role-head">
-      <div><h4>Firm-wide Gen AI capability build &amp; MedTech service line</h4>
-      <div class="meta">McKinsey &amp; Company · Digital &amp; Analytics</div></div>
-      <span class="when">2023 – 2025</span>
-    </div>
-    <p class="meta">
-      Led McKinsey's Gen AI Central Development Hub and the Gen AI for MedTech service line — authoring two
-      CXO-level Gen AI strategy guides and shaping 5+ AI/Gen AI proposals in pre-sales with healthcare and
-      MedTech clients.</p>
-    <div class="chips"><span class="chip">Gen AI strategy</span><span class="chip">CXO advisory</span><span class="chip">Pre-sales</span><span class="chip">MedTech</span></div>
-  </div>
-
-  <h3 class="sub">04 — Data &amp; AI strategy for a $5B Medicaid program</h3>
-  <div class="card">
-    <div class="role-head">
-      <div><h4>1–5 year AI implementation roadmap</h4>
-      <div class="meta">McKinsey &amp; Company · Public-sector healthcare</div></div>
-      <span class="when">2020 – 2025</span>
-    </div>
-    <p class="meta">
-      Built the data &amp; AI strategy and multi-year implementation roadmap for a &#36;5B Medicaid program,
-      working directly with the agency's Chief Data Officer to prioritize AI use cases against value and
-      feasibility tradeoffs.</p>
-    <div class="chips"><span class="chip">AI roadmapping</span><span class="chip">Use-case prioritization</span><span class="chip">CDO partnership</span></div>
-  </div>
-
-  <h3 class="sub">05 — Cloud onboarding: 6 months → 1 week</h3>
-  <div class="card">
-    <div class="role-head">
-      <div><h4>Process redesign for a federal healthcare agency</h4>
-      <div class="meta">McKinsey &amp; Company · Serving 150M+ Americans</div></div>
-      <span class="when">2020 – 2025</span>
-    </div>
-    <p class="meta">
-      Led a combined team of 10 client staff and 4 consultants to redesign the agency's cloud onboarding
-      process and automate key workflows.</p>
-    <div class="impact"><b>Outcome:</b> Onboarding time cut from <span class="kpi">6+ months to 1 week</span>.</div>
-    <div class="chips"><span class="chip">Workflow automation</span><span class="chip">Process improvement</span><span class="chip">Large-team leadership</span></div>
-  </div>
-
-  <h3 class="sub">06 — First-of-its-kind patient portal</h3>
-  <div class="card">
-    <div class="role-head">
-      <div><h4>Product design &amp; go-to-market for ~2M citizens</h4>
-      <div class="meta">McKinsey &amp; Company · Digital product</div></div>
-      <span class="when">2020 – 2025</span>
-    </div>
-    <p class="meta">
-      Led product design and GTM strategy for a first-of-its-kind patient portal, partnering with clients
-      and a cross-functional team of designers, engineers, and consultants to define the end-to-end user
-      journey and launch roadmap.</p>
-    <div class="chips"><span class="chip">User journey</span><span class="chip">Launch roadmap</span><span class="chip">Design partnership</span></div>
-  </div>
-
-  <h3 class="sub">07 — AI adoption at a &#36;20B+ global mining client</h3>
-  <div class="card">
-    <div class="role-head">
-      <div><h4>Rollout, change management, and front-line adoption</h4>
-      <div class="meta">McKinsey &amp; Company · Industrial AI</div></div>
-      <span class="when">2020 – 2025</span>
-    </div>
-    <p class="meta">
-      Supported product rollout and adoption through change management — introducing Agile ways of working
-      and running daily stand-ups with front-line staff — so that an AI product actually landed in daily
-      operations.</p>
-    <div class="impact"><b>Outcome:</b> Mining process yield increased by <span class="kpi">10%</span>.</div>
-    <div class="chips"><span class="chip">Change management</span><span class="chip">Agile</span><span class="chip">Front-line enablement</span></div>
-  </div>
-
-  <h3 class="sub">08 — AI wearables (patented)</h3>
-  <div class="card">
-    <div class="role-head">
-      <div><h4>Sleep apnea detection &amp; epileptic seizure prediction</h4>
-      <div class="meta">Doctoral and applied research · AI-enabled medical devices</div></div>
-      <span class="when">Research</span>
-    </div>
-    <p class="meta">
-      An AI wearable for sleep apnea detection
-      (<a href="https://patents.google.com/patent/US20200353203A1/en" target="_blank" rel="noopener">US Patent ↗</a>)
-      and an AI wearable headband that predicts epileptic seizures and alerts clinicians
-      (provisional patent issued).</p>
-    <div class="chips"><span class="chip">Wearables</span><span class="chip">Physiological signal AI</span><span class="chip">IP</span></div>
-  </div>
-</section>
-
-<!-- ========== PATENTS & RESEARCH ========== -->
-<section class="panel" id="research" role="tabpanel">
-  <h2 class="sec">Patents &amp; Research</h2>
-
-  <h3 class="sub">Patents — AI-enabled products</h3>
-  <ul class="clean">
-    <li>
-      <strong>AI wearable for sleep apnea detection</strong> —
-      <a href="https://patents.google.com/patent/US20200353203A1/en" target="_blank" rel="noopener">US Patent US20200353203A1 ↗</a>
-    </li>
-    <li>
-      <strong>AI wearable headband to predict epileptic seizures and alert clinicians</strong>
-      <span class="meta">— provisional patent issued</span>
-    </li>
-  </ul>
-
-  <h3 class="sub">Publications &amp; talks</h3>
-  <div class="card">
-    <p class="meta">
-      <strong>10+ peer-reviewed research articles</strong> on AI/ML topics, presented at
-      <strong>10+ international conferences</strong>. Research themes span survival analysis for big data,
-      predictive modeling from imbalanced data, synthetic data generation, and multimodal analysis for
-      clinical applications.</p>
-    <div class="chips">
-      <span class="chip">Survival analysis</span><span class="chip">Imbalanced data</span>
-      <span class="chip">Synthetic data generation</span><span class="chip">Multimodal learning</span>
-      <span class="chip">Clinical ML</span>
-    </div>
-  </div>
-
-  <h3 class="sub">Doctoral thesis</h3>
-  <div class="card">
-    <h4><a href="https://oaktrust.library.tamu.edu/items/94f0b7fc-2fa5-4b33-be08-ca5df12f99de" target="_blank" rel="noopener">Survival Analysis for Big Data ↗</a></h4>
-    <p class="meta">Texas A&amp;M University · Developed AI algorithms for predictive modeling from imbalanced
-    data, synthetic data generation, and multimodal analysis for clinical applications.</p>
-  </div>
-</section>
-
-<!-- ========== AWARDS ========== -->
-<section class="panel" id="awards" role="tabpanel">
-  <h2 class="sec">Awards &amp; Recognition</h2>
-  <p class="lead">Selected from 12 awards received.</p>
-  <ul class="clean">
-    <li>
-      <strong>National Academy of Engineering — Global Grand Challenges Award</strong>
-    </li>
-    <li>
-      <strong>McKinsey Master Faculty</strong>
-      <span class="meta">— named Master Faculty for Digital &amp; Analytics programs</span>
-    </li>
-    <li>
-      <strong>Women in OR &amp; Analytics — Bayer Scholarship</strong>
-      <span class="meta">— one awarded globally</span>
-    </li>
-    <li>
-      <strong>AAMI Foundation Health Systems Engineer</strong>
-      <span class="meta">— one awarded in the United States</span>
-    </li>
-    <li>
-      <strong>INFORMS Data Mining — Best Student Paper</strong>
-    </li>
-  </ul>
-
-  <h3 class="sub">Company recognition</h3>
-  <div class="grid2">
-    <div class="card"><h4>TIME Best Inventions 2025</h4><p class="meta">Ceribell</p></div>
-    <div class="card"><h4>Fast Company Most Innovative Companies 2023</h4><p class="meta">Ceribell</p></div>
-  </div>
-</section>
-
-<!-- ========== EDUCATION ========== -->
-<section class="panel" id="education" role="tabpanel">
-  <h2 class="sec">Education</h2>
-  <div class="timeline">
-    <div class="item">
-      <h4 style="font-family:Sora,sans-serif;margin:0 0 4px">Ph.D., Industrial &amp; Systems Engineering</h4>
-      <div class="meta">Texas A&amp;M University · GPA 3.83 / 4.0 · 2020<br>
-      AI/ML specialization</div>
-      <ul class="bul">
-        <li>Thesis:
-          <a href="https://oaktrust.library.tamu.edu/items/94f0b7fc-2fa5-4b33-be08-ca5df12f99de" target="_blank" rel="noopener">Survival Analysis for Big Data ↗</a>
-          — AI algorithms for predictive modeling from imbalanced data, synthetic data generation, and
-          multimodal analysis for clinical applications.</li>
-        <li>Mentored <span class="kpi">50+</span> master's and undergraduate students on award-winning
-          research projects.</li>
-      </ul>
-    </div>
-    <div class="item">
-      <h4 style="font-family:Sora,sans-serif;margin:0 0 4px">B.E., Electronics &amp; Communications Engineering</h4>
-      <div class="meta">Birla Institute of Technology · First Class with Distinction · 2015</div>
-    </div>
-  </div>
-</section>
-
-<!-- ========== SKILLS ========== -->
-<section class="panel" id="skills" role="tabpanel">
-  <h2 class="sec">AI &amp; Technical Skills</h2>
-  <table>
-    <thead><tr><th>Area</th><th>Detail</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Tools</strong></td><td>R · Python · SQL · Tableau · Power BI</td></tr>
-      <tr><td><strong>Concepts</strong></td><td>ML/AI methods including evaluation (precision/recall, ROC/AUC); AI risk, safety, and ethics — particularly in the highly regulated healthcare domain</td></tr>
-      <tr><td><strong>Infrastructure</strong></td><td>High Performance Computing</td></tr>
-    </tbody>
-  </table>
-
-  <h3 class="sub">Product &amp; leadership</h3>
-  <div class="chips">
-    <span class="chip solid">Product vision &amp; strategy</span>
-    <span class="chip solid">0-to-1 product development</span>
-    <span class="chip solid">FDA regulatory filings</span>
-    <span class="chip">Go-to-market strategy</span>
-    <span class="chip">Cross-functional leadership</span>
-    <span class="chip">Clinical data strategy</span>
-    <span class="chip">Model performance targeting</span>
-    <span class="chip">Competitive &amp; market research</span>
-    <span class="chip">AI use-case prioritization</span>
-    <span class="chip">Change management</span>
-    <span class="chip">Agile ways of working</span>
-    <span class="chip">Executive communication</span>
-  </div>
-</section>
-
-<!-- ========== CONTACT ========== -->
-<section class="panel" id="contact" role="tabpanel">
-  <h2 class="sec">Get in touch</h2>
+     ─── HOW TO ADD A PROJECT ───────────────────────────────
+     Copy one <article class="item"> block, paste it inside
+     <div class="cards">, then change: image path, number,
+     title, description, tags. Delete the .status span if the
+     project isn't "published"/"in progress".
+     Images: put them in assets/projects/  — any aspect ratio
+     works, they're cropped to 16:10 automatically.
+     ────────────────────────────────────────────────────────
+     ══════════════════════════════════════════════════════════ -->
+<section class="panel" id="ml" role="tabpanel" aria-label="Machine learning projects">
+  <span class="eyebrow">Research &amp; applied work</span>
+  <h2 class="sec">Machine Learning Projects</h2>
   <p class="lead">
-    I'm always glad to talk about AI product management, regulated healthcare AI, or 0-to-1 product work.
+    Most of these began as questions from my Ph.D. in Industrial Engineering at Texas A&amp;M — how do you
+    learn something trustworthy from data that is rare, imbalanced, incomplete, or collected from a
+    body in motion? A few of them grew into patents and products.
   </p>
-  <div class="grid2">
-    <div class="card">
-      <h4>Email</h4>
-      <p class="meta"><a href="mailto:k.afrin.iqbal@gmail.com">k.afrin.iqbal@gmail.com</a></p>
-      <h4 style="margin-top:18px">Phone</h4>
-      <p class="meta">(979) 422-5399</p>
-    </div>
-    <div class="card">
-      <h4>Location</h4>
-      <p class="meta">Phoenix, AZ<br><span style="color:var(--accent)">Open to relocation to San Francisco</span></p>
-      <h4 style="margin-top:18px">Elsewhere</h4>
-      <p class="meta"><a href="https://www.linkedin.com/in/k-afrin/" target="_blank" rel="noopener">LinkedIn ↗</a></p>
-    </div>
+
+  <div class="cards">
+
+    <!-- ─────────── PROJECT BLOCK 01 ─────────── -->
+    <article class="item">
+      <div class="shot" data-slot>
+        <img src="assets/projects/random-survival-forest.jpg" alt="Random survival forest project">
+        <span class="ph">assets/projects/<br>random-survival-forest.jpg</span>
+      </div>
+      <div class="body">
+        <div class="num">PROJECT 01</div>
+        <h3>Building a Random Survival Forest for Extremely Unbalanced, Right-Censored Data</h3>
+        <p>
+          Rare-event survival data breaks most off-the-shelf models: the events you care about are a tiny
+          minority, and many observations are censored before anything happens at all. This work develops a
+          balanced random survival forest approach for exactly that regime.
+        </p>
+        <div class="tags">
+          <span class="tag accent">Survival analysis</span>
+          <span class="tag">Imbalanced data</span>
+          <span class="tag">Right censoring</span>
+          <span class="tag">Ensemble methods</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ─────────── PROJECT BLOCK 02 ─────────── -->
+    <article class="item">
+      <div class="shot" data-slot>
+        <img src="assets/projects/system-wide-rsf.jpg" alt="Manufacturing system-wide balanced random survival forest">
+        <span class="ph">assets/projects/<br>system-wide-rsf.jpg</span>
+      </div>
+      <div class="body">
+        <div class="num">PROJECT 02</div>
+        <h3>Manufacturing System-wide Balanced Random Survival Forest</h3>
+        <p>
+          Extending balanced survival modelling from a single machine to an entire manufacturing system —
+          so that reliability and failure prediction account for how components fail together, not just
+          in isolation.
+        </p>
+        <div class="tags">
+          <span class="tag accent">Reliability</span>
+          <span class="tag">Prognostics</span>
+          <span class="tag">Manufacturing systems</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ─────────── PROJECT BLOCK 03 ─────────── -->
+    <article class="item">
+      <div class="shot" data-slot>
+        <img src="assets/projects/seizure-prognosis.jpg" alt="Prognosis of epileptic seizure">
+        <span class="ph">assets/projects/<br>seizure-prognosis.jpg</span>
+      </div>
+      <div class="body">
+        <div class="num">PROJECT 03</div>
+        <h3>Prognosis of Epileptic Seizure</h3>
+        <p>
+          Predicting seizures early enough to matter, from wearable signal. This line of work became a
+          wearable AI headband that forecasts epileptic seizures and alerts clinicians — with a
+          provisional patent issued.
+        </p>
+        <div class="tags">
+          <span class="tag accent">Patented</span>
+          <span class="tag">Wearables</span>
+          <span class="tag">Time-series AI</span>
+          <span class="tag">Clinical ML</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ─────────── PROJECT BLOCK 04 ─────────── -->
+    <article class="item">
+      <div class="shot" data-slot>
+        <img src="assets/projects/spo2-ppg.jpg" alt="SpO2 estimation using neck photoplethysmography">
+        <span class="ph">assets/projects/<br>spo2-ppg.jpg</span>
+      </div>
+      <div class="body">
+        <div class="num">PROJECT 04</div>
+        <h3>SpO₂ Estimation Using Neck Photoplethysmography</h3>
+        <p>
+          Estimating blood-oxygen saturation from PPG signal captured at the neck rather than the
+          fingertip — the sensing foundation behind a patented AI wearable for sleep apnea detection.
+        </p>
+        <div class="tags">
+          <span class="tag accent">Patented</span>
+          <span class="tag">Signal processing</span>
+          <span class="tag">PPG</span>
+          <span class="tag">Sleep apnea</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ▲▲▲ Duplicate a block above to add PROJECT 05 ▲▲▲ -->
+
+  </div>
+
+  <div class="wip">
+    <b>A note:</b> the short descriptions above are working summaries — I'm gradually replacing each with a
+    proper write-up, and linking out to papers, code, and patents as I go.
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     TAB 3 · AI EXPERIMENTS
+
+     The PoAIm screenshot from your doc goes at:
+       assets/experiments/poaim.png
+     (a labelled placeholder shows until you add it)
+     ══════════════════════════════════════════════════════════ -->
+<section class="panel" id="experiments" role="tabpanel" aria-label="AI experiments">
+  <span class="eyebrow">Playing around</span>
+  <h2 class="sec">AI Experiments</h2>
+  <p class="lead">
+    When I'm not building AI-enabled neurodiagnostic products, I like using technology to explore the
+    things I already love — reading, hiking, and whatever else I'm curious about at the moment. The
+    projects below are a few small experiments from that process.
+  </p>
+  <p class="lead">
+    This page is definitely still a work in progress. I'm excited to keep making things, trying new ideas,
+    and sharing what comes out of it.
+  </p>
+
+  <div class="cards wide">
+
+    <!-- ─────────── EXPERIMENT · PoAIm ─────────── -->
+    <article class="item">
+      <div class="shot" data-slot>
+        <span class="status">Live</span>
+        <img src="assets/experiments/poaim.png" alt="PoAIm interface — AI-generated tiny poems for every feeling and moment">
+        <span class="ph">assets/experiments/<br>poaim.png</span>
+      </div>
+      <div class="body">
+        <div class="num">EXPERIMENT 01</div>
+        <h3>PoAIm — AI-generated tiny poems for every feeling and moment</h3>
+        <p>
+          A very small app born out of my love for the written word. You tell it what's on your mind, how it
+          should feel, and who it's for — tender, for me, about poetry — and it writes you a tiny poem back.
+          Nothing more than that, which is exactly the point.
+        </p>
+        <div class="tags">
+          <span class="tag accent">Built for fun</span>
+          <span class="tag">LLMs</span>
+          <span class="tag">Poetry</span>
+          <span class="tag">Tiny apps</span>
+        </div>
+        <!-- When PoAIm is public, uncomment and add the URL:
+        <a class="cta" href="https://…" target="_blank" rel="noopener">Try PoAIm →</a> -->
+      </div>
+    </article>
+
+    <!-- ─────────── EXPERIMENT PLACEHOLDER — reading ─────────── -->
+    <article class="item">
+      <div class="shot" data-slot>
+        <span class="status">Coming soon</span>
+        <img src="assets/experiments/experiment-02.jpg" alt="">
+        <span class="ph">assets/experiments/<br>experiment-02.jpg</span>
+      </div>
+      <div class="body">
+        <div class="num">EXPERIMENT 02</div>
+        <h3>Something for readers</h3>
+        <p>
+          An idea in progress, pointed at reading — the thing I return to most. I'll write it up here once
+          it's more than a notebook and a hunch.
+        </p>
+        <div class="tags"><span class="tag">In progress</span></div>
+      </div>
+    </article>
+
+    <!-- ▲▲▲ Duplicate a block above to add EXPERIMENT 03 ▲▲▲ -->
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     TAB 4 · HAPPINESS OF OTHER PURSUITS
+
+     Two blocks: List 100, and Love for the Written Words.
+     Image slots are 4:5 (portrait) here — nice for a kayaking
+     photo or a page of writing. Swap .tall for the default
+     16:10 if you'd rather.
+     ══════════════════════════════════════════════════════════ -->
+<section class="panel" id="pursuits" role="tabpanel" aria-label="Happiness of other pursuits">
+  <span class="eyebrow">Life outside the roadmap</span>
+  <h2 class="sec">Happiness of Other Pursuits</h2>
+  <p class="lead">
+    The things I do for no strategic reason whatsoever — which, it turns out, are the ones that make
+    everything else worth doing.
+  </p>
+
+  <div class="cards wide">
+
+    <!-- ─────────── PURSUIT · LIST 100 ─────────── -->
+    <article class="item">
+      <div class="shot tall" data-slot>
+        <img src="assets/pursuits/list-100.jpg" alt="List 100">
+        <span class="ph">assets/pursuits/<br>list-100.jpg</span>
+      </div>
+      <div class="body">
+        <div class="num">01</div>
+        <h3>List 100</h3>
+        <p>
+          A running list of a hundred things I want to do, see, learn, and try — inspired by Chip Huyen
+          and, honestly, a lot of movies. Some are small. Some are absurd. Kayaking made the list; so did
+          my first candlelight concert. I keep adding, and occasionally crossing things off.
+        </p>
+        <div class="tags">
+          <span class="tag accent">Ongoing</span>
+          <span class="tag">Experiences</span>
+          <span class="tag">Travel</span>
+        </div>
+        <!-- Link out once you publish the list:
+        <a class="cta" href="list-100.html">See the list →</a> -->
+      </div>
+    </article>
+
+    <!-- ─────────── PURSUIT · WRITING ─────────── -->
+    <article class="item">
+      <div class="shot tall" data-slot>
+        <img src="assets/pursuits/written-words.jpg" alt="Love for the written words">
+        <span class="ph">assets/pursuits/<br>written-words.jpg</span>
+      </div>
+      <div class="body">
+        <div class="num">02</div>
+        <h3>Love for the Written Words</h3>
+        <p>
+          Reading first, writing second — and lately, feeding both back into things I build. This is where
+          I'll collect what I've been reading, the occasional piece of my own writing, and the odd poem
+          that only exists because I got curious about what a language model would do with a feeling.
+        </p>
+        <div class="tags">
+          <span class="tag accent">Reading</span>
+          <span class="tag">Writing</span>
+          <span class="tag">Poetry</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- ▲▲▲ Duplicate a block above to add another pursuit ▲▲▲ -->
+
   </div>
 </section>
 
 </main>
 
+
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════════════ -->
 <footer>
-  <div class="wrap">© <span id="yr"></span> Kahkashan Afrin, Ph.D. · AI Product Manager · Phoenix, AZ</div>
+  <div class="wrap">
+    <div class="foot">
+      <div>© <span id="yr"></span> Kahkashan Afrin</div>
+      <div>
+        <a href="mailto:k.afrin.iqbal@gmail.com">k.afrin.iqbal@gmail.com</a>
+        &nbsp;·&nbsp;
+        <a href="https://www.linkedin.com/in/k-afrin/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </div>
+    <p class="disclaimer">
+      Illustrations on this site are AI-generated. Views here are my own and do not represent my employer.
+    </p>
+  </div>
 </footer>
 
+
 <script>
-const tabs = document.querySelectorAll('nav.tabs button');
+/* ════════════════════════════════════════════════════════════
+   TAB ROUTER — no config needed. Reads the buttons in the header
+   and matches them to sections by id. Supports deep links
+   (e.g. …/#ml) and the browser back button.
+   ════════════════════════════════════════════════════════════ */
+const tabs   = document.querySelectorAll('nav.tabs button');
 const panels = document.querySelectorAll('.panel');
 
-function show(id, push = true){
-  if(!document.getElementById(id)) id = 'about';
+function show(id, updateHash = true){
+  if(!id || !document.getElementById(id)) id = 'home';
   panels.forEach(p => p.classList.toggle('active', p.id === id));
-  tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.tab === id));
-  if(push) history.replaceState(null, '', '#' + id);
+  tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === id)));
+  if(updateHash) history.replaceState(null, '', '#' + id);
   window.scrollTo({top:0, behavior:'smooth'});
 }
-tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
-document.querySelectorAll('[data-jump]').forEach(a =>
-  a.addEventListener('click', e => { e.preventDefault(); show(a.dataset.jump); }));
-window.addEventListener('hashchange', () => show(location.hash.slice(1), false));
-show(location.hash.slice(1) || 'about', false);
 
-const root = document.documentElement;
+tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
+
+// Any element with data-jump="tabId" becomes an in-page tab link
+document.querySelectorAll('[data-jump]').forEach(el =>
+  el.addEventListener('click', e => { e.preventDefault(); show(el.dataset.jump); }));
+
+window.addEventListener('hashchange', () => show(location.hash.slice(1), false));
+show(location.hash.slice(1) || 'home', false);
+
+/* ════════════════════════════════════════════════════════════
+   IMAGE SLOTS — if an image file is missing, show the labelled
+   dashed placeholder instead of a broken-image icon.
+   Works automatically for every .shot[data-slot] you add.
+   ════════════════════════════════════════════════════════════ */
+document.querySelectorAll('.shot[data-slot]').forEach(slot => {
+  const img = slot.querySelector('img');
+  if(!img) return;
+  const fail = () => slot.classList.add('empty');
+  img.addEventListener('error', fail);
+  // catch images that already failed before this script ran
+  if(img.complete && img.naturalWidth === 0) fail();
+});
+
+/* ════════════════════════════════════════════════════════════
+   THEME TOGGLE — remembers your choice, respects OS preference
+   ════════════════════════════════════════════════════════════ */
+const root  = document.documentElement;
 const saved = localStorage.getItem('theme');
-if(saved) root.setAttribute('data-theme', saved);
+if(saved){
+  root.setAttribute('data-theme', saved);
+} else if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+  root.setAttribute('data-theme', 'dark');
+}
 document.getElementById('themeBtn').addEventListener('click', () => {
   const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   root.setAttribute('data-theme', next);
   localStorage.setItem('theme', next);
 });
+
 document.getElementById('yr').textContent = new Date().getFullYear();
 </script>
 </body>
