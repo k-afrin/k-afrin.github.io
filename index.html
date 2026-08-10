@@ -6,7 +6,6 @@
 <title>Kahkashan Afrin — AI Product Manager, Reader, Writer, Traveler</title>
 <meta name="description" content="Hi, I'm Afrin. AI Product Manager at Ceribell, ex-McKinsey, Ph.D. in Industrial Engineering. Machine learning projects, small AI experiments, and other pursuits." />
 
-<!-- Social preview (optional: add assets/social-card.jpg, 1200x630) -->
 <meta property="og:title" content="Kahkashan Afrin" />
 <meta property="og:description" content="AI Product Manager · Consultant · Ph.D. · Reader · Writer · Traveler · Dreamer" />
 <meta property="og:type" content="website" />
@@ -17,18 +16,17 @@
 
 <style>
 /* ════════════════════════════════════════════════════════════
-   1. DESIGN TOKENS  — change colours/fonts in one place
+   1. DESIGN TOKENS
    ════════════════════════════════════════════════════════════ */
 :root{
-  --bg:#fdfbf7;            /* warm cream */
+  --bg:#fdfbf7;
   --surface:#ffffff;
   --text:#1c1a22;
-  --muted:#615c६b;
   --muted:#615c6b;
   --line:#e9e3da;
-  --accent:#7a5cc4;        /* soft lilac-purple */
+  --accent:#7a5cc4;
   --accent-soft:#f2eefb;
-  --accent-2:#e0a44f;      /* warm ochre */
+  --accent-2:#e0a44f;
   --chip:#f5f1ea;
   --radius:16px;
   --shadow:0 1px 2px rgba(28,26,34,.04), 0 10px 30px rgba(28,26,34,.06);
@@ -53,13 +51,13 @@ a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline;text-underline-offset:3px}
 img{max-width:100%;display:block}
 .wrap{max-width:1000px;margin:0 auto;padding:0 24px}
-.serif{font-family:Fraunces,Georgia,serif}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
 
 /* ════════════════════════════════════════════════════════════
    3. HEADER + TABS
    ════════════════════════════════════════════════════════════ */
-header.site{position:sticky;top:0;z-index:60;background:color-mix(in srgb, var(--bg) 88%, transparent);
-  border-bottom:1px solid var(--line);backdrop-filter:blur(12px) saturate(1.4)}
+header.site{position:sticky;top:0;z-index:60;background:var(--bg);
+  border-bottom:1px solid var(--line)}
 .bar{display:flex;align-items:center;gap:14px;padding:14px 0;flex-wrap:wrap}
 .brand{font-family:Fraunces,serif;font-weight:600;font-size:1.1rem;letter-spacing:-.01em;white-space:nowrap;cursor:pointer}
 .brand:hover{color:var(--accent)}
@@ -68,13 +66,13 @@ nav.tabs button{font:inherit;font-size:.9rem;font-weight:500;cursor:pointer;back
   border:1px solid transparent;color:var(--muted);padding:8px 13px;border-radius:10px;
   transition:.18s;white-space:nowrap}
 nav.tabs button:hover{color:var(--text);background:var(--chip)}
-nav.tabs button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 18%,transparent)}
+nav.tabs button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft);border-color:var(--accent)}
 #themeBtn{border:1px solid var(--line);background:var(--surface);color:var(--muted);
   width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:.95rem;flex-shrink:0}
 #themeBtn:hover{color:var(--accent);border-color:var(--accent)}
 
 /* ════════════════════════════════════════════════════════════
-   4. HERO  (Home)
+   4. HERO (Home)
    ════════════════════════════════════════════════════════════ */
 .hero{display:grid;grid-template-columns:1fr 230px;gap:52px;align-items:start;padding:58px 0 12px}
 .hello{font-family:Fraunces,serif;font-size:clamp(2.2rem,6vw,3.4rem);line-height:1.08;
@@ -82,14 +80,14 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);background:var(--accen
 .hello .wave{display:inline-block;transform-origin:70% 70%;animation:wave 2.6s ease-in-out 1s 2}
 @keyframes wave{0%,60%,100%{transform:rotate(0)}10%,30%,50%{transform:rotate(14deg)}20%,40%{transform:rotate(-8deg)}}
 .identity{font-size:.93rem;color:var(--muted);margin:0 0 26px;letter-spacing:.01em}
-.identity b{color:var(--text);font-weight:500}
 .identity .dot{color:var(--accent-2);padding:0 6px}
 
 /* Circular profile photo */
 .portrait{position:relative;width:230px;aspect-ratio:1;justify-self:center}
 .portrait img{width:100%;height:100%;border-radius:50%;object-fit:cover;
   border:5px solid var(--surface);box-shadow:var(--shadow-lift);position:relative;z-index:2}
-.portrait::before{content:"";position:absolute;inset:-11px;border-radius:50%;
+.portrait::before{content:"";position:absolute;top:-11px;right:-11px;bottom:-11px;left:-11px;
+  border-radius:50%;
   background:conic-gradient(from 200deg,var(--accent),var(--accent-2),var(--accent-soft),var(--accent));
   opacity:.5;z-index:1}
 .portrait .fallback{width:100%;height:100%;border-radius:50%;z-index:2;position:relative;
@@ -101,8 +99,6 @@ nav.tabs button[aria-selected="true"]{color:var(--accent);background:var(--accen
 
 .prose p{max-width:66ch}
 .prose p+p{margin-top:1.1em}
-.signoff{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);
-  font-size:.85rem;color:var(--muted);font-style:italic}
 
 /* ════════════════════════════════════════════════════════════
    5. SECTION FURNITURE
@@ -116,27 +112,24 @@ h2.sec{font-family:Fraunces,serif;font-size:clamp(1.7rem,4vw,2.2rem);font-weight
 .eyebrow{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.12em;
   text-transform:uppercase;color:var(--accent);margin-bottom:10px}
 p.lead{font-size:1.06rem;color:var(--muted);max-width:70ch;margin:0 0 8px}
-.wip{margin:22px 0 4px;padding:14px 18px;background:var(--accent-soft);border-radius:12px;
-  border-left:3px solid var(--accent);font-size:.9rem;color:var(--text)}
-.wip b{font-family:Fraunces,serif}
 .divider{height:1px;background:var(--line);margin:44px 0}
 
 /* ════════════════════════════════════════════════════════════
-   6. PROJECT / EXPERIMENT / PURSUIT CARDS
+   6. CARDS
    ════════════════════════════════════════════════════════════ */
 .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:22px;margin-top:26px}
 .cards.wide{grid-template-columns:repeat(auto-fill,minmax(420px,1fr))}
 .item{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
   overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:.22s}
-.item:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
+.item:hover{transform:translateY(-3px);box-shadow:var(--shadow-lift);border-color:var(--accent)}
 a.item{color:inherit;text-decoration:none}
 a.item:hover{text-decoration:none}
 
-/* Image slot: shows a labelled dashed placeholder until the file exists */
+/* Image slot: labelled dashed placeholder until the file exists */
 .shot{position:relative;aspect-ratio:16/10;background:var(--chip);overflow:hidden;border-bottom:1px solid var(--line)}
 .shot img{width:100%;height:100%;object-fit:cover}
-.shot .ph{display:none;position:absolute;inset:10px;border:2px dashed color-mix(in srgb,var(--accent) 35%,var(--line));
-  border-radius:10px;place-items:center;text-align:center;padding:16px;
+.shot .ph{display:none;position:absolute;top:10px;right:10px;bottom:10px;left:10px;
+  border:2px dashed var(--line);border-radius:10px;place-items:center;text-align:center;padding:16px;
   font-size:.72rem;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);line-height:1.6}
 .shot.empty img{display:none}
 .shot.empty .ph{display:grid}
@@ -156,15 +149,7 @@ a.item:hover{text-decoration:none}
   font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);box-shadow:var(--shadow)}
 
 /* ════════════════════════════════════════════════════════════
-   7. LISTS  (e.g. List 100, writing)
-   ════════════════════════════════════════════════════════════ */
-ul.clean{list-style:none;padding:0;margin:18px 0 0}
-ul.clean>li{padding:14px 0;border-bottom:1px solid var(--line);font-size:.96rem}
-ul.clean>li:last-child{border-bottom:0}
-ul.clean>li::before{content:"◦";color:var(--accent-2);font-weight:700;margin-right:12px}
-
-/* ════════════════════════════════════════════════════════════
-   8. FOOTER
+   7. FOOTER
    ════════════════════════════════════════════════════════════ */
 footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:var(--muted)}
 .foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
@@ -173,13 +158,12 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
 .disclaimer{margin-top:14px;font-size:.78rem;color:var(--muted);opacity:.85;max-width:70ch}
 
 /* ════════════════════════════════════════════════════════════
-   9. RESPONSIVE
+   8. RESPONSIVE
    ════════════════════════════════════════════════════════════ */
 @media(max-width:800px){
   .hero{grid-template-columns:1fr;gap:30px;padding-top:40px}
   .portrait{width:160px;justify-self:start;order:-1}
-  nav.tabs{margin-left:0;width:100%;overflow-x:auto;padding-bottom:4px;
-    scrollbar-width:none}
+  nav.tabs{margin-left:0;width:100%;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
   nav.tabs::-webkit-scrollbar{display:none}
   .cards,.cards.wide{grid-template-columns:1fr}
 }
@@ -189,9 +173,10 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
 <body>
 
 <!-- ══════════════════════════════════════════════════════════
-     HEADER — to add a tab: add a <button> here + a matching
-     <section class="panel" id="..."> below. The id must match
-     the data-tab value. That's the only wiring needed.
+     HEADER
+     To add a tab: add a <button> here plus a matching
+     <section class="panel" id="..."> below. The id must equal
+     the data-tab value. That is the only wiring needed.
      ══════════════════════════════════════════════════════════ -->
 <header class="site">
   <div class="wrap bar">
@@ -202,7 +187,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
       <button role="tab" data-tab="experiments" aria-selected="false">AI Experiments</button>
       <button role="tab" data-tab="pursuits"    aria-selected="false">Happiness of Other Pursuits</button>
     </nav>
-    <button id="themeBtn" title="Toggle light / dark" aria-label="Toggle light or dark theme">◐</button>
+    <button id="themeBtn" title="Toggle light or dark theme" aria-label="Toggle light or dark theme">&#9686;</button>
   </div>
 </header>
 
@@ -215,41 +200,38 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
 
   <div class="hero">
     <div>
-      <h1 class="hello">Hi, I'm Afrin! <span class="wave">👋</span></h1>
+      <h1 class="hello">Hi, I'm Afrin! <span class="wave">&#128075;</span></h1>
       <p class="identity">
-        <b>AI Product Manager</b><span class="dot">·</span>Consultant<span class="dot">·</span>Ph.D.<span class="dot">·</span>Reader<span class="dot">·</span>Writer<span class="dot">·</span>Traveler<span class="dot">·</span>Dreamer
+        AI Product Manager<span class="dot">·</span>Consultant<span class="dot">·</span>Ph.D.<span class="dot">·</span>Reader<span class="dot">·</span>Writer<span class="dot">·</span>Traveler<span class="dot">·</span>Dreamer
       </p>
 
       <div class="prose">
         <p>
-          I currently work as an <strong>AI Product Manager at Ceribell</strong>, building AI products for
-          stroke detection. Before that, I was a consultant in <strong>McKinsey's Digital &amp; Analytics</strong>
-          practice. And before that, I was a Ph.D. student in Industrial Engineering at
-          <strong>Texas A&amp;M</strong>, where I focused on AI and machine learning.
+          I currently work as an AI Product Manager at Ceribell, building AI products for stroke detection.
+          Before that, I was a consultant in McKinsey's Digital &amp; Analytics practice. And before that, I
+          was a Ph.D. student in Industrial Engineering at Texas A&amp;M, where I focused on AI and machine
+          learning.
         </p>
         <p>
-          Somehow, through this fairly interdisciplinary — and not exactly planned — path, I've ended up
-          working at the intersection of technology, product, and business strategy. It turns out I like it here.
+          Somehow, through this fairly interdisciplinary, and not exactly planned, path, I've ended up
+          working at the intersection of technology, product, and business strategy. It turns out I like it
+          here.
         </p>
         <p>
-          I love trying new things and collecting new experiences. Recently, that has included turning my love
-          for the written word into <a href="#experiments" data-jump="experiments"><strong>PoAIm</strong></a>,
-          a tiny AI poem-generating app, and going to candlelight concerts for the first time
-          (highly recommend).
+          I love trying new things and collecting new experiences. Recently, that has included turning my
+          love for the written word into <a href="#experiments" data-jump="experiments">PoAIm</a>, a tiny AI
+          poem-generating app, and going to candlelight concerts for the first time (highly recommend).
         </p>
         <p>
-          I grew up in a small mining town in <strong>Jharkhand, India</strong>, dreaming about doing big
-          things and seeing the world. I've been chasing that dream ever since!
+          I grew up in a small mining town in Jharkhand, India, dreaming about doing big things and seeing
+          the world. I've been chasing that dream ever since!
         </p>
       </div>
-
-      <p class="signoff">Updated August 2026.</p>
     </div>
 
     <!-- ── PROFILE PHOTO ──
          Drop your photo at: assets/afrin.jpg
-         Square-ish crop works best (e.g. 800×800). Until then a
-         placeholder ring shows automatically. -->
+         A square crop works best, for example 800 by 800. -->
     <div class="portrait" id="portrait">
       <img src="assets/afrin.jpg" alt="Portrait of Kahkashan Afrin"
            onerror="document.getElementById('portrait').classList.add('empty')">
@@ -266,26 +248,26 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
       <div class="body">
         <div class="num">01</div>
         <h3>Machine Learning Projects</h3>
-        <p>Research from my Ph.D. and beyond — survival analysis on messy real-world data, seizure prognosis,
+        <p>Research from my Ph.D., including survival analysis on messy real-world data, seizure prognosis,
         and wearable physiological sensing.</p>
-        <div class="cta">Take a look →</div>
+        <div class="cta">Take a look &rarr;</div>
       </div>
     </a>
     <a class="item" href="#experiments" data-jump="experiments">
       <div class="body">
         <div class="num">02</div>
         <h3>AI Experiments</h3>
-        <p>Small things I build for fun, usually pointed at whatever I already love — poetry, reading,
-        hiking, curiosity.</p>
-        <div class="cta">See the experiments →</div>
+        <p>Small things I build for fun, usually pointed at whatever I already love, like poetry, reading,
+        hiking, and curiosity.</p>
+        <div class="cta">See the experiments &rarr;</div>
       </div>
     </a>
     <a class="item" href="#pursuits" data-jump="pursuits">
       <div class="body">
         <div class="num">03</div>
         <h3>Happiness of Other Pursuits</h3>
-        <p>List 100, a love for the written word, and the other non-work things that make life feel full.</p>
-        <div class="cta">Come along →</div>
+        <p>Other non-work things that make life feel full.</p>
+        <div class="cta">Come along &rarr;</div>
       </div>
     </a>
   </div>
@@ -296,21 +278,20 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
      TAB 2 · MACHINE LEARNING PROJECTS
 
      ─── HOW TO ADD A PROJECT ───────────────────────────────
-     Copy one <article class="item"> block, paste it inside
-     <div class="cards">, then change: image path, number,
-     title, description, tags. Delete the .status span if the
-     project isn't "published"/"in progress".
-     Images: put them in assets/projects/  — any aspect ratio
-     works, they're cropped to 16:10 automatically.
+     Copy one <a class="item"> block, paste it inside
+     <div class="cards">, then change: href, image path,
+     number, title, description, tags.
+     Project pages live in the repo root next to index.html.
+     Images go in assets/projects/ and are cropped to 16:10.
      ────────────────────────────────────────────────────────
      ══════════════════════════════════════════════════════════ -->
 <section class="panel" id="ml" role="tabpanel" aria-label="Machine learning projects">
-  <span class="eyebrow">Research &amp; applied work</span>
+  <span class="eyebrow">Research and applied work</span>
   <h2 class="sec">Machine Learning Projects</h2>
   <p class="lead">
-    Most of these began as questions from my Ph.D. in Industrial Engineering at Texas A&amp;M — how do you
-    learn something trustworthy from data that is rare, imbalanced, incomplete, or collected from a
-    body in motion? A few of them grew into patents and products.
+    Most of these began as questions from my Ph.D. How do you learn something trustworthy from data that is
+    rare, imbalanced, incomplete, or collected from a body in motion? A few of them grew into patents and
+    products.
   </p>
 
   <div class="cards">
@@ -325,7 +306,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
         <div class="num">PROJECT 01</div>
         <h3>Building a Random Survival Forest for Extremely Unbalanced, Right-Censored Data</h3>
         <p>
-          Rare-event survival data breaks most off-the-shelf models: the events you care about are a tiny
+          Rare-event survival data breaks most off-the-shelf models. The events you care about are a tiny
           minority, and many observations are censored before anything happens at all. This work develops a
           balanced random survival forest approach for exactly that regime.
         </p>
@@ -335,7 +316,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
           <span class="tag">Right censoring</span>
           <span class="tag">Ensemble methods</span>
         </div>
-        <div class="cta">Read more →</div>
+        <div class="cta">Read more &rarr;</div>
       </div>
     </a>
 
@@ -349,16 +330,16 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
         <div class="num">PROJECT 02</div>
         <h3>Manufacturing System-wide Balanced Random Survival Forest</h3>
         <p>
-          Extending balanced survival modelling from a single machine to an entire manufacturing system —
-          so that reliability and failure prediction account for how components fail together, not just
-          in isolation.
+          Extending balanced survival modelling from a single machine to an entire manufacturing system, so
+          that reliability and failure prediction account for how components fail together rather than in
+          isolation.
         </p>
         <div class="tags">
           <span class="tag accent">Reliability</span>
           <span class="tag">Prognostics</span>
           <span class="tag">Manufacturing systems</span>
         </div>
-        <div class="cta">Read more →</div>
+        <div class="cta">Read more &rarr;</div>
       </div>
     </a>
 
@@ -380,7 +361,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
           <span class="tag">Time-series AI</span>
           <span class="tag">Clinical ML</span>
         </div>
-        <div class="cta">Read more →</div>
+        <div class="cta">Read more &rarr;</div>
       </div>
     </a>
 
@@ -392,27 +373,22 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
       </div>
       <div class="body">
         <div class="num">PROJECT 04</div>
-        <h3>SpO₂ Estimation Using Neck Photoplethysmography</h3>
+        <h3>SpO&#8322; Estimation Using Neck Photoplethysmography</h3>
         <p>
-          Estimating blood-oxygen saturation from PPG signal captured at the neck rather than the
-          fingertip — the sensing foundation behind a wearable for sleep apnea detection.
+          Estimating blood-oxygen saturation from PPG signal captured at the neck rather than the fingertip,
+          the sensing foundation behind a wearable for sleep apnea detection.
         </p>
         <div class="tags">
           <span class="tag accent">Signal processing</span>
           <span class="tag">PPG</span>
           <span class="tag">Sleep apnea</span>
         </div>
-        <div class="cta">Read more →</div>
+        <div class="cta">Read more &rarr;</div>
       </div>
     </a>
 
     <!-- ▲▲▲ Duplicate a block above to add PROJECT 05 ▲▲▲ -->
 
-  </div>
-
-  <div class="wip">
-    <b>A note:</b> the short descriptions above are working summaries — I'm gradually replacing each with a
-    proper write-up, and linking out to papers, code, and patents as I go.
   </div>
 </section>
 
@@ -420,17 +396,17 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
 <!-- ══════════════════════════════════════════════════════════
      TAB 3 · AI EXPERIMENTS
 
-     The PoAIm screenshot from your doc goes at:
+     The PoAIm screenshot goes at:
        assets/experiments/poaim.png
-     (a labelled placeholder shows until you add it)
+     A labelled placeholder shows until you add it.
      ══════════════════════════════════════════════════════════ -->
 <section class="panel" id="experiments" role="tabpanel" aria-label="AI experiments">
   <span class="eyebrow">Playing around</span>
   <h2 class="sec">AI Experiments</h2>
   <p class="lead">
-    When I'm not building AI-enabled neurodiagnostic products, I like using technology to explore the
-    things I already love — reading, hiking, and whatever else I'm curious about at the moment. The
-    projects below are a few small experiments from that process.
+    Outside of work, I like using technology to explore the things I already love, like reading, hiking, and
+    whatever else I'm curious about at the moment. The projects below are a few small experiments from that
+    process.
   </p>
   <p class="lead">
     This page is definitely still a work in progress. I'm excited to keep making things, trying new ideas,
@@ -443,16 +419,16 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
     <a class="item" href="https://k-afrin.github.io/poAIm/" target="_blank" rel="noopener">
       <div class="shot" data-slot>
         <span class="status">Live</span>
-        <img src="assets/experiments/poaim.png" alt="PoAIm interface — AI-generated tiny poems for every feeling and moment">
+        <img src="assets/experiments/poaim.png" alt="PoAIm interface, AI-generated tiny poems for every feeling and moment">
         <span class="ph">assets/experiments/<br>poaim.png</span>
       </div>
       <div class="body">
         <div class="num">EXPERIMENT 01</div>
-        <h3>PoAIm — AI-generated tiny poems for every feeling and moment</h3>
+        <h3>PoAIm, AI-generated tiny poems for every feeling and moment</h3>
         <p>
-          A very small app born out of my love for the written word. You tell it what's on your mind, how it
-          should feel, and who it's for — tender, for me, about poetry — and it writes you a tiny poem back.
-          Nothing more than that, which is exactly the point.
+          A small app born out of my love for short poems. You tell it what's on your mind, how it should
+          feel, and who it's for, and it writes you a tiny poem. It isn't a match for human creativity yet,
+          but we'll see what happens in the next couple of years (go AGI!)
         </p>
         <div class="tags">
           <span class="tag accent">Built for fun</span>
@@ -460,11 +436,11 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
           <span class="tag">Poetry</span>
           <span class="tag">Tiny apps</span>
         </div>
-        <div class="cta">Try PoAIm ↗</div>
+        <div class="cta">Try PoAIm &#8599;</div>
       </div>
     </a>
 
-    <!-- ─────────── EXPERIMENT PLACEHOLDER — reading ─────────── -->
+    <!-- ─────────── EXPERIMENT · COMING SOON ─────────── -->
     <article class="item">
       <div class="shot" data-slot>
         <span class="status">Coming soon</span>
@@ -475,7 +451,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
         <div class="num">EXPERIMENT 02</div>
         <h3>Something for readers</h3>
         <p>
-          An idea in progress, pointed at reading — the thing I return to most. I'll write it up here once
+          An idea in progress, pointed at reading, the thing I return to most. I'll write it up here once
           it's more than a notebook and a hunch.
         </p>
         <div class="tags"><span class="tag">In progress</span></div>
@@ -490,24 +466,20 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
 
 <!-- ══════════════════════════════════════════════════════════
      TAB 4 · HAPPINESS OF OTHER PURSUITS
-
-     Two blocks: List 100, and Love for the Written Words.
-     Image slots are 4:5 (portrait) here — nice for a kayaking
-     photo or a page of writing. Swap .tall for the default
-     16:10 if you'd rather.
+     Sub-pages: list-100.html and books.html, both in the repo root.
      ══════════════════════════════════════════════════════════ -->
 <section class="panel" id="pursuits" role="tabpanel" aria-label="Happiness of other pursuits">
   <span class="eyebrow">Life outside the roadmap</span>
   <h2 class="sec">Happiness of Other Pursuits</h2>
   <p class="lead">
-    The things I do for no strategic reason whatsoever — which, it turns out, are the ones that make
+    The things I do for no strategic reason whatsoever, which, it turns out, are the ones that make
     everything else worth doing.
   </p>
 
   <div class="cards wide">
 
     <!-- ─────────── PURSUIT · LIST 100 ─────────── -->
-       <a class="item" href="list-100.html">
+    <a class="item" href="list-100.html">
       <div class="shot tall" data-slot>
         <img src="assets/pursuits/list-100.jpg" alt="List 100">
         <span class="ph">assets/pursuits/<br>list-100.jpg</span>
@@ -516,16 +488,11 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
         <div class="num">01</div>
         <h3>List 100</h3>
         <p>
-          A running list of a hundred things I want to do, see, learn, and try — inspired by Chip Huyen
-          and, honestly, a lot of movies. Some are small. Some are absurd. Kayaking made the list; so did
-          my first candlelight concert. I keep adding, and occasionally crossing things off.
+          A running list of a hundred things I want to do, see, learn, and try, inspired by Chip Huyen and,
+          honestly, a lot of movies. Some are small. Some are absurd. Kayaking made the list, and so did my
+          first candlelight concert. I keep adding, and occasionally crossing things off.
         </p>
-              <div class="tags">
-          <span class="tag accent">Ongoing</span>
-          <span class="tag">Experiences</span>
-          <span class="tag">Travel</span>
-        </div>
-        <div class="cta">See all 60 →</div>
+        <div class="cta">See all 60 &rarr;</div>
       </div>
     </a>
 
@@ -539,7 +506,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
         <div class="num">02</div>
         <h3>Love for the Written Words</h3>
         <p>
-          Reading first, writing second — and lately, feeding both back into things I build. This is where
+          Reading first, writing second, and lately, feeding both back into things I build. This is where
           I'll collect what I've been reading, the occasional piece of my own writing, and the odd poem
           that only exists because I got curious about what a language model would do with a feeling.
         </p>
@@ -548,7 +515,7 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
           <span class="tag">Writing</span>
           <span class="tag">Poetry</span>
         </div>
-        <div class="cta">See my bookshelf →</div>
+        <div class="cta">See my bookshelf &rarr;</div>
       </div>
     </a>
 
@@ -566,11 +533,11 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
 <footer>
   <div class="wrap">
     <div class="foot">
-      <div>© <span id="yr"></span> Kahkashan Afrin</div>
+      <div>&copy; <span id="yr"></span> Kahkashan Afrin</div>
       <div>
         <a href="mailto:k.afrin.iqbal@gmail.com">k.afrin.iqbal@gmail.com</a>
-        &nbsp;·&nbsp;
-        <a href="https://www.linkedin.com/in/k-afrin/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        &nbsp;&middot;&nbsp;
+        <a href="https://www.linkedin.com/in/k-afrin/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
       </div>
     </div>
     <p class="disclaimer">
@@ -582,59 +549,81 @@ footer{border-top:1px solid var(--line);padding:30px 0;font-size:.85rem;color:va
 
 <script>
 /* ════════════════════════════════════════════════════════════
-   TAB ROUTER — no config needed. Reads the buttons in the header
-   and matches them to sections by id. Supports deep links
-   (e.g. …/#ml) and the browser back button.
+   TAB ROUTER
+   Reads the buttons in the header and matches them to sections
+   by id. Supports deep links such as /#ml and the back button.
    ════════════════════════════════════════════════════════════ */
-const tabs   = document.querySelectorAll('nav.tabs button');
-const panels = document.querySelectorAll('.panel');
+var tabs = document.querySelectorAll('nav.tabs button');
+var panels = document.querySelectorAll('.panel');
 
-function show(id, updateHash = true){
-  if(!id || !document.getElementById(id)) id = 'home';
-  panels.forEach(p => p.classList.toggle('active', p.id === id));
-  tabs.forEach(t => t.setAttribute('aria-selected', String(t.dataset.tab === id)));
-  if(updateHash) history.replaceState(null, '', '#' + id);
-  window.scrollTo({top:0, behavior:'smooth'});
+function show(id, updateHash){
+  if (updateHash === undefined) updateHash = true;
+  if (!id || !document.getElementById(id)) id = 'home';
+  for (var i = 0; i < panels.length; i++){
+    if (panels[i].id === id) panels[i].className = 'panel active';
+    else panels[i].className = 'panel';
+  }
+  for (var j = 0; j < tabs.length; j++){
+    tabs[j].setAttribute('aria-selected', String(tabs[j].getAttribute('data-tab') === id));
+  }
+  if (updateHash) history.replaceState(null, '', '#' + id);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
+for (var t = 0; t < tabs.length; t++){
+  (function(btn){
+    btn.onclick = function(){ show(btn.getAttribute('data-tab')); };
+  })(tabs[t]);
+}
 
-// Any element with data-jump="tabId" becomes an in-page tab link
-document.querySelectorAll('[data-jump]').forEach(el =>
-  el.addEventListener('click', e => { e.preventDefault(); show(el.dataset.jump); }));
+/* Any element with data-jump="tabId" becomes an in-page tab link */
+var jumps = document.querySelectorAll('[data-jump]');
+for (var k = 0; k < jumps.length; k++){
+  (function(el){
+    el.onclick = function(e){ e.preventDefault(); show(el.getAttribute('data-jump')); };
+  })(jumps[k]);
+}
 
-window.addEventListener('hashchange', () => show(location.hash.slice(1), false));
+window.onhashchange = function(){ show(location.hash.slice(1), false); };
 show(location.hash.slice(1) || 'home', false);
 
 /* ════════════════════════════════════════════════════════════
-   IMAGE SLOTS — if an image file is missing, show the labelled
-   dashed placeholder instead of a broken-image icon.
-   Works automatically for every .shot[data-slot] you add.
+   IMAGE SLOTS
+   If an image file is missing, show the labelled dashed
+   placeholder instead of a broken-image icon. Works
+   automatically for every .shot[data-slot] you add.
    ════════════════════════════════════════════════════════════ */
-document.querySelectorAll('.shot[data-slot]').forEach(slot => {
-  const img = slot.querySelector('img');
-  if(!img) return;
-  const fail = () => slot.classList.add('empty');
-  img.addEventListener('error', fail);
-  // catch images that already failed before this script ran
-  if(img.complete && img.naturalWidth === 0) fail();
-});
+var slots = document.querySelectorAll('.shot[data-slot]');
+for (var s = 0; s < slots.length; s++){
+  (function(slot){
+    var img = slot.querySelector('img');
+    if (!img) return;
+    img.onerror = function(){
+      if (slot.className.indexOf('empty') === -1) slot.className += ' empty';
+    };
+    if (img.complete && img.naturalWidth === 0){
+      if (slot.className.indexOf('empty') === -1) slot.className += ' empty';
+    }
+  })(slots[s]);
+}
 
 /* ════════════════════════════════════════════════════════════
-   THEME TOGGLE — remembers your choice, respects OS preference
+   THEME TOGGLE
+   Remembers your choice and respects the OS preference.
    ════════════════════════════════════════════════════════════ */
-const root  = document.documentElement;
-const saved = localStorage.getItem('theme');
-if(saved){
+var root = document.documentElement;
+var saved = null;
+try { saved = localStorage.getItem('theme'); } catch (ignore) {}
+if (saved){
   root.setAttribute('data-theme', saved);
-} else if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
   root.setAttribute('data-theme', 'dark');
 }
-document.getElementById('themeBtn').addEventListener('click', () => {
-  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+document.getElementById('themeBtn').onclick = function(){
+  var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   root.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-});
+  try { localStorage.setItem('theme', next); } catch (ignore) {}
+};
 
 document.getElementById('yr').textContent = new Date().getFullYear();
 </script>
