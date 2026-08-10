@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>List 100 — Kahkashan Afrin</title>
+<meta name="description" content="A running list of a hundred things I want to do, see, learn, and try." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+<style>
+/* Tokens copied from index.html — keep in sync if you change the palette */
+:root{
+  --bg:#fdfbf7; --surface:#ffffff; --text:#1c1a22; --muted:#615c6b;
+  --line:#e9e3da; --accent:#7a5cc4; --accent-soft:#f2eefb; --accent-2:#e0a44f;
+  --chip:#f5f1ea; --radius:16px; --done:#3f8f6b; --done-soft:#e9f5ef;
+  --shadow:0 1px 2px rgba(28,26,34,.04), 0 10px 30px rgba(28,26,34,.06);
+}
+html[data-theme="dark"]{
+  --bg:#151318; --surface:#1e1b23; --text:#efecf3; --muted:#a29cae;
+  --line:#2e2936; --accent:#b39bef; --accent-soft:#241f30; --accent-2:#e0a44f;
+  --chip:#262230; --done:#6cc79c; --done-soft:#16281f;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,sans-serif;font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline;text-underline-offset:3px}
+.wrap{max-width:820px;margin:0 auto;padding:0 24px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+
+header.site{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);
+  background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px)}
+.bar{display:flex;align-items:center;gap:14px;padding:14px 0}
+.back{font-size:.9rem;font-weight:500;color:var(--muted)}
+.back:hover{color:var(--accent);text-decoration:none}
+#themeBtn{margin-left:auto;border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:.95rem}
+#themeBtn:hover{color:var(--accent);border-color:var(--accent)}
+
+.hero{padding:52px 0 6px}
+.eyebrow{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+h1{font-family:Fraunces,serif;font-size:clamp(2.1rem,6vw,3.2rem);font-weight:600;
+  letter-spacing:-.03em;line-height:1.06;margin:0 0 16px}
+.intro{color:var(--muted);max-width:64ch;margin:0}
+.intro+.intro{margin-top:1em}
+
+/* Progress */
+.progress{margin:36px 0 8px;padding:20px 24px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.ptop{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.pcount{font-family:Fraunces,serif;font-size:1.45rem;font-weight:600;letter-spacing:-.02em}
+.pcount span{color:var(--done)}
+.plabel{font-size:.84rem;color:var(--muted)}
+.track{height:10px;border-radius:99px;background:var(--chip);margin-top:16px;overflow:hidden;display:flex}
+.fill{height:100%;background:linear-gradient(90deg,var(--done),#6cc79c);width:0;transition:width .9s ease}
+.fill.part{background:linear-gradient(90deg,var(--accent-2),#f0c98a);opacity:.75}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:.78rem;color:var(--muted)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.legend .l1 i{background:var(--done)} .legend .l2 i{background:var(--accent-2)}
+.legend .l3 i{background:var(--chip);border:1px solid var(--line)}
+
+/* Filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0 4px}
+.filters button{font:inherit;font-size:.82rem;font-weight:500;cursor:pointer;padding:6px 14px;
+  border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);transition:.16s}
+.filters button:hover{color:var(--text)}
+.filters button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);
+  border-color:color-mix(in srgb,var(--accent) 22%,transparent)}
+
+/* The list */
+ol.list{list-style:none;padding:0;margin:24px 0 0;counter-reset:n}
+ol.list li{counter-increment:n;display:grid;grid-template-columns:36px 26px 1fr auto;gap:12px;
+  align-items:start;padding:14px 6px;border-bottom:1px solid var(--line);border-radius:8px}
+ol.list li:last-child{border-bottom:0}
+ol.list li:hover{background:var(--chip)}
+.n{font-family:Fraunces,serif;font-size:.82rem;font-weight:600;color:var(--muted);
+  opacity:.7;letter-spacing:.04em;padding-top:3px}
+ol.list li::before{content:none}
+
+/* Status marker: ✓ tick for done, ◐ for in progress, empty circle for not yet */
+.mark{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
+  font-size:.78rem;font-weight:700;margin-top:2px;flex-shrink:0}
+.done .mark{background:var(--done-soft);color:var(--done);border:1px solid color-mix(in srgb,var(--done) 30%,transparent)}
+.progressing .mark{background:transparent;color:var(--accent-2);border:1px solid color-mix(in srgb,var(--accent-2) 45%,transparent)}
+.todo .mark{background:transparent;border:1px dashed var(--line)}
+
+.txt{font-size:1rem;padding-top:1px}
+.done .txt{color:var(--muted)}
+.done .txt strong{color:var(--text);font-weight:450}
+.aside{display:block;font-size:.82rem;color:var(--muted);opacity:.9;font-style:italic;margin-top:2px}
+.cat{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+  background:var(--chip);border:1px solid var(--line);border-radius:6px;padding:2px 8px;
+  white-space:nowrap;margin-top:3px}
+.done .cat{background:var(--done-soft);border-color:transparent;color:var(--done)}
+
+.note{margin:42px 0 0;padding:18px 22px;background:var(--accent-soft);border-left:3px solid var(--accent);
+  border-radius:0 12px 12px 0;font-size:.92rem}
+.note b{font-family:Fraunces,serif}
+.empty{padding:34px 0;text-align:center;color:var(--muted);font-size:.92rem}
+footer{border-top:1px solid var(--line);margin-top:58px;padding:28px 0;
+  font-size:.84rem;color:var(--muted);text-align:center}
+@media(max-width:620px){
+  ol.list li{grid-template-columns:26px 22px 1fr;gap:10px}
+  .cat{grid-column:3;justify-self:start;margin-top:6px}
+  .n{font-size:.74rem}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="back" href="index.html#pursuits">← Back to Other Pursuits</a>
+    <button id="themeBtn" title="Toggle light / dark" aria-label="Toggle light or dark theme">◐</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">Happiness of Other Pursuits</span>
+    <h1>List 100</h1>
+    <p class="intro">
+      A running list of a hundred things I want to do, see, learn, and try — inspired by Chip Huyen
+      and, honestly, a lot of movies. Some are enormous. Some take an afternoon. A few of them I only
+      understood the point of afterwards.
+    </p>
+    <p class="intro">
+      The number is aspirational, not a deadline. I keep adding to it, and every so often I get to
+      draw a line through something.
+    </p>
+  </section>
+
+  <div class="progress">
+    <div class="ptop">
+      <div class="pcount"><span id="doneCount">0</span> done, <span id="totalCount">0</span> on the list</div>
+      <div class="plabel" id="pctLabel">and no hurry</div>
+    </div>
+    <div class="track">
+      <div class="fill" id="fill"></div>
+      <div class="fill part" id="fillPart"></div>
+    </div>
+    <div class="legend">
+      <span class="l1"><i></i>Done</span>
+      <span class="l2"><i></i>In progress</span>
+      <span class="l3"><i></i>Still to come</span>
+    </div>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <ol class="list" id="list"></ol>
+
+  <div class="note">
+    <b>Rules, such as they are:</b> nothing goes on the list because it would look good on a list, and
+    nothing gets a tick unless it actually happened. Numbers 42 and 43 are missing because at some point
+    I lost count — which feels about right for a list like this.
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <a href="index.html">Kahkashan Afrin</a> · Last updated August 2026
+  </div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   ★ YOUR LIST — the only part you edit ★
+
+   status: "done"     → green tick ✓, counts toward "done"
+           "progress" → amber half-circle ◐
+           ""         → dashed empty circle (not yet)
+   aside:  optional italic note under the item (or "")
+   cat:    category, used to build the filter buttons automatically
+
+   Add an item: copy any line, change the fields. Numbering is
+   automatic, so you never have to renumber anything.
+   ══════════════════════════════════════════════════════════════════ */
+const LIST = [
+
+  /* ─── Some favourite ticks, up front ─── */
+  { text:"Get proposed to on a frozen lake", status:"done", cat:"Life",
+    aside:"Not my idea, but it belongs on this list." },
+  { text:"Ride in a hot air balloon",        status:"done", cat:"Adventure", aside:"" },
+  { text:"Watch Adele sing live",            status:"done", cat:"Culture",   aside:"" },
+  { text:"Hike to a glacier",                status:"done", cat:"Outdoors",  aside:"" },
+  { text:"See the Milky Way",                status:"done", cat:"Sky",       aside:"" },
+  { text:"See a whale breaching",            status:"done", cat:"Wildlife",  aside:"" },
+  { text:"Earn a Ph.D.",                     status:"done", cat:"Milestones",aside:"" },
+  { text:"Author a patent",                  status:"done", cat:"Milestones",aside:"" },
+  { text:"Sleep under the stars in the woods", status:"done", cat:"Outdoors", aside:"" },
+  { text:"Drive the Road to Hana",           status:"done", cat:"Travel",    aside:"" },
+  { text:"Build an app",                     status:"done", cat:"Making",
+    aside:"This one became PoAIm." },
+  { text:"Love someone",                     status:"done", cat:"Life",      aside:"" },
+  { text:"Watch a planet through a telescope", status:"done", cat:"Sky",     aside:"" },
+  { text:"Camp in the redwoods",             status:"done", cat:"Outdoors",  aside:"" },
+  { text:"Do yoga by the ocean",             status:"done", cat:"Outdoors",  aside:"" },
+  { text:"Own a home",                       status:"done", cat:"Milestones",aside:"" },
+  { text:"Live in another country",          status:"done", cat:"Life",      aside:"" },
+  { text:"Go bouldering",                    status:"done", cat:"Adventure", aside:"" },
+  { text:"Go parasailing",                   status:"done", cat:"Adventure", aside:"" },
+  { text:"Go river rafting",                 status:"done", cat:"Adventure", aside:"" },
+  { text:"Go snorkelling",                   status:"done", cat:"Adventure", aside:"" },
+  { text:"Run a 10K",                        status:"done", cat:"Running",   aside:"" },
+  { text:"Visit the Hawaiian islands",       status:"done", cat:"Travel",    aside:"" },
+  { text:"Take a long-distance road trip",   status:"done", cat:"Travel",    aside:"" },
+  { text:"Stay at an Aman property",         status:"done", cat:"Travel",    aside:"" },
+  { text:"Learn to drive",                   status:"done", cat:"Learning",  aside:"" },
+  { text:"Sponsor an international trip for my parents", status:"done", cat:"Family",
+    aside:"Halfway there — one parent down, one to go." },
+
+  /* ─── In progress ─── */
+  { text:"Read 1,000 books",                 status:"progress", cat:"Reading",
+    aside:"A lifetime project, and happily so." },
+  { text:"Build a plastic-free lifestyle, as far as that's possible", status:"progress", cat:"Life", aside:"" },
+  { text:"Make a life-changing decision every year", status:"progress", cat:"Life",
+    aside:"Somehow I've managed this every year since 2020." },
+  { text:"Get fitter",                       status:"progress", cat:"Running",
+    aside:"An ongoing goal, in the way these things are." },
+
+  /* ─── Still to come ─── */
+  { text:"Travel to 100 countries",          status:"", cat:"Travel",    aside:"" },
+  { text:"Run a half marathon",              status:"", cat:"Running",   aside:"" },
+  { text:"Run a marathon",                   status:"", cat:"Running",   aside:"" },
+  { text:"Run a marathon in Athens",         status:"", cat:"Running",   aside:"Where the distance was invented." },
+  { text:"Learn to scuba dive",              status:"", cat:"Adventure", aside:"" },
+  { text:"Skydive",                          status:"", cat:"Adventure", aside:"" },
+  { text:"Take a cruise to Antarctica",      status:"", cat:"Travel",    aside:"" },
+  { text:"Sleep under the northern lights",  status:"", cat:"Sky",       aside:"" },
+  { text:"Watch the wildebeest migration",   status:"", cat:"Wildlife",  aside:"" },
+  { text:"Go on a wildlife safari in Africa",status:"", cat:"Wildlife",  aside:"" },
+  { text:"Snorkel in the Galápagos",         status:"", cat:"Wildlife",  aside:"" },
+  { text:"Rescue a turtle egg",              status:"", cat:"Wildlife",  aside:"" },
+  { text:"Ride a horse",                     status:"", cat:"Adventure", aside:"" },
+  { text:"Hike hut to hut in Europe",        status:"", cat:"Outdoors",  aside:"" },
+  { text:"Hike Havasupai",                   status:"", cat:"Outdoors",  aside:"" },
+  { text:"Hike in the Brazilian rainforest", status:"", cat:"Outdoors",  aside:"" },
+  { text:"Stay in a monastery",              status:"", cat:"Travel",    aside:"" },
+  { text:"Eat at a three-star Michelin restaurant", status:"", cat:"Culture", aside:"" },
+  { text:"Go to the top of Taipei 101",      status:"", cat:"Travel",    aside:"" },
+  { text:"Attend a Coldplay concert",        status:"", cat:"Culture",   aside:"" },
+  { text:"Write a book",                     status:"", cat:"Making",    aside:"" },
+  { text:"Build a product outside of work",  status:"", cat:"Making",    aside:"" },
+  { text:"Take that product to market",      status:"", cat:"Making",    aside:"" },
+  { text:"Start a business",                 status:"", cat:"Making",    aside:"" },
+  { text:"Own a riverside cabin",            status:"", cat:"Home",      aside:"" },
+  { text:"Buy a house in India",             status:"", cat:"Home",      aside:"" },
+  { text:"Plant a pomegranate tree",         status:"", cat:"Home",      aside:"" },
+  { text:"Get a puppy",                      status:"", cat:"Home",      aside:"Much to the joy of my husband." },
+  { text:"Read Harry Potter with my kid, when I have one", status:"", cat:"Family", aside:"" }
+
+  // ▲ copy any line above to add a new item
+];
+/* ══════════════════════ nothing to edit below ══════════════════════ */
+
+const esc = s => String(s ?? "").replace(/[&<>"]/g,
+  c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+let filter = "All";
+const MARK = { done:"✓", progress:"◐", "":"" };
+const CLS  = { done:"done", progress:"progressing", "":"todo" };
+
+function render(){
+  const items = LIST
+    .map((it, i) => ({ ...it, n: i + 1 }))
+    .filter(it => filter === "All"
+      || it.cat === filter
+      || (filter === "Done" && it.status === "done")
+      || (filter === "To do" && it.status !== "done"));
+
+  const el = document.getElementById("list");
+  if(!items.length){ el.innerHTML = `<div class="empty">Nothing here yet.</div>`; return; }
+
+  el.innerHTML = items.map(it => `
+    <li class="${CLS[it.status]}">
+      <span class="n">${String(it.n).padStart(2,"0")}</span>
+      <span class="mark" role="img" aria-label="${
+        it.status === "done" ? "Done" : it.status === "progress" ? "In progress" : "Not yet"
+      }">${MARK[it.status]}</span>
+      <span class="txt"><strong>${esc(it.text)}</strong>${
+        it.aside ? `<span class="aside">&#36;{esc(it.aside)}</span>` : ""
+      }</span>
+      &#36;{it.cat ? `<span class="cat">&#36;{esc(it.cat)}</span>` : "<span></span>"}
+    </li>`).join("");
+}
+
+function buildFilters(){
+  const cats = [...new Set(LIST.map(i => i.cat).filter(Boolean))].sort();
+  const all = ["All", "Done", "To do", ...cats];
+  document.getElementById("filters").innerHTML = all.map(c =>
+    `<button data-cat="${esc(c)}" aria-pressed="${c === filter}">&#36;{esc(c)}</button>`).join("");
+}
+
+function progress(){
+  const done = LIST.filter(i => i.status === "done").length;
+  const part = LIST.filter(i => i.status === "progress").length;
+  const total = LIST.length;
+  document.getElementById("doneCount").textContent = done;
+  document.getElementById("totalCount").textContent = total;
+  const pct = Math.round(done / total * 100);
+  document.getElementById("pctLabel").textContent =
+    `${pct}% ticked off · ${part} in progress · and no hurry`;
+  requestAnimationFrame(() => {
+    document.getElementById("fill").style.width = (done / total * 100) + "%";
+    document.getElementById("fillPart").style.width = (part / total * 100) + "%";
+  });
+}
+
+document.getElementById("filters").addEventListener("click", e => {
+  const b = e.target.closest("button[data-cat]"); if(!b) return;
+  filter = b.dataset.cat; buildFilters(); render();
+});
+
+buildFilters(); render(); progress();
+
+// Share the theme choice with index.html
+const root = document.documentElement, saved = localStorage.getItem("theme");
+if(saved) root.setAttribute("data-theme", saved);
+else if(window.matchMedia("(prefers-color-scheme: dark)").matches) root.setAttribute("data-theme","dark");
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  localStorage.setItem("theme", next);
+});
+</script>
+</body>
+</html>
