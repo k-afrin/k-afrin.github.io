@@ -2,151 +2,577 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Your Name — AI / Product Professional</title>
-<link rel="stylesheet" href="css/style.css" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kahkashan Afrin, Ph.D. | AI Product Manager</title>
+<meta name="description" content="Kahkashan Afrin, Ph.D. — AI Product Manager. Ceribell, ex-McKinsey. Building AI products from 0 to 1 in regulated, high-stakes environments." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fcfcfd; --surface:#ffffff; --text:#101828; --muted:#5a6376;
+  --line:#e7e9ee; --accent:#0d6e6e; --accent-soft:#e6f4f3; --accent-2:#f0a02a;
+  --chip:#f4f5f7; --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 28px rgba(16,24,40,.06);
+}
+html[data-theme="dark"]{
+  --bg:#0e1116; --surface:#161a21; --text:#e9ecf1; --muted:#9aa3b2;
+  --line:#252b34; --accent:#3fc0b8; --accent-soft:#122a2a; --accent-2:#f0a02a;
+  --chip:#1e232b; --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1060px;margin:0 auto;padding:0 22px}
+
+/* Header */
+header.site{position:sticky;top:0;z-index:60;background:var(--surface);
+  border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.bar{display:flex;align-items:center;gap:14px;padding:13px 0;flex-wrap:wrap}
+.brand{font-family:Sora,sans-serif;font-weight:600;font-size:1.05rem;letter-spacing:-.01em;white-space:nowrap}
+.brand em{font-style:normal;color:var(--accent)}
+nav.tabs{display:flex;gap:3px;margin-left:auto;flex-wrap:wrap}
+nav.tabs button{font:inherit;font-size:.87rem;font-weight:500;cursor:pointer;background:transparent;
+  border:1px solid transparent;color:var(--muted);padding:8px 12px;border-radius:8px;transition:.16s;white-space:nowrap}
+nav.tabs button:hover{color:var(--text);background:var(--chip)}
+nav.tabs button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft);border-color:var(--line)}
+#themeBtn{border:1px solid var(--line);background:var(--surface);color:var(--muted);
+  width:35px;height:35px;border-radius:8px;cursor:pointer;font-size:.95rem;flex-shrink:0}
+
+/* Hero */
+.hero{padding:54px 0 8px;max-width:76ch}
+.eyebrow{display:inline-block;font-size:.74rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:5px 13px;margin-bottom:16px}
+.hero h1{font-family:Sora,sans-serif;font-size:clamp(2.1rem,5.4vw,3.15rem);line-height:1.1;
+  letter-spacing:-.03em;margin:0 0 12px;font-weight:600}
+.hero h1 .grad{color:var(--accent)}
+.tagline{font-size:1.1rem;color:var(--muted);margin:0 0 22px}
+.links{display:flex;gap:9px;flex-wrap:wrap}
+.links a{font-size:.86rem;font-weight:500;padding:8px 15px;border-radius:999px;
+  border:1px solid var(--line);background:var(--surface);color:var(--text);box-shadow:var(--shadow)}
+.links a:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.links a.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.links a.primary:hover{opacity:.9;color:#fff}
+.logos{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin:34px 0 0;
+  padding-top:22px;border-top:1px solid var(--line)}
+.logos span{font-family:Sora,sans-serif;font-weight:600;font-size:.95rem;color:var(--muted);letter-spacing:-.01em}
+.logos small{display:block;font-family:Inter;font-weight:400;font-size:.72rem;letter-spacing:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:13px;margin:30px 0 6px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:17px 19px;box-shadow:var(--shadow)}
+.stat b{display:block;font-family:Sora,sans-serif;font-size:1.6rem;line-height:1.15;color:var(--accent);letter-spacing:-.02em}
+.stat span{font-size:.79rem;color:var(--muted)}
+
+/* Panels */
+main{padding:6px 0 84px}
+.panel{display:none;animation:fade .3s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+h2.sec{font-family:Sora,sans-serif;font-size:1.75rem;font-weight:600;letter-spacing:-.025em;margin:32px 0 8px}
+h3.sub{font-size:.75rem;text-transform:uppercase;letter-spacing:.11em;color:var(--accent);
+  margin:34px 0 14px;font-weight:600}
+p.lead{font-size:1.05rem;color:var(--muted);max-width:72ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:22px 24px;box-shadow:var(--shadow);margin-bottom:15px}
+.card h4{font-family:Sora,sans-serif;margin:0 0 3px;font-size:1.03rem;font-weight:600;letter-spacing:-.01em}
+.meta{font-size:.87rem;color:var(--muted)}
+.role-head{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:baseline;margin-bottom:12px}
+.when{font-size:.8rem;color:var(--muted);white-space:nowrap;background:var(--chip);
+  border:1px solid var(--line);border-radius:6px;padding:3px 10px}
+ul.bul{margin:10px 0 0;padding-left:20px}
+ul.bul li{padding:5px 0;font-size:.95rem}
+ul.bul li::marker{color:var(--accent)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{background:var(--chip);border:1px solid var(--line);border-radius:999px;
+  padding:5px 13px;font-size:.79rem;color:var(--muted)}
+.chip.solid{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:500}
+ul.clean{list-style:none;padding:0;margin:0}
+ul.clean>li{padding:15px 0;border-bottom:1px solid var(--line)}
+ul.clean>li:last-child{border-bottom:0}
+.kpi{display:inline-block;font-family:Sora,sans-serif;font-weight:600;color:var(--accent)}
+.impact{margin-top:14px;padding:13px 16px;background:var(--accent-soft);border-radius:10px;
+  font-size:.9rem;border-left:3px solid var(--accent)}
+.impact b{font-family:Sora,sans-serif}
+table{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:8px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.timeline{border-left:2px solid var(--line);padding-left:24px;margin-left:5px}
+.timeline .item{position:relative;padding-bottom:26px}
+.timeline .item::before{content:"";position:absolute;left:-31px;top:8px;width:12px;height:12px;
+  border-radius:50%;background:var(--accent-2);border:2.5px solid var(--surface)}
+footer{border-top:1px solid var(--line);padding:26px 0;font-size:.84rem;color:var(--muted);text-align:center}
+@media(max-width:760px){
+  nav.tabs{margin-left:0;width:100%;overflow-x:auto;padding-bottom:3px}
+  .grid2{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
 
-<nav class="navbar">
-  <div class="container nav-container">
-    <a href="index.html" class="logo">Your Name</a>
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-      <span></span><span></span><span></span>
-    </button>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="ai-experiments.html">AI Experiments</a></li>
-      <li><a href="pursuits.html">Happiness of Other Pursuits</a></li>
-      <li><a href="#contact-footer" class="nav-cta">Contact</a></li>
+<header class="site">
+  <div class="wrap bar">
+    <div class="brand">Kahkashan <em>Afrin</em>, Ph.D.</div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" data-tab="about"      aria-selected="true">About</button>
+      <button role="tab" data-tab="experience" aria-selected="false">Experience</button>
+      <button role="tab" data-tab="projects"   aria-selected="false">Projects</button>
+      <button role="tab" data-tab="research"   aria-selected="false">Patents &amp; Research</button>
+      <button role="tab" data-tab="awards"     aria-selected="false">Awards</button>
+      <button role="tab" data-tab="education"  aria-selected="false">Education</button>
+      <button role="tab" data-tab="skills"     aria-selected="false">Skills</button>
+      <button role="tab" data-tab="contact"    aria-selected="false">Contact</button>
+    </nav>
+    <button id="themeBtn" title="Toggle theme" aria-label="Toggle theme">◐</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <span class="eyebrow">AI Product Manager</span>
+    <h1>I take AI products from <span class="grad">blue-sky concept</span> to regulated reality.</h1>
+    <p class="tagline">
+      Senior Product Manager, AI at <strong>Ceribell</strong> · Ex-<strong>McKinsey</strong> Digital &amp; Analytics ·
+      Ph.D. in Industrial &amp; Systems Engineering with an AI/ML specialization.
+    </p>
+    <div class="links">
+      <a class="primary" href="mailto:k.afrin.iqbal@gmail.com">Get in touch</a>
+      <a href="https://www.linkedin.com/in/k-afrin/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="#projects" data-jump="projects">See projects</a>
+    </div>
+    <div class="logos">
+      <span>Ceribell<small>TIME Best Inventions 2025</small></span>
+      <span>McKinsey &amp; Company<small>Digital &amp; Analytics</small></span>
+      <span>Texas A&amp;M University<small>Ph.D., ISE</small></span>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><b>6+ yrs</b><span>Turning AI into business impact</span></div>
+    <div class="stat"><b>FDA</b><span>Breakthrough Device designation led</span></div>
+    <div class="stat"><b>2</b><span>Patents on AI-enabled devices</span></div>
+    <div class="stat"><b>10+</b><span>AI/ML publications</span></div>
+  </div>
+</div>
+
+<main class="wrap">
+
+<!-- ========== ABOUT ========== -->
+<section class="panel active" id="about" role="tabpanel">
+  <h2 class="sec">About</h2>
+  <p class="lead">
+    I'm an AI Product Manager with a Ph.D. in Industrial &amp; Systems Engineering, specializing in AI/ML.
+    Over the past six-plus years I've turned technical and AI-powered solutions into business impact — from
+    leading McKinsey's Gen AI Central Development Hub and Data &amp; AI transformations at acting Engagement
+    Manager scope, to taking an AI product from concept to <strong>FDA Breakthrough Device designation</strong>
+    at Ceribell as a Senior Product Manager.
+  </p>
+  <p class="lead">
+    What I bring is the combination: hands-on AI/ML fluency — patents on AI-enabled devices, 10+ AI/ML
+    publications — paired with 0-to-1 leadership of cross-functional teams in regulated, high-stakes
+    environments where the cost of getting it wrong is measured in patient outcomes.
+  </p>
+
+  <h3 class="sub">How I work</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Vision, then evidence</h4>
+      <p class="meta">I set product vision and strategy grounded in user needs and competitive insight, then
+      translate it into model performance targets a data science team can actually build against.</p>
+    </div>
+    <div class="card">
+      <h4>Fluent across functions</h4>
+      <p class="meta">Directing clinical teams on data collection strategy, aligning with data scientists on
+      use cases, and co-authoring formal FDA filings with regulatory — in the same week.</p>
+    </div>
+    <div class="card">
+      <h4>0-to-1 in regulated space</h4>
+      <p class="meta">Comfortable where there's no playbook: category-defining products, novel regulatory
+      pathways, and AI risk, safety, and ethics considerations built in from the start.</p>
+    </div>
+    <div class="card">
+      <h4>Adoption is the deliverable</h4>
+      <p class="meta">A launched product that no one uses is a failed product. I run change management,
+      Agile ways of working, and front-line enablement as first-class product work.</p>
+    </div>
+  </div>
+
+  <div class="chips">
+    <span class="chip solid">AI/ML product strategy</span>
+    <span class="chip solid">Regulated healthcare</span>
+    <span class="chip">0-to-1 product</span>
+    <span class="chip">Go-to-market</span>
+    <span class="chip">Cross-functional leadership</span>
+    <span class="chip">Gen AI</span>
+  </div>
+</section>
+
+<!-- ========== EXPERIENCE ========== -->
+<section class="panel" id="experience" role="tabpanel">
+  <h2 class="sec">Experience</h2>
+
+  <div class="card">
+    <div class="role-head">
+      <div>
+        <h4>Senior Product Manager, AI Product</h4>
+        <div class="meta">Ceribell · AI and R&amp;D Team · Sunnyvale, CA</div>
+      </div>
+      <span class="when">May 2025 – Present</span>
+    </div>
+    <p class="meta">
+      TIME Best Inventions 2025 · Fast Company Most Innovative Companies 2023
+    </p>
+    <ul class="bul">
+      <li>Lead a portfolio of <span class="kpi">4 AI products</span> — three for stroke detection plus a
+        next-generation concept for continuous AI monitoring of the brain in the ICU.</li>
+      <li>Set product vision and strategy, and provide cross-functional leadership: directing the clinical
+        team on data collection strategy, partnering with data scientists on use cases and model performance
+        targets driven by user needs and competitive insight, and co-authoring formal FDA filings with
+        regulatory.</li>
+      <li>Turned a blue-sky concept — detecting stroke from EEG signal using AI — into a category-defining
+        <strong>FDA Breakthrough Device designation</strong>.</li>
+      <li>Currently building the go-to-market implementation plan to carry the breakthrough device through
+        to market clearance.</li>
+      <li>Leading market research and proof-of-concept work for EMS stroke detection and vasospasm detection.</li>
+    </ul>
+    <div class="impact">
+      <b>Impact:</b> The Breakthrough Device designation drove an
+      <span class="kpi">8% jump in company stock price</span> —
+      <a href="https://za.investing.com/news/stock-market-news/ceribell-stock-climbs-after-fda-breakthrough-device-designation-93CH-4046945" target="_blank" rel="noopener">media coverage ↗</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="role-head">
+      <div>
+        <h4>Associate, Digital &amp; Analytics Practice</h4>
+        <div class="meta">McKinsey &amp; Company · Los Angeles, CA · Rated <em>Very Strong</em>, multiple years</div>
+      </div>
+      <span class="when">Sept 2020 – Jan 2025</span>
+    </div>
+    <p class="meta">Operated at Engagement Manager scope across four large Digital, AI, and Gen AI engagements.</p>
+    <ul class="bul">
+      <li>Led McKinsey's <strong>Gen AI Central Development Hub</strong> and the Gen AI for MedTech service
+        line — developing two CXO Gen AI strategy guides and shaping 5+ AI/Gen AI proposals with healthcare
+        and MedTech clients.</li>
+      <li>Defined the data &amp; AI strategy and 1–5 year implementation roadmap for a
+        <span class="kpi">&#36;5B Medicaid program</span>, partnering with the agency's Chief Data Officer to
+        prioritize AI use cases against value and feasibility tradeoffs.</li>
+      <li>Accelerated cloud onboarding from <span class="kpi">6+ months to 1 week</span> for a federal
+        healthcare agency serving 150M+ Americans, leading a team of 10 client staff and 4 consultants
+        through process improvement and workflow automation.</li>
+      <li>Led product design and go-to-market strategy for a first-of-its-kind patient portal serving
+        <span class="kpi">~2M citizens</span>, defining the user journey and launch roadmap with designers,
+        engineers, and consultants.</li>
+      <li>Drove product rollout and adoption through change management — Agile ways of working, daily
+        stand-ups with front-line staff — for an AI product at a $20B+ global mining client,
+        increasing process yield by <span class="kpi">10%</span>.</li>
     </ul>
   </div>
-</nav>
-
-<!-- ===== Feed: recent highlights, Bourke-style scrolling tiles ===== -->
-<section class="container feed-section">
-  <p class="eyebrow">Recently</p>
-  <h1 class="feed-heading">A few things I've been working on</h1>
-
-  <div class="feed-list" id="home-feed">
-    <!-- Dummy feed items — replace text/links with real highlights later -->
-    <a href="project-detail.html?id=project-1" class="feed-item">
-      <div class="img-placeholder feed-img"></div>
-      <div class="feed-caption">
-        <span class="feed-tag">Project</span>
-        <h3>Placeholder headline about Project One</h3>
-        <p>One or two lines teasing what this project is about and why it mattered to you.</p>
-      </div>
-    </a>
-
-    <a href="experiment-detail.html?id=experiment-1" class="feed-item">
-      <div class="img-placeholder feed-img"></div>
-      <div class="feed-caption">
-        <span class="feed-tag">AI Experiment</span>
-        <h3>Placeholder headline about an AI experiment</h3>
-        <p>Short, personal-sounding line about what you tried and what you learned.</p>
-      </div>
-    </a>
-
-    <a href="blog-post.html?id=trip-1" class="feed-item">
-      <div class="img-placeholder feed-img"></div>
-      <div class="feed-caption">
-        <span class="feed-tag">Happiness of Other Pursuits</span>
-        <h3>Placeholder headline about a trip or a hobby</h3>
-        <p>A short, human line about a recent adventure or something outside of work.</p>
-      </div>
-    </a>
-
-    <a href="project-detail.html?id=project-2" class="feed-item">
-      <div class="img-placeholder feed-img"></div>
-      <div class="feed-caption">
-        <span class="feed-tag">Project</span>
-        <h3>Placeholder headline about Project Two</h3>
-        <p>Another short teaser line — keep these casual and personal, not just resume bullets.</p>
-      </div>
-    </a>
-  </div>
 </section>
 
-<!-- ===== Quick links ===== -->
-<section class="container">
-  <h2 style="margin-top:0;">Explore</h2>
-  <div class="feature-grid">
-    <a href="projects.html" class="feature-card">
-      <h3>Projects</h3>
-      <p>Case studies of things I've built, with code, tech stack, and live demos.</p>
-    </a>
-    <a href="ai-experiments.html" class="feature-card">
-      <h3>AI Experiments</h3>
-      <p>Smaller explorations, prototypes, and proofs of concept in AI/ML.</p>
-    </a>
-    <a href="pursuits.html" class="feature-card">
-      <h3>Happiness of Other Pursuits</h3>
-      <p>Travel and life outside of work — because there's more to the story.</p>
-    </a>
-  </div>
-</section>
+<!-- ========== PROJECTS ========== -->
+<section class="panel" id="projects" role="tabpanel">
+  <h2 class="sec">Selected Projects</h2>
+  <p class="lead">Case-by-case look at the products and programs I've led, and what changed as a result.</p>
 
-<!-- ===== About / Bio — placed near the bottom, like a personal sign-off ===== -->
-<section class="container about-section" id="about">
-  <div class="about-grid">
-    <div class="about-text">
-      <p class="eyebrow">About Me</p>
-      <h2 class="about-name">Your Name</h2>
-      <p class="subtitle">AI / Product Professional</p>
-      <p>
-        Placeholder bio text. Write 3–4 sentences about your background, the kind
-        of problems you like solving, the tools you work with, and what you're
-        looking for next. Keep it conversational — this is the "about the person
-        behind the work" section.
-      </p>
-      <p>
-        Optional second paragraph — talk about what you're doing outside of work,
-        curiosity-driven projects, or what got you into AI/product in the first place.
-      </p>
-      <div class="hero-actions">
-        <a href="#" class="btn btn-primary">Download Resume</a>
-        <a href="mailto:you@example.com" class="btn btn-secondary">Get in Touch</a>
-      </div>
-      <div class="social-icons">
-        <a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="mailto:you@example.com">Email</a>
-      </div>
+  <h3 class="sub">01 — AI stroke detection from EEG</h3>
+  <div class="card">
+    <div class="role-head">
+      <div><h4>Concept → FDA Breakthrough Device designation</h4>
+      <div class="meta">Ceribell · Senior Product Manager, AI Product</div></div>
+      <span class="when">2025 – present</span>
     </div>
-    <div class="about-photo">
-      <!-- Replace with <img src="your-photo.jpg" alt="Your Name" class="circle-photo"> later -->
-      <div class="img-placeholder circle"></div>
+    <p class="meta">
+      Took an unproven hypothesis — that stroke could be detected from EEG signal using AI — and shaped it
+      into a category-defining regulatory milestone. Directed the clinical data collection strategy, set
+      model performance targets with data scientists based on user needs and competitive benchmarking, and
+      co-authored the formal FDA submission with the regulatory team.
+    </p>
+    <div class="impact"><b>Outcome:</b> FDA Breakthrough Device designation; <span class="kpi">8%</span> jump in company stock price.
+      <a href="https://za.investing.com/news/stock-market-news/ceribell-stock-climbs-after-fda-breakthrough-device-designation-93CH-4046945" target="_blank" rel="noopener">Coverage ↗</a></div>
+    <div class="chips"><span class="chip">0-to-1</span><span class="chip">FDA filings</span><span class="chip">Clinical data strategy</span><span class="chip">EEG / signal AI</span></div>
+  </div>
+
+  <h3 class="sub">02 — Continuous AI brain monitoring in the ICU</h3>
+  <div class="card">
+    <div class="role-head">
+      <div><h4>Next-generation product concept</h4>
+      <div class="meta">Ceribell · Portfolio of 4 AI products</div></div>
+      <span class="when">Current</span>
+    </div>
+    <p class="meta">
+      Defining the vision for continuous, AI-driven monitoring of the brain in intensive care — plus market
+      research and proof-of-concept work for two adjacent opportunities: EMS-based stroke detection and
+      vasospasm detection. Concurrently developing the go-to-market implementation plan that carries the
+      breakthrough device from designation to market clearance.</p>
+    <div class="chips"><span class="chip">Product vision</span><span class="chip">Market research</span><span class="chip">Proof of concept</span><span class="chip">GTM planning</span></div>
+  </div>
+
+  <h3 class="sub">03 — Gen AI Central Development Hub</h3>
+  <div class="card">
+    <div class="role-head">
+      <div><h4>Firm-wide Gen AI capability build &amp; MedTech service line</h4>
+      <div class="meta">McKinsey &amp; Company · Digital &amp; Analytics</div></div>
+      <span class="when">2023 – 2025</span>
+    </div>
+    <p class="meta">
+      Led McKinsey's Gen AI Central Development Hub and the Gen AI for MedTech service line — authoring two
+      CXO-level Gen AI strategy guides and shaping 5+ AI/Gen AI proposals in pre-sales with healthcare and
+      MedTech clients.</p>
+    <div class="chips"><span class="chip">Gen AI strategy</span><span class="chip">CXO advisory</span><span class="chip">Pre-sales</span><span class="chip">MedTech</span></div>
+  </div>
+
+  <h3 class="sub">04 — Data &amp; AI strategy for a $5B Medicaid program</h3>
+  <div class="card">
+    <div class="role-head">
+      <div><h4>1–5 year AI implementation roadmap</h4>
+      <div class="meta">McKinsey &amp; Company · Public-sector healthcare</div></div>
+      <span class="when">2020 – 2025</span>
+    </div>
+    <p class="meta">
+      Built the data &amp; AI strategy and multi-year implementation roadmap for a &#36;5B Medicaid program,
+      working directly with the agency's Chief Data Officer to prioritize AI use cases against value and
+      feasibility tradeoffs.</p>
+    <div class="chips"><span class="chip">AI roadmapping</span><span class="chip">Use-case prioritization</span><span class="chip">CDO partnership</span></div>
+  </div>
+
+  <h3 class="sub">05 — Cloud onboarding: 6 months → 1 week</h3>
+  <div class="card">
+    <div class="role-head">
+      <div><h4>Process redesign for a federal healthcare agency</h4>
+      <div class="meta">McKinsey &amp; Company · Serving 150M+ Americans</div></div>
+      <span class="when">2020 – 2025</span>
+    </div>
+    <p class="meta">
+      Led a combined team of 10 client staff and 4 consultants to redesign the agency's cloud onboarding
+      process and automate key workflows.</p>
+    <div class="impact"><b>Outcome:</b> Onboarding time cut from <span class="kpi">6+ months to 1 week</span>.</div>
+    <div class="chips"><span class="chip">Workflow automation</span><span class="chip">Process improvement</span><span class="chip">Large-team leadership</span></div>
+  </div>
+
+  <h3 class="sub">06 — First-of-its-kind patient portal</h3>
+  <div class="card">
+    <div class="role-head">
+      <div><h4>Product design &amp; go-to-market for ~2M citizens</h4>
+      <div class="meta">McKinsey &amp; Company · Digital product</div></div>
+      <span class="when">2020 – 2025</span>
+    </div>
+    <p class="meta">
+      Led product design and GTM strategy for a first-of-its-kind patient portal, partnering with clients
+      and a cross-functional team of designers, engineers, and consultants to define the end-to-end user
+      journey and launch roadmap.</p>
+    <div class="chips"><span class="chip">User journey</span><span class="chip">Launch roadmap</span><span class="chip">Design partnership</span></div>
+  </div>
+
+  <h3 class="sub">07 — AI adoption at a &#36;20B+ global mining client</h3>
+  <div class="card">
+    <div class="role-head">
+      <div><h4>Rollout, change management, and front-line adoption</h4>
+      <div class="meta">McKinsey &amp; Company · Industrial AI</div></div>
+      <span class="when">2020 – 2025</span>
+    </div>
+    <p class="meta">
+      Supported product rollout and adoption through change management — introducing Agile ways of working
+      and running daily stand-ups with front-line staff — so that an AI product actually landed in daily
+      operations.</p>
+    <div class="impact"><b>Outcome:</b> Mining process yield increased by <span class="kpi">10%</span>.</div>
+    <div class="chips"><span class="chip">Change management</span><span class="chip">Agile</span><span class="chip">Front-line enablement</span></div>
+  </div>
+
+  <h3 class="sub">08 — AI wearables (patented)</h3>
+  <div class="card">
+    <div class="role-head">
+      <div><h4>Sleep apnea detection &amp; epileptic seizure prediction</h4>
+      <div class="meta">Doctoral and applied research · AI-enabled medical devices</div></div>
+      <span class="when">Research</span>
+    </div>
+    <p class="meta">
+      An AI wearable for sleep apnea detection
+      (<a href="https://patents.google.com/patent/US20200353203A1/en" target="_blank" rel="noopener">US Patent ↗</a>)
+      and an AI wearable headband that predicts epileptic seizures and alerts clinicians
+      (provisional patent issued).</p>
+    <div class="chips"><span class="chip">Wearables</span><span class="chip">Physiological signal AI</span><span class="chip">IP</span></div>
+  </div>
+</section>
+
+<!-- ========== PATENTS & RESEARCH ========== -->
+<section class="panel" id="research" role="tabpanel">
+  <h2 class="sec">Patents &amp; Research</h2>
+
+  <h3 class="sub">Patents — AI-enabled products</h3>
+  <ul class="clean">
+    <li>
+      <strong>AI wearable for sleep apnea detection</strong> —
+      <a href="https://patents.google.com/patent/US20200353203A1/en" target="_blank" rel="noopener">US Patent US20200353203A1 ↗</a>
+    </li>
+    <li>
+      <strong>AI wearable headband to predict epileptic seizures and alert clinicians</strong>
+      <span class="meta">— provisional patent issued</span>
+    </li>
+  </ul>
+
+  <h3 class="sub">Publications &amp; talks</h3>
+  <div class="card">
+    <p class="meta">
+      <strong>10+ peer-reviewed research articles</strong> on AI/ML topics, presented at
+      <strong>10+ international conferences</strong>. Research themes span survival analysis for big data,
+      predictive modeling from imbalanced data, synthetic data generation, and multimodal analysis for
+      clinical applications.</p>
+    <div class="chips">
+      <span class="chip">Survival analysis</span><span class="chip">Imbalanced data</span>
+      <span class="chip">Synthetic data generation</span><span class="chip">Multimodal learning</span>
+      <span class="chip">Clinical ML</span>
+    </div>
+  </div>
+
+  <h3 class="sub">Doctoral thesis</h3>
+  <div class="card">
+    <h4><a href="https://oaktrust.library.tamu.edu/items/94f0b7fc-2fa5-4b33-be08-ca5df12f99de" target="_blank" rel="noopener">Survival Analysis for Big Data ↗</a></h4>
+    <p class="meta">Texas A&amp;M University · Developed AI algorithms for predictive modeling from imbalanced
+    data, synthetic data generation, and multimodal analysis for clinical applications.</p>
+  </div>
+</section>
+
+<!-- ========== AWARDS ========== -->
+<section class="panel" id="awards" role="tabpanel">
+  <h2 class="sec">Awards &amp; Recognition</h2>
+  <p class="lead">Selected from 12 awards received.</p>
+  <ul class="clean">
+    <li>
+      <strong>National Academy of Engineering — Global Grand Challenges Award</strong>
+    </li>
+    <li>
+      <strong>McKinsey Master Faculty</strong>
+      <span class="meta">— named Master Faculty for Digital &amp; Analytics programs</span>
+    </li>
+    <li>
+      <strong>Women in OR &amp; Analytics — Bayer Scholarship</strong>
+      <span class="meta">— one awarded globally</span>
+    </li>
+    <li>
+      <strong>AAMI Foundation Health Systems Engineer</strong>
+      <span class="meta">— one awarded in the United States</span>
+    </li>
+    <li>
+      <strong>INFORMS Data Mining — Best Student Paper</strong>
+    </li>
+  </ul>
+
+  <h3 class="sub">Company recognition</h3>
+  <div class="grid2">
+    <div class="card"><h4>TIME Best Inventions 2025</h4><p class="meta">Ceribell</p></div>
+    <div class="card"><h4>Fast Company Most Innovative Companies 2023</h4><p class="meta">Ceribell</p></div>
+  </div>
+</section>
+
+<!-- ========== EDUCATION ========== -->
+<section class="panel" id="education" role="tabpanel">
+  <h2 class="sec">Education</h2>
+  <div class="timeline">
+    <div class="item">
+      <h4 style="font-family:Sora,sans-serif;margin:0 0 4px">Ph.D., Industrial &amp; Systems Engineering</h4>
+      <div class="meta">Texas A&amp;M University · GPA 3.83 / 4.0 · 2020<br>
+      AI/ML specialization</div>
+      <ul class="bul">
+        <li>Thesis:
+          <a href="https://oaktrust.library.tamu.edu/items/94f0b7fc-2fa5-4b33-be08-ca5df12f99de" target="_blank" rel="noopener">Survival Analysis for Big Data ↗</a>
+          — AI algorithms for predictive modeling from imbalanced data, synthetic data generation, and
+          multimodal analysis for clinical applications.</li>
+        <li>Mentored <span class="kpi">50+</span> master's and undergraduate students on award-winning
+          research projects.</li>
+      </ul>
+    </div>
+    <div class="item">
+      <h4 style="font-family:Sora,sans-serif;margin:0 0 4px">B.E., Electronics &amp; Communications Engineering</h4>
+      <div class="meta">Birla Institute of Technology · First Class with Distinction · 2015</div>
     </div>
   </div>
 </section>
 
-<section class="container">
-  <h2 style="margin-top:0;">Skills</h2>
-  <div class="tag-list">
-    <span class="tag">Placeholder Skill 1</span>
-    <span class="tag">Placeholder Skill 2</span>
-    <span class="tag">Placeholder Skill 3</span>
-    <span class="tag">Placeholder Skill 4</span>
-    <span class="tag">Placeholder Skill 5</span>
-    <span class="tag">Placeholder Skill 6</span>
+<!-- ========== SKILLS ========== -->
+<section class="panel" id="skills" role="tabpanel">
+  <h2 class="sec">AI &amp; Technical Skills</h2>
+  <table>
+    <thead><tr><th>Area</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Tools</strong></td><td>R · Python · SQL · Tableau · Power BI</td></tr>
+      <tr><td><strong>Concepts</strong></td><td>ML/AI methods including evaluation (precision/recall, ROC/AUC); AI risk, safety, and ethics — particularly in the highly regulated healthcare domain</td></tr>
+      <tr><td><strong>Infrastructure</strong></td><td>High Performance Computing</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Product &amp; leadership</h3>
+  <div class="chips">
+    <span class="chip solid">Product vision &amp; strategy</span>
+    <span class="chip solid">0-to-1 product development</span>
+    <span class="chip solid">FDA regulatory filings</span>
+    <span class="chip">Go-to-market strategy</span>
+    <span class="chip">Cross-functional leadership</span>
+    <span class="chip">Clinical data strategy</span>
+    <span class="chip">Model performance targeting</span>
+    <span class="chip">Competitive &amp; market research</span>
+    <span class="chip">AI use-case prioritization</span>
+    <span class="chip">Change management</span>
+    <span class="chip">Agile ways of working</span>
+    <span class="chip">Executive communication</span>
   </div>
 </section>
 
-<footer class="site-footer" id="contact-footer">
-  <div class="container footer-container">
-    <p>© 2026 Your Name. Hosted on GitHub Pages.</p>
-    <div class="social-links">
-      <a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="mailto:you@example.com">Email</a>
+<!-- ========== CONTACT ========== -->
+<section class="panel" id="contact" role="tabpanel">
+  <h2 class="sec">Get in touch</h2>
+  <p class="lead">
+    I'm always glad to talk about AI product management, regulated healthcare AI, or 0-to-1 product work.
+  </p>
+  <div class="grid2">
+    <div class="card">
+      <h4>Email</h4>
+      <p class="meta"><a href="mailto:k.afrin.iqbal@gmail.com">k.afrin.iqbal@gmail.com</a></p>
+      <h4 style="margin-top:18px">Phone</h4>
+      <p class="meta">(979) 422-5399</p>
+    </div>
+    <div class="card">
+      <h4>Location</h4>
+      <p class="meta">Phoenix, AZ<br><span style="color:var(--accent)">Open to relocation to San Francisco</span></p>
+      <h4 style="margin-top:18px">Elsewhere</h4>
+      <p class="meta"><a href="https://www.linkedin.com/in/k-afrin/" target="_blank" rel="noopener">LinkedIn ↗</a></p>
     </div>
   </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">© <span id="yr"></span> Kahkashan Afrin, Ph.D. · AI Product Manager · Phoenix, AZ</div>
 </footer>
 
-<script src="js/main.js"></script>
+<script>
+const tabs = document.querySelectorAll('nav.tabs button');
+const panels = document.querySelectorAll('.panel');
+
+function show(id, push = true){
+  if(!document.getElementById(id)) id = 'about';
+  panels.forEach(p => p.classList.toggle('active', p.id === id));
+  tabs.forEach(t => t.setAttribute('aria-selected', t.dataset.tab === id));
+  if(push) history.replaceState(null, '', '#' + id);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
+document.querySelectorAll('[data-jump]').forEach(a =>
+  a.addEventListener('click', e => { e.preventDefault(); show(a.dataset.jump); }));
+window.addEventListener('hashchange', () => show(location.hash.slice(1), false));
+show(location.hash.slice(1) || 'about', false);
+
+const root = document.documentElement;
+const saved = localStorage.getItem('theme');
+if(saved) root.setAttribute('data-theme', saved);
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
+document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
