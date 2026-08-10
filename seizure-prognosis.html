@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RSF for Epileptic Seizure Prognosis — Interactive Explainer</title>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{
+  --bg:#0a0e1a; --panel:#121828; --panel2:#0f1420;
+  --accent:#3ea6ff; --accent2:#ffcf56; --danger:#ff6b6b; --green:#57d38c; --pink:#e879c7;
+  --text:#e8ecf4; --muted:#8993a8; --border:#243050;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.65;}
+nav{position:sticky;top:0;background:rgba(10,14,26,0.95);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:16px;
+  flex-wrap:wrap;z-index:100;}
+nav a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap;}
+nav a:hover{color:var(--accent);}
+.hero{text-align:center;padding:70px 20px 40px;}
+.hero h1{font-size:2.1em;margin-bottom:8px;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{color:var(--muted);max-width:720px;margin:10px auto;}
+.hero .badge{display:inline-block;background:var(--panel);border:1px solid var(--border);
+  padding:4px 12px;border-radius:20px;font-size:12px;color:var(--accent2);margin-top:10px;margin-right:6px;}
+section{max-width:920px;margin:0 auto;padding:55px 20px;border-top:1px solid var(--border);}
+h2{font-size:1.5em;color:var(--accent2);margin-bottom:4px;}
+h2 .tag{font-size:0.5em;color:var(--muted);font-weight:400;display:block;margin-top:6px;text-transform:uppercase;letter-spacing:1px;}
+h3{color:var(--accent);font-size:1.05em;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0;}
+.controls{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:14px 0;}
+.controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;}
+input[type=range]{width:220px;accent-color:var(--accent);}
+button{background:var(--accent);color:#031018;border:none;padding:9px 18px;border-radius:8px;
+  font-weight:700;cursor:pointer;font-size:13px;}
+button.ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+button.active{background:var(--accent2);}
+button:hover{opacity:0.85;}
+.readout{font-family:"SF Mono",Consolas,Monaco,monospace;font-size:13.5px;background:var(--panel2);
+  border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-top:12px;color:var(--accent2);
+  white-space:pre-wrap;}
+canvas{background:var(--panel2);border-radius:8px;max-width:100%;display:block;margin:0 auto;}
+.plotdiv{width:100%;height:340px;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+th,td{border:1px solid var(--border);padding:8px 10px;text-align:center;}
+th{background:var(--panel2);color:var(--accent2);}
+.legend-row{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:8px;}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;}
+details{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin:10px 0;}
+summary{cursor:pointer;font-weight:700;color:var(--accent);}
+details p{margin-top:10px;color:var(--muted);}
+.note{font-size:13px;color:var(--muted);border-left:3px solid var(--accent2);padding-left:14px;margin:16px 0;}
+.sim{font-size:12px;color:#6f7994;border-left:3px solid #3a4560;padding-left:14px;margin:12px 0;font-style:italic;}
+.real{font-size:12px;color:#8fd6a8;border-left:3px solid var(--green);padding-left:14px;margin:12px 0;}
+footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;}
+pre{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:16px;
+  overflow-x:auto;font-size:12.5px;line-height:1.5;color:#c9d4e8;}
+code{color:var(--accent2);}
+.flow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px 0;align-items:center;}
+.flowbox{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;
+  font-size:12.5px;text-align:center;max-width:150px;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.flowbox.active{border-color:var(--accent2);color:var(--accent2);background:#1a1a10;}
+.flowbox b{color:var(--accent2);display:block;margin-bottom:4px;font-size:13px;}
+.arrow{color:var(--accent);font-size:18px;}
+ul{color:var(--muted);}
+ul li{margin-bottom:6px;}
+@media(max-width:700px){.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#intro">Overview</a>
+  <a href="#sec-problem">The Problem</a>
+  <a href="#sec-signal">EEG Signal</a>
+  <a href="#sec-features">Feature Extraction</a>
+  <a href="#sec-snowball">Snowball Features</a>
+  <a href="#sec-rsf">RSF Core</a>
+  <a href="#sec-metrics">Metrics</a>
+  <a href="#sec-results">Results</a>
+  <a href="#sec-code">Code</a>
+  <a href="#sec-test">Test Yourself</a>
+</nav>
+
+<header class="hero" id="intro">
+  <h1>Prognosis of Epileptic Seizure Onsets Using Random Survival Forests</h1>
+  <p>An interactive walkthrough of Afrin, Dusi, Zhong, Reddy &amp; Bukkapatnam (2022),
+  <em>IISE Transactions on Healthcare Systems Engineering</em> — the first survival-analysis
+  approach to continuous, real-time epileptic seizure prognosis from EEG signals.</p>
+  <span class="badge">IISE THSE 2022, 12(3):221–231</span>
+  <span class="badge">Builds on arXiv:1803.09177 (BRSF)</span>
+</header>
+
+<!-- ============================================================ -->
+<section id="sec-problem">
+  <h2>1. The Problem <span class="tag">Why "Predict at a Fixed Time" Isn't Enough</span></h2>
+  <p>Epilepsy affects an estimated 50 million people globally and elevates mortality risk by
+  1.6–9.3× versus the healthy population. The core clinical frustration: patients never know
+  when the <em>next</em> seizure is coming. Prior seizure-prediction methods try to detect a
+  "pre-ictal" (pre-seizure) state and then forecast a seizure at one specific future time — but:</p>
+  <div class="panel">
+    <p style="font-size:1.05em;color:var(--accent2);text-align:center;margin:0;">
+    "Even if a model says 'no seizure in the next 5 minutes,' a seizure happening at minute 3
+    can't be ruled out — because the model was never asked about minute 3."</p>
+  </div>
+  <p>This paper reframes the question entirely: instead of one prediction at one fixed horizon,
+  estimate a full <strong>hazard function over the entire prediction window</strong> — the risk
+  of seizure onset at <em>every</em> instant between now and the decision horizon. This is
+  exactly what survival analysis (and RSF specifically) is built for.</p>
+  <table>
+    <tr><th></th><th>Prior pre-ictal classifiers</th><th>This paper (RSF)</th></tr>
+    <tr><td>Output</td><td>Binary: pre-ictal or not, at one horizon</td><td>Continuous hazard/survival curve over entire horizon</td></tr>
+    <tr><td>Requires defining pre-ictal period?</td><td>Yes (clinically unsettled)</td><td>No — uses objective censoring only</td></tr>
+    <tr><td>Multiple horizons?</td><td>Needs a separate model per horizon</td><td>One model covers all horizons up to T_D</td></tr>
+    <tr><td>Validated on</td><td>Varies</td><td>80 rodent specimens, hippocampal EEG, 3 months</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-signal">
+  <h2>2. The Raw Data <span class="tag">What a Seizure Looks Like in EEG</span></h2>
+  <p>Recreating Figure 1: a 20-second EEG strip from a hippocampal intracranial electrode, with
+  10 seconds of normal (inter-ictal) activity followed by 10 seconds of seizure (ictal) activity.
+  Drag the scrubber to see how amplitude and volatility change at the transition.</p>
+  <div class="panel">
+    <canvas id="eegCanvas" width="760" height="260"></canvas>
+    <div class="controls">
+      <label>Scrub time (sec)
+        <input type="range" id="eegSlider" min="0" max="20" step="0.1" value="8">
+      </label>
+    </div>
+    <div class="readout" id="eegReadout">—</div>
+  </div>
+  <div class="real">Real experimental context: 4 kHz sampling rate, 80 small mammals (rats/mice),
+  intracranial hippocampal electrode, organophosphate-induced chronic epilepsy model, EEG
+  recorded 24/7 for 3 months. Waveform shape below is a stylized recreation of Fig. 1's
+  pattern, not the literal digitized signal.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-features">
+  <h2>3. Feature Extraction Pipeline <span class="tag">Recreating Figure 2</span></h2>
+  <p>Click through each stage to see how a raw EEG stream becomes a 104-dimensional feature
+  vector. Three window lengths (1024, 2048, 4096 samples ≈ 0.25s, 0.5s, 1s) are each processed
+  identically.</p>
+  <div class="flow" id="pipelineFlow">
+    <div class="flowbox active" data-step="0"><b>1. EEG stream</b>Raw hippocampal signal, 4 kHz</div>
+    <span class="arrow">→</span>
+    <div class="flowbox" data-step="1"><b>2. STFT</b>Short-time Fourier Transform, 0–50 Hz, windows of 1024/2048/4096</div>
+    <span class="arrow">→</span>
+    <div class="flowbox" data-step="2"><b>3. Energy bands</b>Spectral energy in 4 Hz bands, 1 Hz overlap → x<sup>E</sup></div>
+    <span class="arrow">→</span>
+    <div class="flowbox" data-step="3"><b>4. Hilbert Transform</b>Captures shape/phase of spectrum → x<sup>φ</sup></div>
+    <span class="arrow">→</span>
+    <div class="flowbox" data-step="4"><b>5. Snowball features</b>Accumulated change over 30 sec → S(i)</div>
+  </div>
+  <div class="panel">
+    <div id="featurePipelinePlot" class="plotdiv"></div>
+    <div class="readout" id="pipelineReadout">—</div>
+  </div>
+  <div class="note">Final feature count: 51 spectral energy features (×3 window lengths ≈ 17
+  bands each) + 1 signal-variance feature = 52 spectral features, plus 52 corresponding
+  snowball (phase-derivative) features = <strong>104-dimensional feature vector</strong> per
+  time snapshot.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-snowball">
+  <h2>4. Snowball Features <span class="tag">Capturing Slow Build-up</span></h2>
+  <p>Seizure precursors build up gradually — a single snapshot rarely shows an obvious
+  warning sign, but the <em>trend</em> across snapshots does. The snowball feature captures
+  exactly this: the accumulated change in a phase feature between two windows spaced 30 seconds
+  apart.</p>
+  <div class="panel">
+    <div id="snowballPlot" class="plotdiv"></div>
+    <div class="controls">
+      <label>Current window i (sec)
+        <input type="range" id="snowballSlider" min="30" max="300" step="1" value="150">
+      </label>
+    </div>
+    <div class="readout" id="snowballReadout">—</div>
+  </div>
+  <div class="note">
+  $$ S(i) = x^{\varphi}(i) - x^{\varphi}(i-W), \qquad W = 30 \text{ sec} $$
+  Among the top 20 features selected by minimal depth, <strong>14 of 20 were snowball
+  features</strong> and only 6 were raw spectral features — the accumulated trend mattered
+  more than any single snapshot.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-rsf">
+  <h2>5. The RSF Core <span class="tag">Log-Rank Splits + Nelson-Aalen Hazard</span></h2>
+  <p>Once features are extracted, RSF works exactly as in the original BRSF paper: grow trees
+  by splitting on the feature/threshold that maximizes the log-rank statistic between daughter
+  nodes, until each leaf has fewer than <code>s₀ = 3</code> unique seizure events left. Drag ζ
+  to explore a live log-rank split on synthetic seizure-onset-time data.</p>
+  <div class="panel">
+    <canvas id="splitCanvas" width="760" height="300"></canvas>
+    <div class="controls">
+      <label>Split threshold ζ (feature value)
+        <input type="range" id="zetaSlider" min="0.3" max="9.7" step="0.1" value="5">
+      </label>
+      <button onclick="autoScanSplit()">🔍 Auto-find best split</button>
+      <button class="ghost" onclick="regenSplitData()">🎲 New random cohort</button>
+    </div>
+    <div class="readout" id="splitReadout">—</div>
+  </div>
+  <div class="note">
+  $$ \hat H_q(t) = \sum_{T_{l,q}\le t} \frac{d_{l,q}}{Y_{l,q}} $$
+  Once a leaf stops splitting, the Nelson-Aalen estimator gives that leaf's cumulative hazard
+  curve. A sample's predicted risk is the ensemble average of its leaf's hazard across all
+  B trees: $\hat H_e(t|x_i) = \frac{1}{B}\sum_b \hat H_b(t|x_i)$.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-metrics">
+  <h2>6. How Performance Is Measured <span class="tag">C-index &amp; Brier Score</span></h2>
+  <table>
+    <tr><th>Metric</th><th>What it measures</th><th>Good value</th></tr>
+    <tr><td>C-index</td><td>Fraction of concordant pairs — does the model correctly rank who seizes sooner?</td><td>1.0 = perfect, 0.5 = coin flip</td></tr>
+    <tr><td>Brier Score (at time t)</td><td>Squared error between predicted seizure probability and actual outcome</td><td>0 = perfect, 0.33 ≈ random guessing</td></tr>
+    <tr><td>Integrated Brier Score (IBS)</td><td>Brier score averaged over the whole decision horizon T_D</td><td>Lower is better</td></tr>
+  </table>
+  <div class="panel">
+    <div id="brierExplainerPlot" class="plotdiv"></div>
+    <div class="controls">
+      <label>True seizure status at time t
+        <input type="range" id="trueStatusToggle" min="0" max="1" step="1" value="0">
+      </label>
+      <label>Predicted survival probability
+        <input type="range" id="predProbSlider" min="0" max="1" step="0.05" value="0.7">
+      </label>
+    </div>
+    <div class="readout" id="brierReadout">—</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-results">
+  <h2>7. Results <span class="tag">Real Numbers From the Paper</span></h2>
+
+  <div class="panel">
+    <h3>Headline comparison (Table 2, averaged over 300-sec horizon)</h3>
+    <table>
+      <tr><th>Measure</th><th>RSF</th><th>CPH</th><th>Improvement</th></tr>
+      <tr><td>IBS</td><td>0.01</td><td>0.08</td><td>87.5% lower</td></tr>
+      <tr><td>C-index</td><td>94.7</td><td>80.6</td><td>17.5% higher</td></tr>
+    </table>
+    <div class="real">These four numbers are exactly as reported in the paper's Table 2.</div>
+  </div>
+
+  <div class="panel">
+    <h3>Prediction Error Curves — recreating Figure 3</h3>
+    <div id="pecChart" class="plotdiv"></div>
+    <div class="real">Anchor points are real: at t=300s, the paper reports Kaplan-Meier Brier
+    score ≈ 0.20, CPH ≈ 0.12, RSF ≈ 0.01 (near-flat). The curve shapes between t=0 and t=300
+    are smooth interpolations to these real endpoints, matching the paper's description that
+    RSF "stays nearly flat and close to zero throughout."</div>
+  </div>
+
+  <div class="panel">
+    <h3>10-fold cross-validation IBS — recreating Figure 4</h3>
+    <div id="ibsBoxplot" class="plotdiv"></div>
+    <div class="real">Anchor points are real: Kaplan-Meier median IBS ≈ 0.14, CPH ≈ 0.075
+    ("about 50% reduction" vs. KM, as stated in the text), RSF ≈ near 0 ("more than one order
+    of magnitude reduction"). Box/whisker spread is illustrative — exact quartile values were
+    not given in the extracted text.</div>
+  </div>
+
+  <div class="panel">
+    <h3>Survival probability curves — recreating Figure 5</h3>
+    <div id="survivalCurvesPlot" class="plotdiv"></div>
+    <div class="controls">
+      <button onclick="regenSurvivalCurves()">🎲 Regenerate sample curves</button>
+    </div>
+    <div class="sim">Illustrative curves matching the paper's described pattern: red (seizure
+    event) samples show survival probability dropping sharply, blue (no-event) samples stay
+    high throughout — not digitized original data.</div>
+  </div>
+
+  <div class="panel">
+    <h3>Sensitivity &amp; Specificity vs. Time-to-Event — Table 3 (real data)</h3>
+    <div id="table3Chart" class="plotdiv"></div>
+    <table>
+      <tr><th>Time to event (sec)</th><th>Sensitivity (%)</th><th>Specificity (%)</th></tr>
+      <tr><td>300</td><td>82.40</td><td>77.50</td></tr>
+      <tr><td>240</td><td>77.43</td><td>85.78</td></tr>
+      <tr><td>120</td><td>82.19</td><td>85.00</td></tr>
+      <tr><td>60</td><td>82.99</td><td>86.79</td></tr>
+    </table>
+    <div class="real">These 8 numbers are exactly as reported in the paper's Table 3. Notice
+    sensitivity and specificity both generally improve as the model looks closer to the actual
+    seizure onset — exactly as expected.</div>
+  </div>
+
+  <div class="panel">
+    <h3>Feature classification performance by specimen — Table 1 (real data, sample)</h3>
+    <div id="table1Chart" class="plotdiv"></div>
+    <div class="real">Values plotted are a subset of Table 1's real reported sensitivity/
+    specificity per specimen (specimens with ≥1 detected seizure event shown). Overall RF
+    classifier accuracy across all specimens: 93.1%, with 99.3% sensitivity and 86.8%
+    specificity, as reported in the text.</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-code">
+  <h2>8. Implement It Yourself <span class="tag">Python Skeleton</span></h2>
+<pre><code>import numpy as np
+from scipy.signal import stft, hilbert
+from sksurv.ensemble import RandomSurvivalForest
+from sksurv.metrics import concordance_index_censored, integrated_brier_score
+
+def extract_spectral_features(eeg_segment, fs=4000, window_lengths=(1024, 2048, 4096)):
+    """Extract STFT-based spectral energy features across 4 Hz bands, 0-50 Hz,
+    for each window length, plus overall signal variance."""
+    features = []
+    for w in window_lengths:
+        f, t, Zxx = stft(eeg_segment, fs=fs, nperseg=w)
+        energy = np.abs(Zxx) ** 2
+        band_edges = np.arange(0, 50, 1)  # 1 Hz step, 4 Hz bandwidth, overlapping
+        band_energies = []
+        for edge in band_edges:
+            mask = (f >= edge) & (f < edge + 4)
+            band_energies.append(energy[mask, :].sum())
+        features.extend(band_energies[:17])  # ~17 bands per window length
+    features.append(np.var(eeg_segment))  # signal variance feature
+    return np.array(features)  # -> 52 spectral features total
+
+
+def extract_phase_features(spectral_features):
+    """Hilbert transform of the spectral-energy 'waveform' to capture
+    shape/phase variation across frequency bands."""
+    analytic_signal = hilbert(spectral_features)
+    phase = np.angle(analytic_signal)
+    return phase  # -> 52 phase features
+
+
+def snowball_feature(phase_features_over_time, i, W):
+    """S(i) = x_phi(i) - x_phi(i - W); captures accumulated change over W seconds."""
+    return phase_features_over_time[i] - phase_features_over_time[i - W]
+
+
+def build_training_sample(eeg_window, seizure_time_from_now, decision_horizon=300):
+    """Construct one (x, T, delta) survival tuple for the RSF training set."""
+    spectral = extract_spectral_features(eeg_window)
+    phase = extract_phase_features(spectral)
+    # snowball features would be computed using this window's phase vs one 30s earlier
+    x = np.concatenate([spectral, phase])  # simplified; real version adds snowball features
+
+    T = min(seizure_time_from_now, decision_horizon)
+    delta = 1 if seizure_time_from_now > decision_horizon else 0  # censored if 1
+    return x, T, delta
+
+
+def train_rsf(X, T, delta):
+    y = np.array([(bool(1 - d), t) for d, t in zip(delta, T)],
+                 dtype=[('event', bool), ('time', float)])
+    rsf = RandomSurvivalForest(
+        n_estimators=1000, max_features="sqrt",
+        min_samples_leaf=3,  # this is s0 = 3 from the paper
+        n_jobs=-1, random_state=42
+    ).fit(X, y)
+    return rsf
+
+
+def evaluate_rsf(rsf, X_train, T_train, delta_train, X_test, T_test, delta_test, horizon=300):
+    y_train = np.array([(bool(1-d), t) for d, t in zip(delta_train, T_train)],
+                        dtype=[('event', bool), ('time', float)])
+    y_test = np.array([(bool(1-d), t) for d, t in zip(delta_test, T_test)],
+                       dtype=[('event', bool), ('time', float)])
+
+    risk_scores = rsf.predict(X_test)
+    c_index = concordance_index_censored(y_test["event"], y_test["time"], risk_scores)[0]
+
+    times = np.linspace(1, horizon-1, 50)
+    surv_funcs = rsf.predict_survival_function(X_test)
+    preds = np.array([[fn(t) for t in times] for fn in surv_funcs])
+    ibs = integrated_brier_score(y_train, y_test, preds, times)
+
+    return c_index, ibs
+</code></pre>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-test">
+  <h2>9. Test Yourself + Open Problems</h2>
+
+  <details>
+    <summary>Why does the paper deliberately avoid trying to define a "pre-ictal period"?</summary>
+    <p>Because there's no clinically settled definition of when pre-ictal starts — any fixed
+    definition is somewhat arbitrary, and a classifier's reported accuracy becomes an artifact
+    of that choice rather than a property of the underlying EEG signal. Survival analysis
+    sidesteps this by only requiring objective information: whether and when a seizure
+    occurred, not what "stage" preceded it.</p>
+  </details>
+  <details>
+    <summary>Why use snowball features instead of just the raw phase features directly?</summary>
+    <p>Seizure precursors build up gradually — a single snapshot's absolute phase value may not
+    look abnormal, but the *rate of change* over 30 seconds captures the slow, subtle drift
+    that single-snapshot features miss. This is empirically confirmed: 14 of the top 20
+    features selected were snowball features.</p>
+  </details>
+  <details>
+    <summary>Why is minimal depth (MD) preferred over VIMP for feature selection here?</summary>
+    <p>VIMP measures importance via how much prediction error increases when a feature is
+    "noised up" — this is sensitive to whatever biases already exist in the trained model. MD
+    instead measures how close to the root node a feature tends to cause splits, which is a
+    structural property of the trees themselves and considered more robust to model bias.</p>
+  </details>
+  <details>
+    <summary>Why does sensitivity/specificity improve as the model looks closer to the actual seizure onset (Table 3)?</summary>
+    <p>The EEG signal's precursor signature (frequency shifts, snowball trends) becomes more
+    pronounced the closer you are to the actual seizure — so short-horizon predictions have a
+    stronger, less noisy signal to work with than long-horizon ones.</p>
+  </details>
+
+  <h3>Genuine open problems (good portfolio/research extensions)</h3>
+  <ul>
+    <li><strong>Human validation</strong> — the paper explicitly notes this is animal (rodent) data via an organophosphate-intoxication epilepsy model; translating to human intracranial or scalp EEG is future work the authors flag directly.</li>
+    <li><strong>Longer decision horizons</strong> — the 300-sec horizon was chosen based on the average inter-seizure interval in this dataset; systematically studying how RSF performance degrades as T_D grows is open.</li>
+    <li><strong>Exogenous factors</strong> — the paper notes environmental/exogenous influences on seizure timing are not yet incorporated; adding them (sleep state, medication timing, time of day) is a natural extension.</li>
+    <li><strong>Graph-based coupled dynamics features</strong> — the authors mention ongoing work using random-graph representations of coupled EEG channel dynamics as a richer feature set beyond single-channel spectral/snowball features.</li>
+    <li><strong>Adaptive, risk-informed alert thresholds</strong> — the current 0.69 survival-probability threshold was fixed to balance sensitivity/specificity; a patient-adaptive or cost-sensitive thresholding scheme is an open design question for a real seizure warning system.</li>
+  </ul>
+</section>
+
+<footer>
+  Built as a self-study/portfolio explainer of Afrin, Dusi, Zhong, Reddy &amp; Bukkapatnam
+  (2022), IISE Transactions on Healthcare Systems Engineering, 12(3):221–231.<br>
+  Panels marked "real" use exact numbers reported in the paper's text/tables. Panels marked
+  "simulated" are illustrative reconstructions calibrated to the paper's described trends and
+  real anchor points, not digitized original figure data.
+</footer>
+
+<script>
+/* ============================================================
+   SHARED HELPERS
+============================================================ */
+var plotlyTemplate = {
+  paper_bgcolor:'#121828', plot_bgcolor:'#0f1420',
+  font:{color:'#e8ecf4', size:12},
+  xaxis:{gridcolor:'#243050', zerolinecolor:'#243050'},
+  yaxis:{gridcolor:'#243050', zerolinecolor:'#243050'},
+  margin:{t:30,r:20,b:40,l:50}
+};
+function mergeLayout(extra){ return Object.assign({}, plotlyTemplate, extra); }
+
+/* ============================================================
+   2. EEG SIGNAL CANVAS (recreating Figure 1)
+============================================================ */
+var eegCanvas = document.getElementById('eegCanvas');
+var eegCtx = eegCanvas.getContext('2d');
+var eegSamples = 400;
+var eegData = [];
+(function generateEEGData(){
+  for(var i=0;i<eegSamples;i++){
+    var t = (i/eegSamples)*20;
+    var val;
+    if(t < 10){
+      val = (Math.random()-0.5)*1.2 + Math.sin(t*8)*0.3;
+    } else {
+      var intensity = Math.min((t-10)/2, 1);
+      val = (Math.random()-0.5)*8*intensity + Math.sin(t*20)*4*intensity;
+    }
+    eegData.push(val);
+  }
+})();
+function drawEEG(scrubTime){
+  var W = eegCanvas.width, H = eegCanvas.height;
+  var padL=60, padR=20, padT=20, padB=40;
+  var plotW=W-padL-padR, plotH=H-padT-padB;
+  eegCtx.clearRect(0,0,W,H);
+  eegCtx.strokeStyle='#243050';
+  eegCtx.beginPath(); eegCtx.moveTo(padL,padT); eegCtx.lineTo(padL,H-padB); eegCtx.lineTo(W-padR,H-padB); eegCtx.stroke();
+  eegCtx.fillStyle='#8993a8'; eegCtx.font='11px sans-serif';
+  for(var s=0;s<=20;s+=5){
+    var x = padL + (s/20)*plotW;
+    eegCtx.fillText(s, x-6, H-padB+16);
+  }
+  eegCtx.fillText('Time (sec)', W/2-30, H-padB+30);
+  eegCtx.save();
+  eegCtx.translate(15, H/2+30);
+  eegCtx.rotate(-Math.PI/2);
+  eegCtx.fillText('Amplitude (mV)', 0, 0);
+  eegCtx.restore();
+
+  var midY = padT + plotH/2;
+  eegCtx.strokeStyle = '#3a4560'; eegCtx.setLineDash([2,3]);
+  eegCtx.beginPath(); eegCtx.moveTo(padL, midY); eegCtx.lineTo(W-padR, midY); eegCtx.stroke();
+  eegCtx.setLineDash([]);
+
+  eegCtx.strokeStyle = '#3ea6ff'; eegCtx.lineWidth = 1.3;
+  eegCtx.beginPath();
+  for(var i=0;i<eegSamples;i++){
+    var t = (i/eegSamples)*20;
+    var x = padL + (t/20)*plotW;
+    var y = midY - eegData[i]*(plotH/24);
+    if(i===0) eegCtx.moveTo(x,y); else eegCtx.lineTo(x,y);
+  }
+  eegCtx.stroke();
+
+  var redX = padL + (10/20)*plotW;
+  eegCtx.strokeStyle = '#ff6b6b'; eegCtx.lineWidth = 2;
+  eegCtx.beginPath(); eegCtx.moveTo(redX, padT-5); eegCtx.lineTo(redX, H-padB); eegCtx.stroke();
+
+  var scrubX = padL + (scrubTime/20)*plotW;
+  eegCtx.strokeStyle = '#ffcf56'; eegCtx.lineWidth = 2; eegCtx.setLineDash([5,4]);
+  eegCtx.beginPath(); eegCtx.moveTo(scrubX, padT-5); eegCtx.lineTo(scrubX, H-padB); eegCtx.stroke();
+  eegCtx.setLineDash([]);
+
+  var idx = Math.min(Math.floor((scrubTime/20)*eegSamples), eegSamples-1);
+  var state = scrubTime < 10 ? 'Inter-ictal (normal)' : 'Ictal (seizure)';
+  document.getElementById('eegReadout').textContent =
+    't = ' + scrubTime.toFixed(1) + 's -> state: ' + state + '\n' +
+    'Instantaneous amplitude ~ ' + eegData[idx].toFixed(2) + ' mV\n' +
+    (scrubTime < 10 ?
+      'Amplitude fluctuates near 0 with small variation -- normal baseline activity.' :
+      'Amplitude shows large, erratic oscillations -- hallmark of seizure activity.');
+}
+document.getElementById('eegSlider').addEventListener('input', function(e){
+  drawEEG(parseFloat(e.target.value));
+});
+drawEEG(8);
+
+/* ============================================================
+   3. FEATURE PIPELINE STEPPER  (FIXED: stages 0 and 1 now show
+      the actual raw waveform instead of a blank/zeroed bar chart)
+============================================================ */
+var pipelineStep = 0;
+var pipelineDescriptions = [
+  'Raw EEG stream sampled at 4 kHz from the hippocampal intracranial electrode.',
+  'Short-Time Fourier Transform applied over the 0-50 Hz range, using three window lengths (1024, 2048, 4096 samples).',
+  'Spectral energy computed in overlapping 4 Hz bands (1 Hz step) -> 51 energy features per specimen snapshot, plus 1 signal-variance feature = 52 spectral features (x^E).',
+  'Hilbert Transform applied to the spectral-energy "waveform" to extract instantaneous phase, capturing the shape of the frequency spectrum -> 52 phase features (x^phi).',
+  'Snowball features computed as the accumulated change in phase features over a 30-second window -> 52 additional features. Total: 104-dimensional feature vector.'
+];
+function renderPipelineStage(step){
+  var boxes = document.querySelectorAll('#pipelineFlow .flowbox');
+  boxes.forEach(function(b){ b.classList.remove('active'); });
+  boxes[step].classList.add('active');
+  document.getElementById('pipelineReadout').textContent = pipelineDescriptions[step];
+
+  // --- Stage 0: Raw EEG waveform ---
+  if(step === 0){
+    var tVals = [], yVals = [];
+    for(var t=0; t<200; t++){
+      tVals.push(t);
+      yVals.push((Math.random()-0.5)*2 + Math.sin(t*0.3)*0.6);
+    }
+    Plotly.react('featurePipelinePlot', [
+      {x:tVals, y:yVals, mode:'lines', line:{color:'#3ea6ff', width:1.5}, name:'Raw EEG (4 kHz samples)'}
+    ], mergeLayout({
+      xaxis:{title:'Sample index'}, yaxis:{title:'Amplitude (mV)'}
+    }), {displayModeBar:false, responsive:true});
+    return;
+  }
+
+  // --- Stage 1: Same waveform, with STFT windows overlaid ---
+  if(step === 1){
+    var tVals2 = [], yVals2 = [];
+    for(var t2=0; t2<200; t2++){
+      tVals2.push(t2);
+      yVals2.push((Math.random()-0.5)*2 + Math.sin(t2*0.3)*0.6);
+    }
+    Plotly.react('featurePipelinePlot', [
+      {x:tVals2, y:yVals2, mode:'lines', line:{color:'#3a4560', width:1.5}, name:'Raw EEG'}
+    ], mergeLayout({
+      xaxis:{title:'Sample index'}, yaxis:{title:'Amplitude (mV)'},
+      shapes:[
+        {type:'rect', x0:0,   x1:65,  y0:-3, y1:3, fillcolor:'rgba(62,166,255,0.15)',  line:{color:'#3ea6ff'}},
+        {type:'rect', x0:70,  x1:135, y0:-3, y1:3, fillcolor:'rgba(255,207,86,0.15)',  line:{color:'#ffcf56'}},
+        {type:'rect', x0:140, x1:200, y0:-3, y1:3, fillcolor:'rgba(232,121,199,0.15)', line:{color:'#e879c7'}}
+      ]
+    }), {displayModeBar:false, responsive:true});
+    return;
+  }
+
+  // --- Stages 2-4: frequency-band feature bars ---
+  var bandNames = [];
+  var values = [];
+  var nBands = 17;
+  for(var i=0;i<nBands;i++){
+    bandNames.push((i*3) + '-' + (i*3+4) + 'Hz');
+    var base = Math.exp(-Math.pow(i-6,2)/18) * 10;
+    values.push(base + Math.random()*1.5);
+  }
+  var trace;
+  if(step === 2){
+    trace = {x:bandNames, y:values, type:'bar', marker:{color:'#3ea6ff'}, name:'Spectral energy x^E'};
+  } else if(step === 3){
+    var phaseVals = values.map(function(v,i){ return Math.sin(i*0.7)*v*0.3; });
+    trace = {x:bandNames, y:phaseVals, type:'bar', marker:{color:'#e879c7'}, name:'Phase x^phi'};
+  } else {
+    var snowVals = values.map(function(v,i){ return Math.sin(i*0.7+0.4)*v*0.3 - Math.sin(i*0.7)*v*0.3; });
+    trace = {x:bandNames, y:snowVals, type:'bar', marker:{color:'#ffcf56'}, name:'Snowball S(i)'};
+  }
+  Plotly.react('featurePipelinePlot', [trace], mergeLayout({
+    xaxis:{title:'Frequency band', tickangle:-45},
+    yaxis:{title:'Feature value (a.u.)'}
+  }), {displayModeBar:false, responsive:true});
+}
+document.querySelectorAll('#pipelineFlow .flowbox').forEach(function(box){
+  box.addEventListener('click', function(){
+    pipelineStep = parseInt(box.getAttribute('data-step'));
+    renderPipelineStage(pipelineStep);
+  });
+});
+renderPipelineStage(0);
+
+/* ============================================================
+   4. SNOWBALL FEATURE DEMO
+============================================================ */
+function phaseSignal(t){
+  return Math.sin(t*0.02) * 3 + Math.sin(t*0.005)*t*0.01;
+}
+function renderSnowball(i){
+  var W = 30;
+  var tVals = [];
+  var phaseVals = [];
+  for(var t=0;t<=300;t+=1){
+    tVals.push(t);
+    phaseVals.push(phaseSignal(t));
+  }
+  var iVal = phaseSignal(i);
+  var iMinusW = phaseSignal(Math.max(i-W,0));
+  var S = iVal - iMinusW;
+
+  Plotly.react('snowballPlot', [
+    {x:tVals, y:phaseVals, name:'Phase feature x^phi(t)', line:{color:'#e879c7', width:2}},
+    {x:[Math.max(i-W,0), i], y:[iMinusW, iVal], mode:'markers+lines',
+     name:'Window used for S(i)', line:{color:'#ffcf56', width:3, dash:'dot'},
+     marker:{size:10, color:'#ffcf56'}}
+  ], mergeLayout({
+    xaxis:{title:'Time (sec)'}, yaxis:{title:'Phase feature value'},
+    legend:{orientation:'h', y:-0.3}
+  }), {displayModeBar:false, responsive:true});
+
+  document.getElementById('snowballReadout').textContent =
+    'i = ' + i + 's, W = 30s -> comparing x^phi(' + i + ') = ' + iVal.toFixed(3) +
+    ' vs x^phi(' + Math.max(i-W,0) + ') = ' + iMinusW.toFixed(3) + '\n' +
+    'Snowball feature S(i) = ' + S.toFixed(3) +
+    (Math.abs(S) > 1.5 ? '  <- large accumulated change, potential precursor signal' : '  <- small accumulated change');
+}
+document.getElementById('snowballSlider').addEventListener('input', function(e){
+  renderSnowball(parseInt(e.target.value));
+});
+renderSnowball(150);
+
+/* ============================================================
+   5. RSF SPLIT DEMO (log-rank statistic)
+============================================================ */
+var splitCohort = [];
+function regenSplitData(){
+  splitCohort = [];
+  var n = 70;
+  for(var i=0;i<n;i++){
+    var x = Math.random()*10;
+    var rate = 0.03 + 0.06*(x/10);
+    var trueT = -Math.log(Math.random())/rate;
+    var censorT = 60 + Math.random()*240;
+    var t = Math.min(trueT, censorT, 300);
+    var e = trueT <= censorT && trueT <= 300 ? 1 : 0;
+    splitCohort.push({x:x, t:t, e:e, jitter:Math.random()});
+  }
+  drawSplit(parseFloat(document.getElementById('zetaSlider').value));
+}
+function logRankStat(zeta){
+  var left = splitCohort.filter(function(p){ return p.x < zeta; });
+  var right = splitCohort.filter(function(p){ return p.x >= zeta; });
+  var eventTimes = [];
+  splitCohort.forEach(function(p){ if(p.e && eventTimes.indexOf(p.t)===-1) eventTimes.push(p.t); });
+  eventTimes.sort(function(a,b){ return a-b; });
+  var numerator=0, variance=0;
+  eventTimes.forEach(function(tj){
+    var Y1 = left.filter(function(p){ return p.t >= tj; }).length;
+    var Y2 = right.filter(function(p){ return p.t >= tj; }).length;
+    var Yj = Y1+Y2;
+    if(Yj < 2) return;
+    var d1 = left.filter(function(p){ return p.e && p.t===tj; }).length;
+    var d2 = right.filter(function(p){ return p.e && p.t===tj; }).length;
+    var dj = d1+d2;
+    var e1 = dj * Y1/Yj;
+    numerator += (d1 - e1);
+    if(Yj>1){
+      variance += (Y1*Y2*dj*(Yj-dj)) / (Yj*Yj*(Yj-1));
+    }
+  });
+  var L = variance>0 ? numerator/Math.sqrt(variance) : 0;
+  return {
+    L:L, leftN:left.length, rightN:right.length,
+    leftEvents:left.filter(function(p){return p.e;}).length,
+    rightEvents:right.filter(function(p){return p.e;}).length
+  };
+}
+var sCanvas = document.getElementById('splitCanvas');
+var sCtx = sCanvas.getContext('2d');
+function drawSplit(zeta){
+  var W=sCanvas.width, H=sCanvas.height;
+  var padL=40, padR=20, padT=20, padB=40;
+  var plotW=W-padL-padR, plotH=H-padT-padB;
+  sCtx.clearRect(0,0,W,H);
+  sCtx.strokeStyle='#243050';
+  sCtx.beginPath(); sCtx.moveTo(padL,padT); sCtx.lineTo(padL,H-padB); sCtx.lineTo(W-padR,H-padB); sCtx.stroke();
+
+  function xOf(x){ return padL + (x/10)*plotW; }
+  function yOf(j){ return padT + j*plotH*0.9 + plotH*0.05; }
+
+  splitCohort.forEach(function(p){
+    var px = xOf(p.x), py = yOf(p.jitter);
+    sCtx.beginPath();
+    sCtx.arc(px, py, 4, 0, 2*Math.PI);
+    sCtx.fillStyle = p.e ? '#ff6b6b' : '#3ea6ff';
+    sCtx.fill();
+  });
+
+  var zx = xOf(zeta);
+  sCtx.strokeStyle='#ffcf56'; sCtx.lineWidth=2; sCtx.setLineDash([6,4]);
+  sCtx.beginPath(); sCtx.moveTo(zx,padT-5); sCtx.lineTo(zx,H-padB); sCtx.stroke();
+  sCtx.setLineDash([]);
+
+  sCtx.fillStyle='#8993a8'; sCtx.font='11px sans-serif';
+  for(var m=0;m<=10;m+=2){ sCtx.fillText(m, xOf(m)-4, H-padB+16); }
+  sCtx.fillText('feature value', W/2-35, H-padB+30);
+
+  var stats = logRankStat(zeta);
+  document.getElementById('splitReadout').textContent =
+    'zeta = ' + zeta.toFixed(1) + '\n' +
+    'Left node:  n=' + stats.leftN + ', seizure events=' + stats.leftEvents + '\n' +
+    'Right node: n=' + stats.rightN + ', seizure events=' + stats.rightEvents + '\n' +
+    'Log-rank statistic L(x,zeta) = ' + stats.L.toFixed(3) + '   (bigger |L| = better split)';
+}
+document.getElementById('zetaSlider').addEventListener('input', function(e){
+  drawSplit(parseFloat(e.target.value));
+});
+function autoScanSplit(){
+  var best = {zeta:0.3, L:-Infinity};
+  for(var z=0.3; z<=9.7; z+=0.1){
+    var res = logRankStat(z);
+    if(Math.abs(res.L) > Math.abs(best.L)) best = {zeta:z, L:res.L};
+  }
+  document.getElementById('zetaSlider').value = best.zeta.toFixed(1);
+  drawSplit(best.zeta);
+}
+regenSplitData();
+
+/* ============================================================
+   6. BRIER SCORE EXPLAINER
+============================================================ */
+function renderBrierExplainer(){
+  var trueStatus = parseInt(document.getElementById('trueStatusToggle').value);
+  var predProb = parseFloat(document.getElementById('predProbSlider').value);
+  var trueLabel = trueStatus === 1 ? 'Seizure occurred by time t (Y=1)' : 'No seizure by time t (Y=0)';
+  var predictedSeizureProb = 1 - predProb;
+  var brier = Math.pow(trueStatus - predictedSeizureProb, 2);
+
+  Plotly.react('brierExplainerPlot', [{
+    x:['True status Y(t)', 'Predicted seizure prob.', 'Squared error'],
+    y:[trueStatus, predictedSeizureProb, brier],
+    type:'bar',
+    marker:{color:['#ff6b6b','#3ea6ff','#ffcf56']}
+  }], mergeLayout({
+    yaxis:{title:'Value', range:[0,1.1]}
+  }), {displayModeBar:false, responsive:true});
+
+  document.getElementById('brierReadout').textContent =
+    trueLabel + '\n' +
+    'Predicted survival probability S(t) = ' + predProb.toFixed(2) +
+    ' -> predicted seizure probability = ' + predictedSeizureProb.toFixed(2) + '\n' +
+    'Brier score contribution = (Y - predicted)^2 = ' + brier.toFixed(3) +
+    (brier < 0.1 ? '  <- good prediction' : '  <- poor prediction');
+}
+document.getElementById('trueStatusToggle').addEventListener('input', renderBrierExplainer);
+document.getElementById('predProbSlider').addEventListener('input', renderBrierExplainer);
+renderBrierExplainer();
+
+/* ============================================================
+   7a. PEC CHART (Figure 3, real anchor points)
+============================================================ */
+function pecKM(t){ return 0.20 * Math.pow(t/300, 1.15); }
+function pecCPH(t){ return 0.12 * Math.pow(t/300, 1.05); }
+function pecRSF(t){ return 0.01 * Math.pow(t/300, 0.6); }
+
+(function renderPEC(){
+  var tVals = [];
+  for(var t=0;t<=300;t+=5){ tVals.push(t); }
+  var traces = [
+    {x:tVals, y:tVals.map(pecKM), name:'Kaplan-Meier', line:{color:'#000000', width:2.5}},
+    {x:tVals, y:tVals.map(pecCPH), name:'CPH', line:{color:'#3ea6ff', width:2.5}},
+    {x:tVals, y:tVals.map(pecRSF), name:'RSF', line:{color:'#ff6b6b', width:2.5}}
+  ];
+  Plotly.newPlot('pecChart', traces, mergeLayout({
+    xaxis:{title:'Time (sec)'}, yaxis:{title:'Brier Score Prediction Error', range:[0,0.22]},
+    legend:{orientation:'h', y:-0.3}
+  }), {displayModeBar:false, responsive:true});
+})();
+
+/* ============================================================
+   7b. IBS BOXPLOT (Figure 4, real anchor points)
+============================================================ */
+function generateBoxData(median, spread, n){
+  var arr = [];
+  for(var i=0;i<n;i++){
+    arr.push(Math.max(0, median + (Math.random()-0.5)*spread));
+  }
+  return arr;
+}
+(function renderIBSBox(){
+  var kmData = generateBoxData(0.14, 0.03, 30);
+  var cphData = generateBoxData(0.075, 0.015, 30);
+  var rsfData = generateBoxData(0.01, 0.008, 30);
+  Plotly.newPlot('ibsBoxplot', [
+    {y:kmData, name:'Kaplan-Meier', type:'box', marker:{color:'#ff6b6b'}},
+    {y:cphData, name:'CPH', type:'box', marker:{color:'#57d38c'}},
+    {y:rsfData, name:'RSF', type:'box', marker:{color:'#3ea6ff'}}
+  ], mergeLayout({
+    yaxis:{title:'Integrated Brier Score', range:[0,0.18]}
+  }), {displayModeBar:false, responsive:true});
+})();
+
+/* ============================================================
+   7c. SURVIVAL CURVES (Figure 5, illustrative)
+============================================================ */
+function generateSurvivalCurve(isSeizure){
+  var tVals = [];
+  var sVals = [];
+  var dropPoint = 30 + Math.random()*100;
+  var s = 1.0;
+  for(var t=0;t<=300;t+=5){
+    tVals.push(t);
+    if(isSeizure){
+      if(t > dropPoint){
+        s = Math.max(0.02, s - (0.15 + Math.random()*0.1));
+      }
+    } else {
+      s = Math.max(0.75, s - Math.random()*0.02);
+    }
+    sVals.push(Math.min(1, Math.max(0, s)));
+  }
+  return {x:tVals, y:sVals};
+}
+function renderSurvivalCurves(){
+  var traces = [];
+  for(var i=0;i<6;i++){
+    var c = generateSurvivalCurve(true);
+    traces.push({x:c.x, y:c.y, mode:'lines', line:{color:'#ff6b6b', width:1.5}, showlegend:false});
+  }
+  for(var j=0;j<6;j++){
+    var c2 = generateSurvivalCurve(false);
+    traces.push({x:c2.x, y:c2.y, mode:'lines', line:{color:'#3ea6ff', width:1.5}, showlegend:false});
+  }
+  traces.push({x:[null], y:[null], mode:'lines', line:{color:'#ff6b6b', width:2}, name:'Seizure Event'});
+  traces.push({x:[null], y:[null], mode:'lines', line:{color:'#3ea6ff', width:2}, name:'No event'});
+
+  Plotly.react('survivalCurvesPlot', traces, mergeLayout({
+    xaxis:{title:'Time (sec)'}, yaxis:{title:'Survival Probability', range:[0,1]},
+    legend:{orientation:'h', y:-0.3}
+  }), {displayModeBar:false, responsive:true});
+}
+function regenSurvivalCurves(){ renderSurvivalCurves(); }
+renderSurvivalCurves();
+
+/* ============================================================
+   7d. TABLE 3 CHART (real data)
+============================================================ */
+(function renderTable3Chart(){
+  var timeToEvent = [300, 240, 120, 60];
+  var sensitivity = [82.40, 77.43, 82.19, 82.99];
+  var specificity = [77.50, 85.78, 85.00, 86.79];
+  Plotly.newPlot('table3Chart', [
+    {x:timeToEvent, y:sensitivity, name:'Sensitivity (%)', mode:'lines+markers', line:{color:'#3ea6ff', width:3}, marker:{size:9}},
+    {x:timeToEvent, y:specificity, name:'Specificity (%)', mode:'lines+markers', line:{color:'#ff6b6b', width:3}, marker:{size:9}}
+  ], mergeLayout({
+    xaxis:{title:'Time to event (sec)', autorange:'reversed'},
+    yaxis:{title:'Accuracy (%)', range:[70,92]},
+    legend:{orientation:'h', y:-0.3}
+  }), {displayModeBar:false, responsive:true});
+})();
+
+/* ============================================================
+   7e. TABLE 1 CHART (real data, specimens with events)
+============================================================ */
+(function renderTable1Chart(){
+  var specimens = ['V12','V13','D11','D12','R23','R33','A5','A8'];
+  var sensitivity = [100,87,100,100,100,100,100,100];
+  var specificity = [100,80,87.5,80,100,78.6,90.9,91.2];
+  Plotly.newPlot('table1Chart', [
+    {x:specimens, y:sensitivity, name:'Sensitivity (%)', type:'bar', marker:{color:'#3ea6ff'}},
+    {x:specimens, y:specificity, name:'Specificity (%)', type:'bar', marker:{color:'#ff6b6b'}}
+  ], mergeLayout({
+    barmode:'group', yaxis:{title:'Accuracy (%)', range:[0,110]},
+    xaxis:{title:'Specimen ID'},
+    legend:{orientation:'h', y:-0.3}
+  }), {displayModeBar:false, responsive:true});
+})();
+</script>
+
+</body>
+</html>

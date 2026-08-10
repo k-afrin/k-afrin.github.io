@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balanced Random Survival Forests — Interactive Explainer</title>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{
+  --bg:#0a0e1a; --panel:#121828; --panel2:#0f1420;
+  --accent:#3ea6ff; --accent2:#ffcf56; --danger:#ff6b6b; --green:#57d38c;
+  --text:#e8ecf4; --muted:#8993a8; --border:#243050;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.65;}
+nav{position:sticky;top:0;background:rgba(10,14,26,0.95);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:16px;
+  flex-wrap:wrap;z-index:100;}
+nav a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap;}
+nav a:hover{color:var(--accent);}
+.hero{text-align:center;padding:70px 20px 40px;}
+.hero h1{font-size:2.3em;margin-bottom:8px;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{color:var(--muted);max-width:680px;margin:10px auto;}
+.hero .badge{display:inline-block;background:var(--panel);border:1px solid var(--border);
+  padding:4px 12px;border-radius:20px;font-size:12px;color:var(--accent2);margin-top:10px;}
+section{max-width:900px;margin:0 auto;padding:55px 20px;border-top:1px solid var(--border);}
+h2{font-size:1.55em;color:var(--accent2);margin-bottom:4px;}
+h2 .tag{font-size:0.5em;color:var(--muted);font-weight:400;display:block;margin-top:6px;text-transform:uppercase;letter-spacing:1px;}
+h3{color:var(--accent);font-size:1.1em;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0;}
+.controls{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:14px 0;}
+.controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;}
+input[type=range]{width:220px;accent-color:var(--accent);}
+button{background:var(--accent);color:#031018;border:none;padding:9px 18px;border-radius:8px;
+  font-weight:700;cursor:pointer;font-size:13px;}
+button.secondary{background:transparent;border:1px solid var(--accent);color:var(--accent);}
+button.ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+button:hover{opacity:0.85;}
+.readout{font-family:"SF Mono",Consolas,Monaco,monospace;font-size:13.5px;background:var(--panel2);
+  border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-top:12px;color:var(--accent2);
+  white-space:pre-wrap;}
+canvas{background:var(--panel2);border-radius:8px;max-width:100%;display:block;margin:0 auto;}
+.plotdiv{width:100%;height:320px;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+th,td{border:1px solid var(--border);padding:8px 10px;text-align:center;}
+th{background:var(--panel2);color:var(--accent2);}
+.legend-row{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:8px;}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;}
+details{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin:10px 0;}
+summary{cursor:pointer;font-weight:700;color:var(--accent);}
+details p{margin-top:10px;color:var(--muted);}
+.note{font-size:13px;color:var(--muted);border-left:3px solid var(--accent2);padding-left:14px;margin:16px 0;}
+.warn{font-size:13px;color:var(--danger);border-left:3px solid var(--danger);padding-left:14px;margin:16px 0;}
+footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;}
+pre{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:16px;
+  overflow-x:auto;font-size:12.5px;line-height:1.5;color:#c9d4e8;}
+code{color:var(--accent2);}
+ul{color:var(--muted);}
+ul li{margin-bottom:6px;}
+@media(max-width:700px){nav{font-size:11px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#intro">Overview</a>
+  <a href="#sec-data">Survival Data</a>
+  <a href="#sec-hazard">Hazard Curves</a>
+  <a href="#sec-cph">CPH vs RSF</a>
+  <a href="#sec-split">Log-Rank Splits</a>
+  <a href="#sec-bias">Imbalance Bias</a>
+  <a href="#sec-smote">SMOTE Fix</a>
+  <a href="#sec-results">Results</a>
+  <a href="#sec-features">Biomarkers</a>
+  <a href="#sec-code">Implement It</a>
+  <a href="#sec-test">Test Yourself</a>
+</nav>
+
+<header class="hero" id="intro">
+  <h1>Balanced Random Survival Forests</h1>
+  <p>An interactive walkthrough of Afrin, Illangovan, Srivatsa &amp; Bukkapatnam (2018) —
+  how to make survival predictions trustworthy when the thing you're trying to predict
+  (death, failure, churn) is rare.</p>
+  <span class="badge">arXiv:1803.09177</span>
+</header>
+
+<!-- ============================================================ -->
+<section id="sec-data">
+  <h2>1. Survival Data 101 <span class="tag">Interactive Timeline</span></h2>
+  <p>Every patient contributes a triple $(x_i, T_i, \delta_i)$: features, an observed time,
+  and whether that time ended in <strong style="color:var(--danger)">death</strong> or the
+  patient was simply <strong style="color:var(--accent)">still alive when the study ended</strong>
+  (censored). Drag the slider to sweep time forward and watch the risk set shrink while the
+  cumulative hazard estimate climbs, one death at a time.</p>
+
+  <div class="panel">
+    <canvas id="timelineCanvas" width="760" height="340"></canvas>
+    <div class="controls">
+      <label>Sweep time (months)
+        <input type="range" id="timeSlider" min="0" max="25" step="0.5" value="0">
+      </label>
+    </div>
+    <div class="readout" id="timelineReadout">—</div>
+    <div class="legend-row">
+      <span><span class="dot" style="background:#ff6b6b"></span>Died (event)</span>
+      <span><span class="dot" style="background:#3ea6ff"></span>Censored (still alive / lost to follow-up)</span>
+      <span><span class="dot" style="background:#3a4560"></span>Not yet reached by sweep line</span>
+    </div>
+  </div>
+  <div class="note">Nelson–Aalen estimator: $\hat H(t) = \sum_{t_l \le t} \dfrac{d_l}{Y_l}$
+  — at every death time, add "deaths that day / people still at risk that day." It only ever climbs.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-hazard">
+  <h2>2. What a Model Actually Outputs <span class="tag">Cumulative Hazard, Live</span></h2>
+  <p>The learned object isn't a single number — it's a <em>curve</em>. Drag the slider to change
+  a hypothetical patient's risk score $\beta^\top x$ and watch their hazard curve and
+  survival probability shift together.</p>
+  <div class="panel">
+    <div id="hazardPlot" class="plotdiv"></div>
+    <div class="controls">
+      <label>Risk score β·x
+        <input type="range" id="riskSlider" min="-2" max="2" step="0.1" value="0">
+      </label>
+    </div>
+    <div class="readout" id="hazardReadout">—</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-cph">
+  <h2>3. Cox PH vs. Random Survival Forests <span class="tag">Where the old method breaks</span></h2>
+  <p>Cox Proportional Hazards assumes every patient's hazard curve is <em>the same shape</em>,
+  just scaled by a constant. That holds sometimes — and fails badly other times. RSF makes
+  no such assumption. Toggle between the two scenarios below.</p>
+  <div class="panel">
+    <div id="phPlot" class="plotdiv"></div>
+    <div class="controls">
+      <button onclick="renderPHPlot('prop')">Proportional hazards (CPH is fine)</button>
+      <button class="secondary" onclick="renderPHPlot('nonprop')">Non-proportional (CPH breaks)</button>
+    </div>
+    <div class="readout" id="phReadout">Curves scale by a constant factor and never cross — CPH's assumption holds here.</div>
+  </div>
+  <table>
+    <tr><th></th><th>Cox PH</th><th>Random Survival Forest</th></tr>
+    <tr><td>Shape assumption</td><td>Same shape for everyone</td><td>None — learned locally</td></tr>
+    <tr><td>Nonlinear effects</td><td>No (unless engineered)</td><td>Yes, automatically</td></tr>
+    <tr><td>Missing data</td><td>Needs imputation</td><td>Built-in adaptive imputation</td></tr>
+    <tr><td>Interpretability</td><td>High (coefficients)</td><td>Lower (needs importance/PDPs)</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-split">
+  <h2>4. How a Tree Actually Splits <span class="tag">The Log-Rank Statistic, Live</span></h2>
+  <p>At every node, RSF scores candidate splits with the log-rank statistic — the same test
+  statistic from biostatistics, repurposed as a splitting criterion. Drag ζ across the
+  biomarker axis; the computed statistic uses the real two-sample log-rank formula on this
+  synthetic cohort.</p>
+  <div class="panel">
+    <canvas id="splitCanvas" width="760" height="320"></canvas>
+    <div class="controls">
+      <label>Split threshold ζ
+        <input type="range" id="zetaSlider" min="0.3" max="9.7" step="0.1" value="5">
+      </label>
+      <button onclick="autoScan()">🔍 Auto-find best split</button>
+      <button class="ghost" onclick="regenSplitData()">🎲 New random cohort</button>
+    </div>
+    <div class="readout" id="splitReadout">—</div>
+    <div class="legend-row">
+      <span><span class="dot" style="background:#ff6b6b"></span>Died</span>
+      <span><span class="dot" style="background:#3ea6ff"></span>Censored</span>
+    </div>
+  </div>
+  <div class="note">
+  $$ L(x_v,\zeta) = \frac{\sum_l \left(d_{l,1} - Y_{l,1}\frac{d_{l,q}}{Y_{l,q}}\right)}
+  {\sqrt{\sum_l \frac{Y_{l,1}}{Y_{l,q}}\left(1-\frac{Y_{l,1}}{Y_{l,q}}\right)\frac{Y_{l,q}-d_{l,q}}{Y_{l,q}-1}d_{l,q}}} $$
+  Numerator = "observed deaths on the left minus deaths expected by chance." Bigger |L| = better split.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-bias">
+  <h2>5. Why Imbalance Breaks This <span class="tag">The Paper's Core Insight</span></h2>
+  <p>Every leaf must keep at least $d_0$ unique deaths (here, 3). When the minority (death)
+  class is rare, its leaves get starved to almost nothing — and their hazard estimate
+  plateaus <em>before</em> it should. Drag the sample-size slider down and watch the orange
+  curve fall further behind the true (dashed) hazard.</p>
+  <div class="panel">
+    <div id="biasPlot" class="plotdiv"></div>
+    <div class="controls">
+      <label>Minority samples in this leaf (m)
+        <input type="range" id="biasSlider" min="4" max="120" step="1" value="60">
+      </label>
+    </div>
+    <div class="readout" id="biasReadout">—</div>
+  </div>
+  <div class="note">This is a simplified simulation built to make the mechanism intuitive —
+  not a literal reproduction of the paper's formal digamma-function proof (Proposition 1).
+  The real proof shows the bias direction rigorously; this shows you <em>why</em> it happens.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-smote">
+  <h2>6. The Fix: SMOTE <span class="tag">Synthetic Minority Over-sampling</span></h2>
+  <p>Instead of duplicating rare patients (teaches the model nothing new) or discarding common
+  ones (wastes data), SMOTE invents new, plausible minority patients by interpolating between
+  real ones and their nearest minority neighbors. Click to generate some and watch where they land.</p>
+  <div class="panel">
+    <canvas id="smoteCanvas" width="480" height="380"></canvas>
+    <div class="controls">
+      <label>k nearest neighbors
+        <input type="range" id="smoteK" min="1" max="5" step="1" value="3">
+      </label>
+      <button onclick="smoteGenerate(1)">+1 synthetic sample</button>
+      <button onclick="smoteGenerate(8)">+8 synthetic samples</button>
+      <button class="ghost" onclick="smoteReset()">Reset</button>
+    </div>
+    <div class="readout">Synthetic samples created: <span id="smoteCount">0</span></div>
+    <div class="legend-row">
+      <span><span class="dot" style="background:#3ea6ff"></span>Majority (survivors)</span>
+      <span><span class="dot" style="background:#ff6b6b"></span>Minority (real deaths)</span>
+      <span><span class="dot" style="background:#ffcf56"></span>Synthetic (SMOTE-generated)</span>
+    </div>
+  </div>
+  <div class="note">
+  $$ x_{new} = x_i + \gamma\,(x_j - x_i), \qquad \gamma \sim \text{Uniform}(0,1) $$
+  where $x_j$ is a randomly chosen nearest minority neighbor of $x_i$.</div>
+  <div class="warn">⚠️ Open gap in the paper: this formula only interpolates <em>features</em>.
+  It never specifies how synthetic $(T,\delta)$ pairs are generated for survival time — a
+  genuine ambiguity, and a good place to make an original contribution (see §10).</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-results">
+  <h2>7. Results <span class="tag">Does Balancing Actually Help?</span></h2>
+  <p>Click legend entries to isolate a method. BRSF wins on both metrics across every dataset,
+  regardless of starting imbalance.</p>
+  <div class="panel">
+    <h3>C-index (higher = better at ranking who's at risk)</h3>
+    <div id="cIndexChart" class="plotdiv"></div>
+  </div>
+  <div class="panel">
+    <h3>Integrated Brier Score (lower = better calibrated probabilities)</h3>
+    <div id="ibsChart" class="plotdiv"></div>
+  </div>
+  <div class="note">Headline: ~25% average C-index improvement, ~55% average IBS reduction vs.
+  the next-best method, across 6 datasets ranging from 6.6% to 38.5% minority prevalence.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-features">
+  <h2>8. What the Model Learned <span class="tag">Top STEMI Biomarkers</span></h2>
+  <p>On the heart-attack (STEMI) dataset, these ranked highest by variable importance —
+  a cardiologist confirmed all seven have known physiological links to mortality.</p>
+  <div class="panel">
+    <div id="featPlot" class="plotdiv" style="height:300px;"></div>
+  </div>
+  <div class="note">Using just these 7 features (of 150 available) instead of the full set
+  actually <em>improved</em> OOB error from 18% → 15.8% — fewer, better-chosen features beat
+  the kitchen sink.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-code">
+  <h2>9. Implement It Yourself <span class="tag">Python Skeleton</span></h2>
+  <p>A minimal, runnable core using <code>scikit-survival</code>, mirroring the algorithm
+  simulated in the demos above.</p>
+<pre><code>import numpy as np
+from sklearn.neighbors import NearestNeighbors
+from sksurv.ensemble import RandomSurvivalForest
+from sksurv.metrics import concordance_index_censored, integrated_brier_score
+
+def survival_smote(X_min, T_min, k=5, n_synth=100):
+    """Standard SMOTE, adapted for survival time.
+    NOTE: the paper never specifies synthetic (T, delta) generation --
+    this is an open design choice (see the SMOTE section above)."""
+    nn = NearestNeighbors(n_neighbors=k+1).fit(X_min)
+    _, nbrs = nn.kneighbors(X_min)
+    X_syn, T_syn = [], []
+    for _ in range(n_synth):
+        i = np.random.randint(len(X_min))
+        j = nbrs[i, np.random.randint(1, k+1)]
+        g = np.random.uniform(0, 1)
+        X_syn.append(X_min[i] + g * (X_min[j] - X_min[i]))
+        T_syn.append(T_min[i] + g * (T_min[j] - T_min[i]))
+    return np.array(X_syn), np.abs(np.array(T_syn)), np.ones(n_synth, dtype=bool)
+
+def train_brsf(X, T, delta, minority_mask, target_ratio=1.0):
+    X_min, T_min = X[minority_mask], T[minority_mask]
+    n_needed = max(int(target_ratio * (~minority_mask).sum()) - minority_mask.sum(), 0)
+    X_s, T_s, d_s = survival_smote(X_min, T_min, n_synth=n_needed)
+
+    X_bal = np.vstack([X, X_s])
+    T_bal = np.concatenate([T, T_s])
+    d_bal = np.concatenate([delta, d_s])
+
+    y_bal = np.array([(bool(d), t) for d, t in zip(d_bal, T_bal)],
+                      dtype=[('event', bool), ('time', float)])
+    rsf = RandomSurvivalForest(
+        n_estimators=1000, max_features="sqrt",
+        min_samples_leaf=3,   # <-- this is d0 from the paper
+        n_jobs=-1, random_state=42
+    ).fit(X_bal, y_bal)
+    return rsf
+</code></pre>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-test">
+  <h2>10. Test Yourself + Open Problems</h2>
+
+  <details>
+    <summary>Why does under-sampling the majority hurt survival analysis more than plain classification?</summary>
+    <p>With few total samples, you lose the ability to resolve a fine-grained hazard curve at all — every leaf becomes noisy, not just the minority-class ones. Survival curves need many observed event <em>times</em>, not just class labels.</p>
+  </details>
+  <details>
+    <summary>If d₀ increased from 3 to 10, would the underestimation bias get worse or better?</summary>
+    <p>Worse. Larger d₀ forces bigger "reserved" minority leaves, truncating the usable hazard curve earlier — exactly what the bias demo above shows.</p>
+  </details>
+  <details>
+    <summary>Why evaluate BRSF on the original imbalanced test set, not a balanced one?</summary>
+    <p>Because the real world stays imbalanced. Balancing is a training-time fix for a biased learning signal — testing on synthetic data would just measure how well you memorized your own interpolation.</p>
+  </details>
+  <details>
+    <summary>What happens to L(x_v, ζ) if a split perfectly separates all deaths left, survivors right?</summary>
+    <p>|L| is maximized — the log-rank statistic measures deviation from "no difference between groups," and perfect separation is the most extreme deviation possible.</p>
+  </details>
+
+  <h3>Genuine open problems (good portfolio/research extensions)</h3>
+  <ul>
+    <li><strong>Survival-aware SMOTE</strong> — formally define and benchmark how synthetic (T, δ) should be generated.</li>
+    <li><strong>Beyond one split</strong> — extend the bias proof to realistically deep, correlated trees.</li>
+    <li><strong>Alternative resamplers</strong> — Borderline-SMOTE, ADASYN, SMOTE-ENN untested in this setting.</li>
+    <li><strong>Competing risks</strong> — generalize beyond binary censored/event to multiple rare causes of death.</li>
+    <li><strong>Cost-sensitive splitting</strong> — reweight the log-rank statistic directly instead of resampling, avoiding the synthetic-time problem entirely.</li>
+    <li><strong>Deep survival models</strong> — test whether DeepSurv/DeepHit show the same imbalance bias, and whether the same fix helps.</li>
+  </ul>
+</section>
+
+<footer>
+  Built as a self-study/portfolio explainer of arXiv:1803.09177 (Afrin, Illangovan, Srivatsa &amp; Bukkapatnam, 2018).<br>
+  Demos are simplified simulations for intuition — see notes throughout for where they diverge from the paper's formal proofs.
+</footer>
+
+<script>
+/* ============================================================
+   SHARED STYLE HELPERS
+============================================================ */
+const plotlyTemplate = {
+  paper_bgcolor:'#121828', plot_bgcolor:'#0f1420',
+  font:{color:'#e8ecf4', size:12},
+  xaxis:{gridcolor:'#243050', zerolinecolor:'#243050'},
+  yaxis:{gridcolor:'#243050', zerolinecolor:'#243050'},
+  margin:{t:30,r:20,b:40,l:50}
+};
+function mergeLayout(extra){ return Object.assign({}, plotlyTemplate, extra); }
+
+/* ============================================================
+   1. TIMELINE / NELSON-AALEN DEMO
+============================================================ */
+const timelinePatients = [
+  {t:3,  e:1}, {t:5,  e:0}, {t:5,  e:1}, {t:8,  e:1}, {t:10, e:0},
+  {t:12, e:1}, {t:14, e:0}, {t:15, e:1}, {t:18, e:0}, {t:20, e:1},
+  {t:22, e:0}, {t:24, e:0}
+];
+const tCanvas = document.getElementById('timelineCanvas');
+const tCtx = tCanvas.getContext('2d');
+const T_MAX = 25;
+
+function drawTimeline(sweep){
+  const W = tCanvas.width, H = tCanvas.height;
+  const padL = 50, padR = 30, padT = 20, padB = 40;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  tCtx.clearRect(0,0,W,H);
+
+  const n = timelinePatients.length;
+  const rowH = plotH / n;
+  const xOf = (t) => padL + (t/T_MAX)*plotW;
+
+  // axis
+  tCtx.strokeStyle = '#243050'; tCtx.lineWidth = 1;
+  tCtx.beginPath(); tCtx.moveTo(padL, padT); tCtx.lineTo(padL, H-padB); tCtx.lineTo(W-padR, H-padB); tCtx.stroke();
+  tCtx.fillStyle = '#8993a8'; tCtx.font = '11px sans-serif';
+  for(let m=0;m<=T_MAX;m+=5){ tCtx.fillText(m, xOf(m)-6, H-padB+16); }
+  tCtx.fillText('months', W-padR-40, H-padB+30);
+
+  timelinePatients.forEach((p, i)=>{
+    const y = padT + i*rowH + rowH/2;
+    const reached = p.t <= sweep;
+    const lineColor = reached ? (p.e ? '#ff6b6b' : '#3ea6ff') : '#3a4560';
+    tCtx.strokeStyle = lineColor; tCtx.lineWidth = 3;
+    tCtx.beginPath(); tCtx.moveTo(xOf(0), y); tCtx.lineTo(xOf(p.t), y); tCtx.stroke();
+    tCtx.fillStyle = lineColor;
+    tCtx.beginPath();
+    if(p.e){
+      // X marker for death
+      tCtx.moveTo(xOf(p.t)-5, y-5); tCtx.lineTo(xOf(p.t)+5, y+5);
+      tCtx.moveTo(xOf(p.t)+5, y-5); tCtx.lineTo(xOf(p.t)-5, y+5);
+      tCtx.strokeStyle = lineColor; tCtx.lineWidth=2; tCtx.stroke();
+    } else {
+      tCtx.arc(xOf(p.t), y, 5, 0, 2*Math.PI); tCtx.fill();
+    }
+  });
+
+  // sweep line
+  const sx = xOf(sweep);
+  tCtx.strokeStyle = '#ffcf56'; tCtx.lineWidth = 2;
+  tCtx.setLineDash([5,4]);
+  tCtx.beginPath(); tCtx.moveTo(sx, padT-5); tCtx.lineTo(sx, H-padB); tCtx.stroke();
+  tCtx.setLineDash([]);
+
+  // compute Nelson-Aalen up to sweep
+  const deathTimes = [...new Set(timelinePatients.filter(p=>p.e && p.t<=sweep).map(p=>p.t))].sort((a,b)=>a-b);
+  let H_est = 0;
+  deathTimes.forEach(dt=>{
+    const Y = timelinePatients.filter(p=>p.t >= dt).length;
+    const d = timelinePatients.filter(p=>p.e && p.t===dt).length;
+    H_est += d/Y;
+  });
+  const atRisk = timelinePatients.filter(p=>p.t >= sweep).length;
+  const deathsSoFar = timelinePatients.filter(p=>p.e && p.t<=sweep).length;
+
+  document.getElementById('timelineReadout').textContent =
+`Sweep t = ${sweep.toFixed(1)} months
+Patients still "at risk" (alive & in study): ${atRisk} / ${n}
+Cumulative deaths observed so far: ${deathsSoFar}
+Nelson-Aalen estimate  Ĥ(t) = &#36;{H_est.toFixed(3)}`;
+}
+document.getElementById('timeSlider').addEventListener('input', e=>{
+  drawTimeline(parseFloat(e.target.value));
+});
+drawTimeline(0);
+
+/* ============================================================
+   2. HAZARD / SURVIVAL CURVE DEMO
+============================================================ */
+const hazardTimes = Array.from({length:49}, (_,i)=> i*0.5);
+function H0(t){ return Math.pow(t/10, 1.5); }  // baseline cumulative hazard
+
+function computeHazardTraces(risk){
+  const H = hazardTimes.map(t => H0(t)*Math.exp(risk));
+  const S = H.map(h => Math.exp(-h));
+  return {H, S};
+}
+function renderHazardPlot(risk){
+  const {H, S} = computeHazardTraces(risk);
+  const traces = [
+    {x:hazardTimes, y:H, name:'Cumulative Hazard H(t)', line:{color:'#ff6b6b', width:3}, yaxis:'y'},
+    {x:hazardTimes, y:S, name:'Survival Probability S(t)', line:{color:'#3ea6ff', width:3}, yaxis:'y2'}
+  ];
+  const layout = mergeLayout({
+    xaxis:{title:'Months', gridcolor:'#243050'},
+    yaxis:{title:'H(t)', gridcolor:'#243050', side:'left'},
+    yaxis2:{title:'S(t)', overlaying:'y', side:'right', range:[0,1], gridcolor:'#1a2136'},
+    legend:{orientation:'h', y:-0.25}
+  });
+  Plotly.react('hazardPlot', traces, layout, {displayModeBar:false, responsive:true});
+  const s12 = S[24].toFixed(2); // 12 months
+  document.getElementById('hazardReadout').textContent =
+    `Risk score β·x = ${risk.toFixed(1)}  →  12-month survival probability ≈ ${s12}`;
+}
+document.getElementById('riskSlider').addEventListener('input', e=>{
+  renderHazardPlot(parseFloat(e.target.value));
+});
+renderHazardPlot(0);
+
+/* ============================================================
+   3. CPH vs RSF: PROPORTIONAL vs NON-PROPORTIONAL HAZARDS
+============================================================ */
+function renderPHPlot(mode){
+  let traces, note;
+  if(mode==='prop'){
+    const risks = [-1, 0, 1];
+    const colors = ['#57d38c','#3ea6ff','#ff6b6b'];
+    traces = risks.map((r,i)=>({
+      x:hazardTimes, y:hazardTimes.map(t=>H0(t)*Math.exp(r)),
+      name:`β·x = &#36;{r}`, line:{color:colors[i], width:3}
+    }));
+    note = 'Curves scale by a constant factor and never cross — CPH\'s core assumption holds.';
+  } else {
+    traces = [
+      {x:hazardTimes, y:hazardTimes.map(t=>0.02*t*t), name:'Patient A (accelerating risk)', line:{color:'#ff6b6b', width:3}},
+      {x:hazardTimes, y:hazardTimes.map(t=>1.5*Math.sqrt(t)), name:'Patient B (early risk, then plateaus)', line:{color:'#3ea6ff', width:3}}
+    ];
+    note = 'These curves cross around month 14 — no constant scaling factor relates them. CPH cannot represent this; RSF can.';
+  }
+  Plotly.react('phPlot', traces, mergeLayout({
+    xaxis:{title:'Months'}, yaxis:{title:'Cumulative Hazard H(t)'},
+    legend:{orientation:'h', y:-0.3}
+  }), {displayModeBar:false, responsive:true});
+  document.getElementById('phReadout').textContent = note;
+}
+renderPHPlot('prop');
+
+/* ============================================================
+   4. LOG-RANK SPLIT DEMO
+============================================================ */
+let splitCohort = [];
+function regenSplitData(){
+  splitCohort = [];
+  const n = 70;
+  for(let i=0;i<n;i++){
+    const x = Math.random()*10;                       // biomarker value
+    const rate = 0.03 + 0.05*(x/10);                   // higher biomarker -> higher hazard
+    const trueT = -Math.log(Math.random())/rate;       // exponential survival time
+    const censorT = 5 + Math.random()*25;              // random censoring time
+    const t = Math.min(trueT, censorT);
+    const e = trueT <= censorT ? 1 : 0;
+    splitCohort.push({x, t: Math.min(t,30), e, jitter: Math.random()});
+  }
+  drawSplit(parseFloat(document.getElementById('zetaSlider').value));
+}
+
+function logRankStat(zeta){
+  const left = splitCohort.filter(p=>p.x < zeta);
+  const right = splitCohort.filter(p=>p.x >= zeta);
+  const eventTimes = [...new Set(splitCohort.filter(p=>p.e).map(p=>p.t))].sort((a,b)=>a-b);
+  let numerator = 0, variance = 0;
+  eventTimes.forEach(tj=>{
+    const Y1 = left.filter(p=>p.t >= tj).length;
+    const Y2 = right.filter(p=>p.t >= tj).length;
+    const Yj = Y1+Y2;
+    if(Yj < 2) return;
+    const d1 = left.filter(p=>p.e && p.t===tj).length;
+    const d2 = right.filter(p=>p.e && p.t===tj).length;
+    const dj = d1+d2;
+    const e1 = dj * Y1/Yj;
+    numerator += (d1 - e1);
+    if(Yj>1){
+      variance += (Y1*Y2*dj*(Yj-dj)) / (Yj*Yj*(Yj-1));
+    }
+  });
+  const L = variance>0 ? numerator/Math.sqrt(variance) : 0;
+  return {L, leftN:left.length, rightN:right.length,
+          leftDeaths:left.filter(p=>p.e).length, rightDeaths:right.filter(p=>p.e).length};
+}
+
+const sCanvas = document.getElementById('splitCanvas');
+const sCtx = sCanvas.getContext('2d');
+function drawSplit(zeta){
+  const W=sCanvas.width, H=sCanvas.height;
+  const padL=40, padR=20, padT=20, padB=40;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
+  sCtx.clearRect(0,0,W,H);
+  sCtx.strokeStyle='#243050'; sCtx.lineWidth=1;
+  sCtx.beginPath(); sCtx.moveTo(padL,padT); sCtx.lineTo(padL,H-padB); sCtx.lineTo(W-padR,H-padB); sCtx.stroke();
+
+  const xOf = x => padL + (x/10)*plotW;
+  const yOf = j => padT + j*plotH*0.9 + plotH*0.05;
+
+  splitCohort.forEach(p=>{
+    const px = xOf(p.x), py = yOf(p.jitter);
+    sCtx.beginPath();
+    sCtx.arc(px, py, 4, 0, 2*Math.PI);
+    sCtx.fillStyle = p.e ? '#ff6b6b' : '#3ea6ff';
+    sCtx.fill();
+  });
+
+  const zx = xOf(zeta);
+  sCtx.strokeStyle='#ffcf56'; sCtx.lineWidth=2; sCtx.setLineDash([6,4]);
+  sCtx.beginPath(); sCtx.moveTo(zx,padT-5); sCtx.lineTo(zx,H-padB); sCtx.stroke();
+  sCtx.setLineDash([]);
+
+  sCtx.fillStyle='#8993a8'; sCtx.font='11px sans-serif';
+  for(let m=0;m<=10;m+=2){ sCtx.fillText(m, xOf(m)-4, H-padB+16); }
+  sCtx.fillText('biomarker value', W/2-45, H-padB+30);
+
+  const stats = logRankStat(zeta);
+  document.getElementById('splitReadout').textContent =
+`ζ = ${zeta.toFixed(1)}
+Left node:  n=${stats.leftN}, deaths=${stats.leftDeaths}
+Right node: n=${stats.rightN}, deaths=${stats.rightDeaths}
+Log-rank statistic L(x,ζ) = ${stats.L.toFixed(3)}   (bigger |L| = better split)`;
+}
+document.getElementById('zetaSlider').addEventListener('input', e=>{
+  drawSplit(parseFloat(e.target.value));
+});
+function autoScan(){
+  let best = {zeta:0.3, L:-Infinity};
+  for(let z=0.3; z<=9.7; z+=0.1){
+    const {L} = logRankStat(z);
+    if(Math.abs(L) > Math.abs(best.L)) best = {zeta:z, L};
+  }
+  document.getElementById('zetaSlider').value = best.zeta.toFixed(1);
+  drawSplit(best.zeta);
+}
+regenSplitData();
+
+/* ============================================================
+   5. IMBALANCE BIAS DEMO
+============================================================ */
+function trueHazard(t){ return Math.pow(t/10, 1.2); }
+function estimatedHazard(t, m){
+  const cutoff = 24 * Math.min(1, m/70);
+  const shrink = Math.max(0, 1 - 6/m);
+  const clippedT = Math.min(t, cutoff);
+  return trueHazard(clippedT) * shrink;
+}
+function renderBiasPlot(m){
+  const trueVals = hazardTimes.map(t=>trueHazard(t));
+  const estVals = hazardTimes.map(t=>estimatedHazard(t,m));
+  const traces = [
+    {x:hazardTimes, y:trueVals, name:'True hazard (population)', line:{color:'#8993a8', width:2, dash:'dash'}},
+    {x:hazardTimes, y:estVals, name:`Leaf estimate (m=&#36;{m} minority samples)`, line:{color:'#ffcf56', width:3}}
+  ];
+  Plotly.react('biasPlot', traces, mergeLayout({
+    xaxis:{title:'Months'}, yaxis:{title:'Cumulative Hazard H(t)'},
+    legend:{orientation:'h', y:-0.3}
+  }), {displayModeBar:false, responsive:true});
+
+  const gap = (trueVals[trueVals.length-1] - estVals[estVals.length-1]);
+  document.getElementById('biasReadout').textContent =
+    `With only &#36;{m} minority samples in this leaf, the estimated hazard curve flattens early ` +
+    `and undershoots the true value by about ${gap.toFixed(2)} at 24 months. ` +
+    (m<20 ? 'This is the exact starvation effect Proposition 1 proves.' :
+     'As m grows, the estimate converges toward the true curve.');
+}
+document.getElementById('biasSlider').addEventListener('input', e=>{
+  renderBiasPlot(parseInt(e.target.value));
+});
+renderBiasPlot(60);
+
+/* ============================================================
+   6. SMOTE DEMO
+============================================================ */
+const majorityPts = Array.from({length:22}, ()=>({
+  x: 5 + Math.random()*4 - 2, y: 4 + Math.random()*4 - 2
+}));
+const minorityPts = [
+  {x:1.5,y:1.2},{x:2.1,y:1.8},{x:1.0,y:2.4},{x:2.6,y:2.0},
+  {x:1.8,y:0.8},{x:0.9,y:1.6},{x:2.4,y:1.3}
+];
+let smote_synthetic = [];
+
+function smoteReset(){
+  smote_synthetic = [];
+  document.getElementById('smoteCount').textContent = '0';
+  drawSmote();
+}
+function smoteGenerate(count){
+  const k = parseInt(document.getElementById('smoteK').value);
+  for(let c=0;c<count;c++){
+    const i = Math.floor(Math.random()*minorityPts.length);
+    const pi = minorityPts[i];
+    const dists = minorityPts.map((p,idx)=>({idx, d: idx===i?Infinity:Math.hypot(p.x-pi.x,p.y-pi.y)}));
+    dists.sort((a,b)=>a.d-b.d);
+    const neighborChoices = dists.slice(0, Math.min(k, dists.length-1));
+    const chosen = neighborChoices[Math.floor(Math.random()*neighborChoices.length)];
+    const pj = minorityPts[chosen.idx];
+    const g = Math.random();
+    smote_synthetic.push({x: pi.x + g*(pj.x-pi.x), y: pi.y + g*(pj.y-pi.y)});
+  }
+  document.getElementById('smoteCount').textContent = smote_synthetic.length;
+  drawSmote();
+}
+
+const smCanvas = document.getElementById('smoteCanvas');
+const smCtx = smCanvas.getContext('2d');
+function toCanvasCoords(x,y){
+  const W=smCanvas.width, H=smCanvas.height, pad=30;
+  return [pad + (x/8)*(W-2*pad), H-pad - (y/8)*(H-2*pad)];
+}
+function drawSmote(){
+  const W=smCanvas.width, H=smCanvas.height;
+  smCtx.clearRect(0,0,W,H);
+  smCtx.strokeStyle='#243050';
+  smCtx.strokeRect(20,20,W-40,H-40);
+
+  majorityPts.forEach(p=>{
+    const [cx,cy] = toCanvasCoords(p.x,p.y);
+    smCtx.fillStyle='#3ea6ff';
+    smCtx.beginPath(); smCtx.arc(cx,cy,6,0,2*Math.PI); smCtx.fill();
+  });
+  minorityPts.forEach(p=>{
+    const [cx,cy] = toCanvasCoords(p.x,p.y);
+    smCtx.fillStyle='#ff6b6b';
+    smCtx.beginPath(); smCtx.arc(cx,cy,7,0,2*Math.PI); smCtx.fill();
+  });
+  smote_synthetic.forEach(p=>{
+    const [cx,cy] = toCanvasCoords(p.x,p.y);
+    smCtx.fillStyle='#ffcf56';
+    smCtx.beginPath(); smCtx.arc(cx,cy,5,0,2*Math.PI); smCtx.fill();
+    smCtx.strokeStyle='#8a7020'; smCtx.lineWidth=1; smCtx.stroke();
+  });
+}
+drawSmote();
+
+/* ============================================================
+   7. RESULTS CHARTS
+============================================================ */
+const datasets = ['veteran','mgus','COST','lung','pbc','STEMI'];
+const cIndexData = {
+  CPH:  [59,71,69,61,77,80],
+  BCPH: [58,89,76,70,79,79],
+  RSF:  [61,69,64,59,78,82],
+  BRSF: [77,88,85,76,83,82]
+};
+const ibsData = {
+  CPH:  [0.15,0.13,0.17,0.18,0.14,0.18],
+  BCPH: [0.14,0.06,0.15,0.13,0.12,0.12],
+  RSF:  [0.15,0.14,0.18,0.18,0.13,0.17],
+  BRSF: [0.09,0.04,0.06,0.08,0.07,0.08]
+};
+const methodColors = {CPH:'#8993a8', BCPH:'#57d38c', RSF:'#3ea6ff', BRSF:'#ff6b6b'};
+
+function buildBarTraces(dataObj){
+  return Object.keys(dataObj).map(method=>({
+    x: datasets, y: dataObj[method], name: method, type:'bar',
+    marker:{color: methodColors[method]}
+  }));
+}
+Plotly.newPlot('cIndexChart', buildBarTraces(cIndexData), mergeLayout({
+  barmode:'group', yaxis:{title:'C-index (%)'}, legend:{orientation:'h', y:-0.3}
+}), {displayModeBar:false, responsive:true});
+
+Plotly.newPlot('ibsChart', buildBarTraces(ibsData), mergeLayout({
+  barmode:'group', yaxis:{title:'Integrated Brier Score'}, legend:{orientation:'h', y:-0.3}
+}), {displayModeBar:false, responsive:true});
+
+/* ============================================================
+   8. FEATURE IMPORTANCE
+============================================================ */
+const features = [
+  {name:'DischTrop (discharge troponin)', rank:1},
+  {name:'MCRS-MS (Mayo Clinic Risk Score - Mortality)', rank:2},
+  {name:'CronDC (composite cardiac risk)', rank:3},
+  {name:'GRACEProb (GRACE risk score)', rank:4},
+  {name:'MCRS-MACE (adverse cardiac events score)', rank:5},
+  {name:'CHFin1yr (CHF within 1 year)', rank:6},
+  {name:'ACSin1yr (ACS within 1 year)', rank:7}
+];
+const importanceScore = features.map(f => 8 - f.rank); // simple inverse-rank score for visualization
+Plotly.newPlot('featPlot', [{
+  x: importanceScore.slice().reverse(),
+  y: features.map(f=>f.name).slice().reverse(),
+  type:'bar', orientation:'h',
+  marker:{color:'#ffcf56'}
+}], mergeLayout({
+  xaxis:{title:'Relative Importance (rank-based)'}, margin:{t:20,r:20,b:40,l:260}
+}), {displayModeBar:false, responsive:true});
+</script>
+
+</body>
+</html>

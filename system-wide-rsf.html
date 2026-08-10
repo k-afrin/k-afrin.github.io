@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MBRSF — Manufacturing System-wide Balanced Random Survival Forest</title>
+<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+:root{
+  --bg:#0a0e1a; --panel:#121828; --panel2:#0f1420;
+  --accent:#3ea6ff; --accent2:#ffcf56; --danger:#ff6b6b; --green:#57d38c; --pink:#e879c7;
+  --text:#e8ecf4; --muted:#8993a8; --border:#243050;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.65;}
+nav{position:sticky;top:0;background:rgba(10,14,26,0.95);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:16px;
+  flex-wrap:wrap;z-index:100;}
+nav a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap;}
+nav a:hover{color:var(--accent);}
+.hero{text-align:center;padding:70px 20px 40px;}
+.hero h1{font-size:2.1em;margin-bottom:8px;background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+.hero p{color:var(--muted);max-width:700px;margin:10px auto;}
+.hero .badge{display:inline-block;background:var(--panel);border:1px solid var(--border);
+  padding:4px 12px;border-radius:20px;font-size:12px;color:var(--accent2);margin-top:10px;margin-right:6px;}
+section{max-width:920px;margin:0 auto;padding:55px 20px;border-top:1px solid var(--border);}
+h2{font-size:1.5em;color:var(--accent2);margin-bottom:4px;}
+h2 .tag{font-size:0.5em;color:var(--muted);font-weight:400;display:block;margin-top:6px;text-transform:uppercase;letter-spacing:1px;}
+h3{color:var(--accent);font-size:1.05em;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0;}
+.controls{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:14px 0;}
+.controls label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;}
+input[type=range]{width:220px;accent-color:var(--accent);}
+button{background:var(--accent);color:#031018;border:none;padding:9px 18px;border-radius:8px;
+  font-weight:700;cursor:pointer;font-size:13px;}
+button.ghost{background:transparent;border:1px solid var(--border);color:var(--muted);}
+button:hover{opacity:0.85;}
+.readout{font-family:"SF Mono",Consolas,Monaco,monospace;font-size:13.5px;background:var(--panel2);
+  border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-top:12px;color:var(--accent2);
+  white-space:pre-wrap;}
+canvas{background:var(--panel2);border-radius:8px;max-width:100%;display:block;margin:0 auto;}
+.plotdiv{width:100%;height:340px;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+th,td{border:1px solid var(--border);padding:8px 10px;text-align:center;}
+th{background:var(--panel2);color:var(--accent2);}
+.legend-row{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:8px;}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;}
+details{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin:10px 0;}
+summary{cursor:pointer;font-weight:700;color:var(--accent);}
+details p{margin-top:10px;color:var(--muted);}
+.note{font-size:13px;color:var(--muted);border-left:3px solid var(--accent2);padding-left:14px;margin:16px 0;}
+.sim{font-size:12px;color:#6f7994;border-left:3px solid #3a4560;padding-left:14px;margin:12px 0;font-style:italic;}
+footer{text-align:center;padding:40px 20px;color:var(--muted);font-size:13px;}
+pre{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:16px;
+  overflow-x:auto;font-size:12.5px;line-height:1.5;color:#c9d4e8;}
+code{color:var(--accent2);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+ul{color:var(--muted);}
+ul li{margin-bottom:6px;}
+@media(max-width:700px){.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#intro">Overview</a>
+  <a href="#sec-problem">The Problem</a>
+  <a href="#sec-state">System State</a>
+  <a href="#sec-core">RSF Core</a>
+  <a href="#sec-imbalance">SMOTE</a>
+  <a href="#sec-theory">Theory</a>
+  <a href="#sec-results">Results</a>
+  <a href="#sec-hazardogram">Hazardogram</a>
+  <a href="#sec-graph">Influence Graph</a>
+  <a href="#sec-code">Code</a>
+  <a href="#sec-test">Test Yourself</a>
+</nav>
+
+<header class="hero" id="intro">
+  <h1>Manufacturing System-wide Balanced Random Survival Forest</h1>
+  <p>An interactive walkthrough of Bukkapatnam, Afrin, Dave &amp; Kumara (2019),
+  <em>CIRP Annals — Manufacturing Technology</em> — taking Balanced Random Survival Forests
+  out of the hospital and onto the factory floor, to predict machine breakdowns up to a full
+  shift in advance.</p>
+  <span class="badge">CIRP Annals 2019</span>
+  <span class="badge">Builds on arXiv:1803.09177 (BRSF)</span>
+</header>
+
+<!-- ============================================================ -->
+<section id="sec-problem">
+  <h2>1. The Problem <span class="tag">Why Factories Need This</span></h2>
+  <p>Plant floor systems generate huge volumes of equipment status logs ("up"/"down"/"wait").
+  Machine breakdowns cause substantial throughput loss in industries like automotive
+  manufacturing. The core question this paper asks:</p>
+  <div class="panel">
+    <p style="font-size:1.05em;color:var(--accent2);text-align:center;margin:0;">
+    "Given everything happening across the whole system right now, how much longer until
+    <em>this</em> machine breaks down?"</p>
+  </div>
+  <p>This is a survival analysis question — but with a critical new wrinkle versus the
+  original BRSF paper: <strong>a machine's breakdown risk depends not just on its own history,
+  but on every other machine's status</strong>, because of shared material flow and cascading
+  faults across the line.</p>
+  <table>
+    <tr><th></th><th>Original BRSF (2018)</th><th>MBRSF (2019, this paper)</th></tr>
+    <tr><td>Domain</td><td>Cardiac patient mortality</td><td>Machine breakdown prognosis</td></tr>
+    <tr><td>Unit of prediction</td><td>Single patient</td><td>Single machine, within a system</td></tr>
+    <tr><td>Features</td><td>150 biomarkers</td><td>System-wide state: status + time-since-restoration of every machine</td></tr>
+    <tr><td>Core algorithm</td><td>RSF + SMOTE</td><td>Same RSF + SMOTE core</td></tr>
+    <tr><td>New contribution</td><td>Bias proof + balancing fix</td><td>System-wide state construction, hazardogram, cross-machine influence graph</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-state">
+  <h2>2. Building the System-wide State Vector <span class="tag">The Near-Markovian Trick</span></h2>
+  <p>Key modeling assumption: once a machine is restored from a fault, its <em>next</em>
+  breakdown depends mostly on (a) how long it's been running since restoration, and (b) the
+  fault status of other machines right now — not on the machine's entire deep history. This
+  near-Markovian assumption is what makes the problem tractable.</p>
+  <p>Drag the time cursor across three machines' up/down logs and watch the state vector get
+  extracted live at that instant.</p>
+  <div class="panel">
+    <canvas id="stateCanvas" width="780" height="260"></canvas>
+    <div class="controls">
+      <label>Current time t (seconds ×1000)
+        <input type="range" id="stateSlider" min="0" max="100" step="1" value="40">
+      </label>
+      <button class="ghost" onclick="regenStateData()">🎲 New random fault pattern</button>
+    </div>
+    <div class="readout" id="stateReadout">—</div>
+  </div>
+  <div class="note">
+  State vector at time t: $x_i = [\text{status}_1,\dots,\text{status}_{20},\;
+  \Delta t_1,\dots,\Delta t_{20}]$ where $\Delta t_m$ = time since machine m's last
+  restoration. Observed time $T_i = \min(T_i', T_C)$, capped at whichever decision horizon
+  $T_C$ you're prognosing over.
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-core">
+  <h2>3. The RSF Core, Recapped <span class="tag">Same Engine, New Fuel</span></h2>
+  <p>MBRSF reuses the exact tree-growing machinery from the original BRSF paper. Only the
+  <em>input</em> (system-wide state vectors instead of biomarkers) and the <em>output horizon</em>
+  (breakdowns instead of mortality) change.</p>
+  <div class="grid2">
+    <div class="panel">
+      <h3>Split criterion (log-rank)</h3>
+      <p style="font-size:13px;">At every node, split on predictor $x^r$ and threshold
+      $\gamma^r$ to maximize how differently the two daughter nodes' hazard functions
+      look — identical to the original BRSF.</p>
+    </div>
+    <div class="panel">
+      <h3>Leaf hazard estimate</h3>
+      $$ \hat H_h(t|x) = \sum_{t_{l,h}\le t} \frac{d_{l,h}}{Y_{l,h}} $$
+      <p style="font-size:13px;">Nelson-Aalen estimator — same formula, now estimating
+      "breakdown risk" instead of "mortality risk."</p>
+    </div>
+  </div>
+  <div class="note">Stopping rule unchanged: every leaf must retain at least $d_0$ unique
+  breakdown events. That's exactly the rule whose interaction with class imbalance the original
+  BRSF paper proved biases hazard estimates — which is why balancing matters here too.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-imbalance">
+  <h2>4. Imbalance in Factory Data <span class="tag">Over 90% Innocuous</span></h2>
+  <p>Over 90% of fault events are short, harmless blips. The catastrophic breakdowns that
+  matter for prognosis are rare — an even more extreme imbalance than the mortality dataset in
+  the original paper. SMOTE is applied identically: interpolate synthetic minority
+  (catastrophic breakdown) state vectors between real ones and their nearest minority
+  neighbors.</p>
+  <div class="panel">
+    <canvas id="smoteCanvas" width="480" height="360"></canvas>
+    <div class="controls">
+      <label>k nearest neighbors
+        <input type="range" id="smoteK" min="1" max="5" step="1" value="3">
+      </label>
+      <button onclick="smoteGenerate(1)">+1 synthetic breakdown</button>
+      <button onclick="smoteGenerate(8)">+8 synthetic breakdowns</button>
+      <button class="ghost" onclick="smoteReset()">Reset</button>
+    </div>
+    <div class="readout">Synthetic minority episodes created: <span id="smoteCount">0</span></div>
+    <div class="legend-row">
+      <span><span class="dot" style="background:#3ea6ff"></span>Majority (short, innocuous faults)</span>
+      <span><span class="dot" style="background:#ff6b6b"></span>Minority (real catastrophic breakdowns)</span>
+      <span><span class="dot" style="background:#ffcf56"></span>Synthetic (SMOTE-generated)</span>
+    </div>
+  </div>
+  <div class="note">$$ x_s = x_i + \gamma\,(x_j - x_i), \qquad \gamma \sim \text{Uniform}(0,1) $$</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-theory">
+  <h2>5. The Theoretical Guarantee <span class="tag">Same Proof, Restated</span></h2>
+  <p>The paper carries over the original BRSF proposition essentially unchanged, just
+  relabeled for breakdown episodes:</p>
+  <div class="panel">
+  $$ \rho'(t) = \rho(t)\,\frac{m_1+m_2}{m_1+m_2'}\cdot
+  \frac{(m_2'-d_0)e^{-2\hat H_2'(t)} + d_0 e^{-2\hat H_1(t)} + m_1(1-e^{-\hat H_1(t)})^2}
+  {(m_2-d_0)e^{-2\hat H_2(t)} + d_0 e^{-2\hat H_1(t)} + m_1(1-e^{-\hat H_1(t)})^2} $$
+  <p style="font-size:13px;color:var(--muted);margin-top:10px;">Adding $(m_2'-m_2)$ synthetic
+  breakdown samples provably reduces the Brier score $\rho(t)$ — balancing helps
+  <em>before you even run the experiment</em>, not just empirically after the fact.</p>
+  </div>
+  <div class="note">This is the same corollary from the original BRSF paper — the contribution
+  here is showing the proof transfers cleanly to a completely different domain and feature
+  space, not deriving a new theorem.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-results">
+  <h2>6. Case Study Results <span class="tag">20-Machine Automotive Line, 2 Years of Data</span></h2>
+  <p>Trained on Year 1 plant-floor data, tested on Year 2. Compared against Cox PH, Kaplan-Meier,
+  plain RSF, and ARIMA.</p>
+
+  <div class="panel">
+    <h3>Headline improvements (as reported in the paper)</h3>
+    <table>
+      <tr><th>Comparison</th><th>Metric</th><th>MBRSF improvement</th></tr>
+      <tr><td>vs. CPH</td><td>IBS</td><td>~90%</td></tr>
+      <tr><td>vs. Kaplan-Meier</td><td>IBS</td><td>~95%</td></tr>
+      <tr><td>vs. plain RSF</td><td>IBS</td><td>~89% (avg across 20 machines)</td></tr>
+      <tr><td>vs. plain RSF</td><td>C-index</td><td>~42% (avg across 20 machines)</td></tr>
+      <tr><td>vs. ARIMA</td><td>Mean squared error</td><td>~86% lower</td></tr>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h3>IBS &amp; C-index across all 20 machines</h3>
+    <div id="machineChart" class="plotdiv"></div>
+    <div class="sim">Simulated to match the paper's described pattern: RSF fluctuates widely
+    machine-to-machine, while MBRSF stays flat and strong throughout. Exact per-machine values
+    were not digitized from the original figure — only the qualitative pattern and averaged
+    improvement percentages are drawn from the paper.</div>
+  </div>
+
+  <div class="panel">
+    <h3>Graceful degradation with decision horizon</h3>
+    <div class="controls">
+      <label>Decision horizon T_C (seconds)
+        <input type="range" id="horizonSlider" min="300" max="28000" step="100" value="1800">
+      </label>
+    </div>
+    <div id="horizonChart" class="plotdiv"></div>
+    <div class="readout" id="horizonReadout">—</div>
+    <div class="sim">Simulated using the paper's reported anchor values: substantially higher
+    IBS for the next-best method at short horizons, dropping to a lower IBS for MBRSF even at a
+    full shift (~28,000s) — i.e. a full-shift MBRSF prediction is still more accurate than the
+    next-best method's 30-minute prediction. Curve shape between anchors is interpolated for
+    illustration.</div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-hazardogram">
+  <h2>7. The Hazardogram <span class="tag">This Paper's Signature Visualization</span></h2>
+  <p>A genuinely novel contribution: instead of one hazard curve, plot survival probability
+  $1-\hat H(t)$ as a color map across <em>both</em> episode time (x-axis) and prediction
+  horizon (y-axis). Blue = safe, red = breakdown imminent. In the paper's real results, actual
+  breakdowns consistently land right where the color turns from blue to red.</p>
+  <div class="panel">
+    <div id="hazardogramPlot" class="plotdiv" style="height:380px;"></div>
+    <div class="controls">
+      <button class="ghost" onclick="regenHazardogram()">🎲 Regenerate episode pattern</button>
+    </div>
+    <div class="readout" id="hazardogramReadout">—</div>
+  </div>
+  <div class="sim">Simulated heatmap illustrating the concept and the qualitative finding
+  described in the paper — not literal digitized values from the original figure.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-graph">
+  <h2>8. Cross-Machine Influence Graph <span class="tag">Variable Importance, System-wide</span></h2>
+  <p>Variable importance is measured by how much prediction error <em>increases</em> when a
+  variable is randomly permuted: $V_r = e(\tilde x_r) - e(x_r)$. Applied across all 20
+  machines, this produces a directed graph of which machines' state variables influence which
+  other machines' breakdown risk.</p>
+  <div class="panel">
+    <div id="graphPlot" class="plotdiv" style="height:440px;"></div>
+    <div class="legend-row">
+      <span><span class="dot" style="background:#57d38c"></span>Time-since-last-breakdown influence</span>
+      <span><span class="dot" style="background:#e879c7"></span>Machine-status influence</span>
+    </div>
+  </div>
+  <div class="note">Reported finding: the influence structure is <strong>sparse</strong> — a
+  small subset of variables carries almost all predictive power — and <strong>over 75% of
+  edges are "time-since-last-breakdown" edges</strong>, meaning how long ago a machine was
+  restored matters more, system-wide, than its instantaneous up/down status.</div>
+  <div class="sim">Graph topology below is illustrative (random layout honoring the reported
+  ~75% statistic) — the paper's exact inferred graph structure was not published as raw data.</div>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-code">
+  <h2>9. Implement It Yourself <span class="tag">Adapting BRSF to Multi-Machine Systems</span></h2>
+<pre><code>import numpy as np
+from sksurv.ensemble import RandomSurvivalForest
+from sklearn.neighbors import NearestNeighbors
+
+def build_system_state(machine_logs, t, n_machines=20):
+    """
+    Near-Markovian state vector at time t, across the whole system.
+    machine_logs[m] = sorted list of (timestamp, status) tuples for machine m,
+    status: 1 = running, 0 = down/faulted.
+    """
+    status_vec, dt_vec = [], []
+    for m in range(n_machines):
+        log = machine_logs[m]
+        times = [r[0] for r in log]
+        idx = np.searchsorted(times, t, side="right") - 1
+        status = log[idx][1] if idx >= 0 else 1
+        status_vec.append(status)
+
+        # last restoration = most recent transition 0 -> 1 at or before t
+        last_restore = 0.0
+        for k in range(idx, 0, -1):
+            if log[k][1] == 1 and log[k-1][1] == 0:
+                last_restore = log[k][0]
+                break
+        dt_vec.append(max(t - last_restore, 0.0))
+    return np.array(status_vec + dt_vec)
+
+
+def survival_smote(X_min, T_min, k=5, n_synth=100):
+    """SMOTE adapted for survival time (same open design choice as in BRSF)."""
+    nn = NearestNeighbors(n_neighbors=k+1).fit(X_min)
+    _, nbrs = nn.kneighbors(X_min)
+    X_syn, T_syn = [], []
+    for _ in range(n_synth):
+        i = np.random.randint(len(X_min))
+        j = nbrs[i, np.random.randint(1, k+1)]
+        g = np.random.uniform(0, 1)
+        X_syn.append(X_min[i] + g * (X_min[j] - X_min[i]))
+        T_syn.append(T_min[i] + g * (T_min[j] - T_min[i]))
+    return np.array(X_syn), np.abs(np.array(T_syn)), np.ones(n_synth, dtype=bool)
+
+
+def train_mbrsf(X, T, delta, minority_mask, decision_horizon, target_ratio=1.0):
+    """Train MBRSF for a given decision horizon T_C (censor at T_C first)."""
+    T_capped = np.minimum(T, decision_horizon)
+    delta_capped = delta & (T <= decision_horizon)
+
+    X_min, T_min = X[minority_mask], T_capped[minority_mask]
+    n_needed = max(int(target_ratio * (~minority_mask).sum()) - minority_mask.sum(), 0)
+    X_s, T_s, d_s = survival_smote(X_min, T_min, n_synth=n_needed)
+
+    X_bal = np.vstack([X, X_s])
+    T_bal = np.concatenate([T_capped, T_s])
+    d_bal = np.concatenate([delta_capped, d_s])
+
+    y_bal = np.array([(bool(d), t) for d, t in zip(d_bal, T_bal)],
+                      dtype=[('event', bool), ('time', float)])
+    rsf = RandomSurvivalForest(
+        n_estimators=1000, max_features="sqrt",
+        min_samples_leaf=3, n_jobs=-1, random_state=42
+    ).fit(X_bal, y_bal)
+    return rsf
+
+
+def hazardogram(rsf, X_episode, horizons):
+    """Stack survival curves across multiple decision horizons for one episode."""
+    grid = []
+    for T_C in horizons:
+        surv_fn = rsf.predict_survival_function(X_episode.reshape(1, -1))[0]
+        times = np.linspace(0, T_C, 50)
+        grid.append([surv_fn(t) if t <= surv_fn.x[-1] else surv_fn.y[-1] for t in times])
+    return np.array(grid)
+</code></pre>
+</section>
+
+<!-- ============================================================ -->
+<section id="sec-test">
+  <h2>10. Test Yourself + Open Problems</h2>
+
+  <details>
+    <summary>Why is the near-Markovian assumption necessary here, when the original BRSF paper didn't need one?</summary>
+    <p>A patient's full history is bounded (one lifetime, one record). A plant floor runs
+    continuously and generates unbounded history per machine. Without the Markovian
+    simplification (only current status + time-since-restoration matters), the state space
+    would grow without bound and RSF couldn't be trained tractably.</p>
+  </details>
+  <details>
+    <summary>Why does the paper report C-index and IBS separately per machine instead of one pooled number?</summary>
+    <p>Different machines have very different roles (bottleneck vs. buffer stations) and very
+    different breakdown rates — pooling would hide machines where the model quietly fails.
+    Reporting per-machine also directly supports the "MBRSF is uniformly good, RSF is
+    inconsistent" claim.</p>
+  </details>
+  <details>
+    <summary>In the hazardogram, why do breakdowns cluster at the blue→red transition rather than deep in the red region?</summary>
+    <p>Once the model is fully confident (deep red), the breakdown has essentially already
+    become inevitable/imminent — real breakdowns happen at the transition because that's where
+    the hazard is crossing the threshold from "unlikely soon" to "likely soon," which is
+    exactly the moment of interest for early warning.</p>
+  </details>
+  <details>
+    <summary>Why does "time since last restoration" dominate the influence graph over instantaneous status?</summary>
+    <p>Instantaneous status is binary and noisy — a status flip can be a 2-second blip.
+    Time-since-restoration integrates a machine's operating stress continuously, making it a
+    smoother, more predictive signal of accumulated wear.</p>
+  </details>
+
+  <h3>Genuine open problems (good portfolio/research extensions)</h3>
+  <ul>
+    <li><strong>Learn the Markov order automatically</strong> — instead of assuming state depends only on current status + time-since-restoration, test whether adding a short window of recent history improves accuracy enough to justify the extra complexity.</li>
+    <li><strong>Formalize survival-SMOTE for multivariate system states</strong> — interpolating 40-dimensional mixed binary/continuous vectors raises validity questions beyond the single-patient case.</li>
+    <li><strong>Causal, not just correlational, influence graphs</strong> — permutation importance shows association; combine with intervention-style analysis (e.g. do-calculus, Granger causality) to test true cross-machine causal influence.</li>
+    <li><strong>Online/streaming MBRSF</strong> — the paper trains on a full year and tests on the next; a streaming update rule would make this deployable in real time.</li>
+    <li><strong>Uncertainty-aware hazardograms</strong> — add confidence bands to the heatmap so operators know when a "red" prediction is statistically shaky vs. solid.</li>
+  </ul>
+</section>
+
+<footer>
+  Built as a self-study/portfolio explainer of Bukkapatnam, Afrin, Dave &amp; Kumara (2019),
+  CIRP Annals — Manufacturing Technology, extending arXiv:1803.09177 (BRSF).<br>
+  Panels marked "simulated" are illustrative reconstructions calibrated to the paper's reported
+  trends and percentages, not digitized original data.
+</footer>
+
+<script>
+/* ============================================================
+   SHARED STYLE
+============================================================ */
+const plotlyTemplate = {
+  paper_bgcolor:'#121828', plot_bgcolor:'#0f1420',
+  font:{color:'#e8ecf4', size:12},
+  xaxis:{gridcolor:'#243050', zerolinecolor:'#243050'},
+  yaxis:{gridcolor:'#243050', zerolinecolor:'#243050'},
+  margin:{t:30,r:20,b:40,l:50}
+};
+function mergeLayout(extra){ return Object.assign({}, plotlyTemplate, extra); }
+
+/* ============================================================
+   2. SYSTEM STATE VECTOR DEMO
+============================================================ */
+let machineLogs = [];
+const T_TOTAL = 100; // x1000 seconds
+
+function genMachineLog(){
+  // sequence of (time, status) transitions over [0, T_TOTAL]
+  let log = [[0,1]];
+  let t = 0;
+  while(t < T_TOTAL){
+    t += 5 + Math.random()*15;          // running duration
+    if(t >= T_TOTAL) break;
+    log.push([t, 0]);                    // goes down
+    t += 1 + Math.random()*4;            // down duration
+    if(t >= T_TOTAL) break;
+    log.push([t, 1]);                    // restored
+  }
+  return log;
+}
+function regenStateData(){
+  machineLogs = [genMachineLog(), genMachineLog(), genMachineLog()];
+  drawState(parseFloat(document.getElementById('stateSlider').value));
+}
+
+const stCanvas = document.getElementById('stateCanvas');
+const stCtx = stCanvas.getContext('2d');
+function statusAt(log, t){
+  let idx = -1;
+  for(let i=0;i<log.length;i++){ if(log[i][0] <= t) idx = i; else break; }
+  return idx >= 0 ? log[idx][1] : 1;
+}
+function lastRestorationBefore(log, t){
+  let last = 0;
+  for(let i=1;i<log.length;i++){
+    if(log[i][0] > t) break;
+    if(log[i][1]===1 && log[i-1][1]===0) last = log[i][0];
+  }
+  return last;
+}
+function drawState(t){
+  const W=stCanvas.width, H=stCanvas.height;
+  const padL=90, padR=20, padT=20, padB=40;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
+  stCtx.clearRect(0,0,W,H);
+  const xOf = x => padL + (x/T_TOTAL)*plotW;
+  const rowH = plotH/3;
+  const colors = ['#3ea6ff','#57d38c','#e879c7'];
+
+  stCtx.strokeStyle='#243050';
+  stCtx.beginPath(); stCtx.moveTo(padL,padT); stCtx.lineTo(padL,H-padB); stCtx.lineTo(W-padR,H-padB); stCtx.stroke();
+  stCtx.fillStyle='#8993a8'; stCtx.font='11px sans-serif';
+  for(let m=0;m<=T_TOTAL;m+=20){ stCtx.fillText(m, xOf(m)-8, H-padB+16); }
+
+  let readoutLines = [`t = &#36;{t.toFixed(0)} (×1000 sec)\n`];
+  machineLogs.forEach((log,i)=>{
+    const y0 = padT + i*rowH + rowH*0.2;
+    const barH = rowH*0.6;
+    stCtx.fillStyle = '#8993a8'; stCtx.font='12px sans-serif';
+    stCtx.fillText(`Machine &#36;{i+1}`, 5, y0+barH/2+4);
+    for(let s=0;s<log.length;s++){
+      const segStart = log[s][0];
+      const segEnd = s+1<log.length ? log[s+1][0] : T_TOTAL;
+      const isUp = log[s][1]===1;
+      stCtx.fillStyle = isUp ? colors[i] : '#ff6b6b';
+      stCtx.globalAlpha = isUp ? 0.35 : 0.85;
+      stCtx.fillRect(xOf(segStart), y0, xOf(segEnd)-xOf(segStart), barH);
+    }
+    stCtx.globalAlpha = 1;
+    const status = statusAt(log, t);
+    const restore = lastRestorationBefore(log, t);
+    const dt = Math.max(t-restore,0);
+    readoutLines.push(`Machine ${i+1}: status=${status?'UP':'DOWN'}, Δt since restore=&#36;{dt.toFixed(1)}k sec`);
+  });
+
+  const cx = xOf(t);
+  stCtx.strokeStyle='#ffcf56'; stCtx.lineWidth=2; stCtx.setLineDash([6,4]);
+  stCtx.beginPath(); stCtx.moveTo(cx,padT-5); stCtx.lineTo(cx,H-padB); stCtx.stroke();
+  stCtx.setLineDash([]);
+
+  document.getElementById('stateReadout').textContent = readoutLines.join('\n');
+}
+document.getElementById('stateSlider').addEventListener('input', e=>{
+  drawState(parseFloat(e.target.value));
+});
+regenStateData();
+
+/* ============================================================
+   4. SMOTE DEMO (same mechanism, factory framing)
+============================================================ */
+const majorityPts = Array.from({length:24}, ()=>({
+  x: 5 + Math.random()*4 - 2, y: 4 + Math.random()*4 - 2
+}));
+const minorityPts = [
+  {x:1.5,y:1.2},{x:2.1,y:1.8},{x:1.0,y:2.4},{x:2.6,y:2.0},
+  {x:1.8,y:0.8},{x:0.9,y:1.6},{x:2.4,y:1.3}
+];
+let smote_synthetic = [];
+
+function smoteReset(){
+  smote_synthetic = [];
+  document.getElementById('smoteCount').textContent = '0';
+  drawSmote();
+}
+function smoteGenerate(count){
+  const k = parseInt(document.getElementById('smoteK').value);
+  for(let c=0;c<count;c++){
+    const i = Math.floor(Math.random()*minorityPts.length);
+    const pi = minorityPts[i];
+    const dists = minorityPts.map((p,idx)=>({idx, d: idx===i?Infinity:Math.hypot(p.x-pi.x,p.y-pi.y)}));
+    dists.sort((a,b)=>a.d-b.d);
+    const neighborChoices = dists.slice(0, Math.min(k, dists.length-1));
+    const chosen = neighborChoices[Math.floor(Math.random()*neighborChoices.length)];
+    const pj = minorityPts[chosen.idx];
+    const g = Math.random();
+    smote_synthetic.push({x: pi.x + g*(pj.x-pi.x), y: pi.y + g*(pj.y-pi.y)});
+  }
+  document.getElementById('smoteCount').textContent = smote_synthetic.length;
+  drawSmote();
+}
+const smCanvas = document.getElementById('smoteCanvas');
+const smCtx = smCanvas.getContext('2d');
+function toCanvasCoords(x,y){
+  const W=smCanvas.width, H=smCanvas.height, pad=30;
+  return [pad + (x/8)*(W-2*pad), H-pad - (y/8)*(H-2*pad)];
+}
+function drawSmote(){
+  const W=smCanvas.width, H=smCanvas.height;
+  smCtx.clearRect(0,0,W,H);
+  smCtx.strokeStyle='#243050';
+  smCtx.strokeRect(20,20,W-40,H-40);
+  majorityPts.forEach(p=>{
+    const [cx,cy]=toCanvasCoords(p.x,p.y);
+    smCtx.fillStyle='#3ea6ff'; smCtx.beginPath(); smCtx.arc(cx,cy,6,0,2*Math.PI); smCtx.fill();
+  });
+  minorityPts.forEach(p=>{
+    const [cx,cy]=toCanvasCoords(p.x,p.y);
+    smCtx.fillStyle='#ff6b6b'; smCtx.beginPath(); smCtx.arc(cx,cy,7,0,2*Math.PI); smCtx.fill();
+  });
+  smote_synthetic.forEach(p=>{
+    const [cx,cy]=toCanvasCoords(p.x,p.y);
+    smCtx.fillStyle='#ffcf56'; smCtx.beginPath(); smCtx.arc(cx,cy,5,0,2*Math.PI); smCtx.fill();
+    smCtx.strokeStyle='#8a7020'; smCtx.lineWidth=1; smCtx.stroke();
+  });
+}
+drawSmote();
+
+/* ============================================================
+   6. MACHINE-WISE IBS/C-INDEX BAR CHART (simulated)
+============================================================ */
+const machineIdx = Array.from({length:20}, (_,i)=>`M&#36;{i+1}`);
+function genRSFSeries(base, noiseAmp, spikeIdxs, spikeAmp){
+  return machineIdx.map((_,i)=>{
+    let v = base + (Math.random()-0.5)*noiseAmp;
+    if(spikeIdxs.includes(i)) v += spikeAmp*(Math.random()>0.5?1:-1);
+    return v;
+  });
+}
+const rsf_ibs = genRSFSeries(0.28, 0.10, [2,8,18], 0.15).map(v=>Math.max(0.05,v));
+const mbrsf_ibs = machineIdx.map(()=> 0.05 + Math.random()*0.03);
+const rsf_cidx = genRSFSeries(62, 8, [12,13,14,15,16,17], -12).map(v=>Math.max(30,Math.min(95,v)));
+const mbrsf_cidx = machineIdx.map(()=> 84 + Math.random()*6);
+
+Plotly.newPlot('machineChart', [
+  {x:machineIdx, y:rsf_ibs, name:'RSF (IBS)', type:'bar', marker:{color:'#3ea6ff'}, yaxis:'y'},
+  {x:machineIdx, y:mbrsf_ibs, name:'MBRSF (IBS)', type:'bar', marker:{color:'#ff6b6b'}, yaxis:'y'},
+], mergeLayout({
+  barmode:'group', yaxis:{title:'Integrated Brier Score'},
+  legend:{orientation:'h', y:-0.3}
+}), {displayModeBar:false, responsive:true});
+
+/* second chart reuses same div via tabs would be nice, but keep simple: append below using annotations */
+/* We'll instead render C-index in the same figure as a secondary trace set using a toggle button pattern via two calls */
+(function(){
+  const chart = document.getElementById('machineChart');
+  const btnWrap = document.createElement('div');
+  btnWrap.style.textAlign='center'; btnWrap.style.marginTop='8px';
+  const btnIBS = document.createElement('button'); btnIBS.textContent='Show IBS'; btnIBS.className='';
+  const btnC = document.createElement('button'); btnC.textContent='Show C-index'; btnC.className='ghost'; btnC.style.marginLeft='8px';
+  btnWrap.appendChild(btnIBS); btnWrap.appendChild(btnC);
+  chart.parentNode.insertBefore(btnWrap, chart.nextSibling);
+  btnIBS.onclick = ()=> Plotly.react('machineChart', [
+    {x:machineIdx, y:rsf_ibs, name:'RSF (IBS)', type:'bar', marker:{color:'#3ea6ff'}},
+    {x:machineIdx, y:mbrsf_ibs, name:'MBRSF (IBS)', type:'bar', marker:{color:'#ff6b6b'}},
+  ], mergeLayout({barmode:'group', yaxis:{title:'Integrated Brier Score'}, legend:{orientation:'h', y:-0.3}}), {displayModeBar:false, responsive:true});
+  btnC.onclick = ()=> Plotly.react('machineChart', [
+    {x:machineIdx, y:rsf_cidx, name:'RSF (C-index %)', type:'bar', marker:{color:'#3ea6ff'}},
+    {x:machineIdx, y:mbrsf_cidx, name:'MBRSF (C-index %)', type:'bar', marker:{color:'#ff6b6b'}},
+  ], mergeLayout({barmode:'group', yaxis:{title:'C-index (%)'}, legend:{orientation:'h', y:-0.3}}), {displayModeBar:false, responsive:true});
+})();
+
+/* ============================================================
+   6b. HORIZON DEGRADATION CHART
+============================================================ */
+const horizonPoints = [300,900,1800,3600,7200,14400,21600,28000];
+function ibsAtHorizon_next(h){ return 0.10 + 0.28*(1-Math.exp(-h/6000)); }
+function ibsAtHorizon_mbrsf(h){ return 0.04 + 0.11*(1-Math.exp(-h/9000)); }
+
+function renderHorizonChart(current){
+  const nextVals = horizonPoints.map(ibsAtHorizon_next);
+  const mbVals = horizonPoints.map(ibsAtHorizon_mbrsf);
+  const traces = [
+    {x:horizonPoints, y:nextVals, name:'Next-best method', line:{color:'#3ea6ff', width:3}, mode:'lines+markers'},
+    {x:horizonPoints, y:mbVals, name:'MBRSF', line:{color:'#ff6b6b', width:3}, mode:'lines+markers'},
+    {x:[current], y:[ibsAtHorizon_mbrsf(current)], name:'Current horizon (MBRSF)',
+     mode:'markers', marker:{color:'#ffcf56', size:12, symbol:'diamond'}}
+  ];
+  Plotly.react('horizonChart', traces, mergeLayout({
+    xaxis:{title:'Decision horizon T_C (seconds)'},
+    yaxis:{title:'Integrated Brier Score'},
+    legend:{orientation:'h', y:-0.3}
+  }), {displayModeBar:false, responsive:true});
+
+  document.getElementById('horizonReadout').textContent =
+    `At T_C = ${current}s: MBRSF IBS ≈ ${ibsAtHorizon_mbrsf(current).toFixed(3)}, ` +
+    `next-best method IBS ≈ &#36;{ibsAtHorizon_next(current).toFixed(3)}. ` +
+    `MBRSF degrades far more gracefully as the horizon extends toward a full shift.`;
+}
+document.getElementById('horizonSlider').addEventListener('input', e=>{
+  renderHorizonChart(parseFloat(e.target.value));
+});
+renderHorizonChart(1800);
+
+/* ============================================================
+   7. HAZARDOGRAM
+============================================================ */
+function generateHazardogramData(){
+  const nT = 60, nH = 40;
+  const z = [];
+  const breakdownTimes = [];
+  let breakdownAt = 15 + Math.random()*30; // episode time of actual breakdown
+  breakdownTimes.push(breakdownAt);
+
+  for(let hIdx=0; hIdx<nH; hIdx++){
+    const horizonFrac = hIdx/(nH-1); // 0 = short horizon, 1 = long horizon
+    const row = [];
+    for(let tIdx=0; tIdx<nT; tIdx++){
+      const time = tIdx/(nT-1)*45;
+      // risk increases as time approaches breakdownAt, more sharply for longer horizons
+      const dist = breakdownAt - time;
+      const sharpness = 0.3 + horizonFrac*1.2;
+      let risk = dist > 0 ? 1/(1+Math.exp(dist*sharpness - 2)) : 0.95;
+      row.push(1 - risk); // survival probability
+    }
+    z.push(row);
+  }
+  return {z, breakdownAt, nT};
+}
+let hazardogramState = generateHazardogramData();
+
+function renderHazardogram(){
+  const {z, breakdownAt, nT} = hazardogramState;
+  const xVals = Array.from({length:nT}, (_,i)=> i/(nT-1)*45);
+  const yVals = Array.from({length:z.length}, (_,i)=> i/(z.length-1));
+  const heat = {
+    z, x:xVals, y:yVals, type:'heatmap',
+    colorscale:[[0,'#ff6b6b'],[0.5,'#ffcf56'],[1,'#3ea6ff']],
+    colorbar:{title:'Survival prob.'}
+  };
+  const marker = {
+    x:[breakdownAt], y:[0.95], mode:'markers', type:'scatter',
+    marker:{color:'#0a0e1a', size:14, symbol:'x', line:{color:'#fff', width:2}},
+    name:'Actual breakdown'
+  };
+  Plotly.react('hazardogramPlot', [heat, marker], mergeLayout({
+    xaxis:{title:'Episode time (min)'},
+    yaxis:{title:'Prediction horizon (normalized, 0=short → 1=full shift)'}
+  }), {displayModeBar:false, responsive:true});
+
+  document.getElementById('hazardogramReadout').textContent =
+    `Actual breakdown occurs at episode time ≈ &#36;{breakdownAt.toFixed(1)} min — ` +
+    `note it lands right at the blue→red transition band, not deep in the red region.`;
+}
+function regenHazardogram(){
+  hazardogramState = generateHazardogramData();
+  renderHazardogram();
+}
+renderHazardogram();
+
+/* ============================================================
+   8. INFLUENCE GRAPH
+============================================================ */
+function generateInfluenceGraph(){
+  const n = 20;
+  const nodes = Array.from({length:n}, (_,i)=>{
+    const angle = (i/n)*2*Math.PI;
+    return {id:i, x:Math.cos(angle), y:Math.sin(angle)};
+  });
+  const edges = [];
+  const nEdges = 26;
+  for(let e=0;e<nEdges;e++){
+    const a = Math.floor(Math.random()*n);
+    let b = Math.floor(Math.random()*n);
+    while(b===a) b = Math.floor(Math.random()*n);
+    const isTimeEdge = Math.random() < 0.76; // ~75% statistic from paper
+    edges.push({a,b,color: isTimeEdge ? '#57d38c' : '#e879c7'});
+  }
+  return {nodes, edges};
+}
+function renderInfluenceGraph(){
+  const {nodes, edges} = generateInfluenceGraph();
+  const edgeTraces = edges.map(e=>({
+    x:[nodes[e.a].x, nodes[e.b].x],
+    y:[nodes[e.a].y, nodes[e.b].y],
+    mode:'lines',
+    line:{color:e.color, width:1.5},
+    hoverinfo:'none',
+    showlegend:false
+  }));
+  const nodeTrace = {
+    x:nodes.map(n=>n.x), y:nodes.map(n=>n.y),
+    mode:'markers+text',
+    text:nodes.map(n=>`M${n.id+1}`),
+    textposition:'top center',
+    textfont:{color:'#e8ecf4', size:9},
+    marker:{color:'#ffcf56', size:14, line:{color:'#0a0e1a', width:1}},
+    showlegend:false
+  };
+  Plotly.react('graphPlot', [...edgeTraces, nodeTrace], mergeLayout({
+    xaxis:{visible:false}, yaxis:{visible:false},
+    margin:{t:20,r:20,b:20,l:20}
+  }), {displayModeBar:false, responsive:true});
+}
+renderInfluenceGraph();
+</script>
+
+</body>
+</html>
