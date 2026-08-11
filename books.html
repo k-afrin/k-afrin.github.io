@@ -150,7 +150,7 @@ var SHELVES = [
     title: "Recent Favourites",
     note: "Books from the last stretch of reading that I have pressed on other people.",
     books: [
-      {title:"A Man Called Ove", author:"Fredrik Backman", ribbon:"Favourite", note:"Grumpy on the surface, devastating underneath."},
+      {title:"A Man Called Ove", author:"Fredrik Backman", ribbon:"Favourite"},
       {title:"A Woman Is No Man", author:"Etaf Rum", ribbon:"", note:""},
       {title:"The Midnight Library", author:"Matt Haig", ribbon:"", note:""},
       {title:"The Namesake", author:"Jhumpa Lahiri", ribbon:"", note:""},
@@ -176,7 +176,7 @@ var SHELVES = [
     title: "All-Time Favourites",
     note: "The short list. I have reread all three, and I would give any of them away without hesitating.",
     books: [
-      {title:"A Thousand Splendid Suns", author:"Khaled Hosseini", ribbon:"Favourite", note:"The one I measure other novels against."},
+      {title:"A Thousand Splendid Suns", author:"Khaled Hosseini", ribbon:"Favourite"},
       {title:"The Alchemist", author:"Paulo Coelho", ribbon:"Favourite", note:""},
       {title:"The Joy Luck Club", author:"Amy Tan", ribbon:"Favourite", note:""}
     ]
@@ -253,41 +253,63 @@ function coverUrlFromId(id){
 }
 
 function loadCover(b, key){
-  /* 1. Manual override wins */
+  /* 1. Manual override always wins */
   if (b.img){ showCover(key, b.img); return; }
 
-  /* 2. Explicit ISBN wins over search */
+  /* 2. Explicit ISBN */
   if (b.isbn){
-    showCover(key, "https://covers.openlibrary.org/b/isbn/" + b.isbn + "-L.jpg?default=false");
+    showCover(key, "https://covers.openlibrary.org/b/isbn/" +
+      String(b.isbn).replace(/[^0-9Xx]/g,"") + "-L.jpg?default=false");
     return;
   }
 
-  /* 3. Cached result from a previous visit */
+  /* 3. Cached from a previous visit */
   if (cache[key] !== undefined){
     if (cache[key]) showCover(key, coverUrlFromId(cache[key]));
     else noCover(key);
     return;
   }
 
-  /* 4. Search Open Library by title and author */
-  var url = "https://openlibrary.org/search.json?limit=1&fields=cover_i&title=" +
-            encodeURIComponent(b.title);
-  if (b.author) url += "&author=" + encodeURIComponent(b.author);
+  /* 4. Search Open Library, scanning several results for one that has a cover */
+  var base = "https://openlibrary.org/search.json?fields=cover_i,title&limit=10&title=";
+  var withAuthor = base + encodeURIComponent(b.title) +
+                   (b.author ? "&author=" + encodeURIComponent(b.author) : "");
+  var titleOnly  = base + encodeURIComponent(b.title);
+  var qFallback  = "https://openlibrary.org/search.json?fields=cover_i&limit=10&q=" +
+                   encodeURIComponent(b.title + (b.author ? " " + b.author : ""));
 
-  fetch(url)
-    .then(function(r){ return r.ok ? r.json() : null; })
-    .then(function(data){
-      var id = null;
-      if (data && data.docs && data.docs.length && data.docs[0].cover_i){
-        id = data.docs[0].cover_i;
-      }
-      cache[key] = id;
+  function firstCover(data){
+    if (!data || !data.docs) return null;
+    for (var i = 0; i < data.docs.length; i++){
+      if (data.docs[i].cover_i) return data.docs[i].cover_i;
+    }
+    return null;
+  }
+
+  function get(url){
+    return fetch(url).then(function(r){ return r.ok ? r.json() : null; })
+                     .catch(function(){ return null; });
+  }
+
+  get(withAuthor)
+    .then(function(d){
+      var id = firstCover(d);
+      if (id) return id;
+      return get(titleOnly).then(firstCover);
+    })
+    .then(function(id){
+      if (id) return id;
+      return get(qFallback).then(firstCover);
+    })
+    .then(function(id){
+      cache[key] = id || null;
       saveCache();
       if (id) showCover(key, coverUrlFromId(id));
       else noCover(key);
     })
     .catch(function(){ noCover(key); });
 }
+ 
 
 /* ---------- Render ---------- */
 try {
