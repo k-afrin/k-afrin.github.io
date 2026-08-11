@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bookshelf — Kahkashan Afrin</title>
+<title>Bookshelf &mdash; Kahkashan Afrin</title>
 <meta name="description" content="What I'm reading, what I've loved, and what's waiting on the shelf.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://covers.openlibrary.org" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -60,16 +61,15 @@ h2.sec{font-family:Fraunces,serif;font-size:clamp(1.5rem,3.6vw,1.9rem);font-weig
   background:var(--chip);border:1px solid var(--line);box-shadow:var(--shadow);
   transition:transform .24s ease, box-shadow .24s ease}
 .book:hover .cover{transform:translateY(-6px) rotate(-.7deg);box-shadow:var(--shadow-lift)}
-.cover img{width:100%;height:100%;object-fit:cover}
-.cover .ph{position:absolute;top:0;right:0;bottom:0;left:0;display:none;
+.cover img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s ease}
+.cover img.loaded{opacity:1}
+.cover .ph{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;
   flex-direction:column;justify-content:space-between;padding:16px 14px;
   background:var(--accent-soft);border-left:5px solid var(--accent)}
-.cover.empty img{display:none}
-.cover.empty .ph{display:flex}
+.cover.filled .ph{display:none}
 .ph .pt{font-family:Fraunces,serif;font-size:.92rem;font-weight:600;line-height:1.25;color:var(--text)}
 .ph .pa{font-size:.73rem;color:var(--muted);line-height:1.4;margin-top:3px}
-.ph .pf{font-size:.58rem;font-family:ui-monospace,Menlo,monospace;
-  color:var(--muted);opacity:.7;word-break:break-all;line-height:1.35}
+.ph .pf{font-size:.62rem;color:var(--muted);opacity:.7;line-height:1.35}
 
 .cap{margin-top:11px}
 .cap .t{font-family:Fraunces,serif;font-size:.88rem;font-weight:600;line-height:1.3}
@@ -108,7 +108,8 @@ footer{border-top:1px solid var(--line);margin-top:58px;padding:28px 0;
     <h1>Bookshelf</h1>
     <p class="intro">Reading is the habit I&rsquo;ve kept longest and defended hardest. This is what I&rsquo;ve
       loved recently, what&rsquo;s waiting on the shelf, and the handful of books I&rsquo;d hand to almost anyone.</p>
-
+    <p class="intro">One of these is on <a href="list-100.html">List&nbsp;100</a>, too: read a thousand books.
+      A lifetime project, and happily so.</p>
   </section>
 
   <div id="err"></div>
@@ -116,27 +117,32 @@ footer{border-top:1px solid var(--line);margin-top:58px;padding:28px 0;
   <main id="shelves"></main>
 
   <div class="note">
-    <b>On the covers:</b> cover images belong to their publishers and are shown here purely to point you
-    toward books I love. If you wrote one of these and would rather I didn&rsquo;t, just email me and it comes down.
+    <b>On the covers:</b> cover images are pulled from
+    <a href="https://openlibrary.org/" target="_blank" rel="noopener">Open Library</a>
+    and belong to their publishers. They are shown here purely to point you toward books I love.
   </div>
 </div>
 
 <footer>
-  <div class="wrap"><a href="index.html">Kahkashan Afrin</a> &middot; Last updated August 2026</div>
+  <div class="wrap"><a href="index.html">Kahkashan Afrin</a></div>
 </footer>
 
 <script>
 /* ==================================================================
-   YOUR SHELVES - the only part you edit.
+   YOUR SHELVES, the only part you edit.
 
-   Each book: {title, author, img, note, ribbon}
-     img    - "assets/books/filename.jpg"  (2:3 portrait crop is ideal)
-              Until that file exists, a placeholder shows the title,
-              author, and the filename it is waiting for.
-     note   - optional one-line italic thought, or ""
-     ribbon - "" or "Favourite" or "Reading now" or anything short
+   Each book: {title, author, note, ribbon, img, isbn}
+     title, author  required. Covers are looked up automatically
+                    from Open Library using these two fields.
+     note    optional one-line italic thought, or ""
+     ribbon  "" or "Favourite" or "Reading now" or anything short
+     img     optional. Set this only if you want to override the
+             automatic lookup with your own file, for example
+             "assets/books/my-cover.jpg"
+     isbn    optional. Set this if the automatic lookup picks the
+             wrong edition. Overrides the title search.
 
-   Add a book: copy a line. Add a shelf: copy a whole {...} block.
+   To add a book: copy a line and change title and author. That is all.
    ================================================================== */
 var SHELVES = [
   {
@@ -144,25 +150,25 @@ var SHELVES = [
     title: "Recent Favourites",
     note: "Books from the last stretch of reading that I have pressed on other people.",
     books: [
-      {title:"A Man Called Ove", author:"Fredrik Backman", img:"assets/books/a-man-called-ove.jpg", ribbon:"Favourite", note:"Grumpy on the surface, devastating underneath."},
-      {title:"A Woman Is No Man", author:"Etaf Rum", img:"assets/books/a-woman-is-no-man.jpg", ribbon:"", note:""},
-      {title:"The Midnight Library", author:"Matt Haig", img:"assets/books/the-midnight-library.jpg", ribbon:"", note:""},
-      {title:"The Namesake", author:"Jhumpa Lahiri", img:"assets/books/the-namesake.jpg", ribbon:"", note:""},
-      {title:"Anxious People", author:"Fredrik Backman", img:"assets/books/anxious-people.jpg", ribbon:"", note:""},
-      {title:"Piranesi", author:"Susanna Clarke", img:"assets/books/piranesi.jpg", ribbon:"", note:""}
+      {title:"A Man Called Ove", author:"Fredrik Backman", ribbon:"Favourite", note:"Grumpy on the surface, devastating underneath."},
+      {title:"A Woman Is No Man", author:"Etaf Rum", ribbon:"", note:""},
+      {title:"The Midnight Library", author:"Matt Haig", ribbon:"", note:""},
+      {title:"The Namesake", author:"Jhumpa Lahiri", ribbon:"", note:""},
+      {title:"Anxious People", author:"Fredrik Backman", ribbon:"", note:""},
+      {title:"Piranesi", author:"Susanna Clarke", ribbon:"", note:""}
     ]
   },
   {
     id: "list",
     title: "Reading List",
-    note: "Bought, borrowed, or bookmarked - waiting their turn.",
+    note: "Bought, borrowed, or bookmarked, waiting their turn.",
     books: [
-      {title:"A Fine Balance", author:"Rohinton Mistry", img:"assets/books/a-fine-balance.jpg", ribbon:"Reading now", note:""},
-      {title:"Circe", author:"Madeline Miller", img:"assets/books/circe.jpg", ribbon:"", note:""},
-      {title:"The Odyssey", author:"Homer", img:"assets/books/the-odyssey.jpg", ribbon:"", note:""},
-      {title:"The Infinity Machine", author:"", img:"assets/books/the-infinity-machine.jpg", ribbon:"", note:""},
-      {title:"AI for Good", author:"", img:"assets/books/ai-for-good.jpg", ribbon:"", note:""},
-      {title:"Data Empire", author:"", img:"assets/books/data-empire.jpg", ribbon:"", note:""}
+      {title:"A Fine Balance", author:"Rohinton Mistry", ribbon:"Reading now", note:""},
+      {title:"Circe", author:"Madeline Miller", ribbon:"", note:""},
+      {title:"The Odyssey", author:"Homer", ribbon:"", note:""},
+      {title:"The Infinity Machine", author:"", ribbon:"", note:""},
+      {title:"AI for Good", author:"", ribbon:"", note:""},
+      {title:"Data Empire", author:"", ribbon:"", note:""}
     ]
   },
   {
@@ -170,9 +176,9 @@ var SHELVES = [
     title: "All-Time Favourites",
     note: "The short list. I have reread all three, and I would give any of them away without hesitating.",
     books: [
-      {title:"A Thousand Splendid Suns", author:"Khaled Hosseini", img:"assets/books/a-thousand-splendid-suns.jpg", ribbon:"Favourite", note:"The one I measure other novels against."},
-      {title:"The Alchemist", author:"Paulo Coelho", img:"assets/books/the-alchemist.jpg", ribbon:"Favourite", note:""},
-      {title:"The Joy Luck Club", author:"Amy Tan", img:"assets/books/the-joy-luck-club.jpg", ribbon:"Favourite", note:""}
+      {title:"A Thousand Splendid Suns", author:"Khaled Hosseini", ribbon:"Favourite", note:"The one I measure other novels against."},
+      {title:"The Alchemist", author:"Paulo Coelho", ribbon:"Favourite", note:""},
+      {title:"The Joy Luck Club", author:"Amy Tan", ribbon:"Favourite", note:""}
     ]
   }
 ];
@@ -184,8 +190,9 @@ function esc(s){
                   .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
 
-function bookHtml(b){
-  var alt = b.author ? (b.title + " by " + b.author + " - book cover") : (b.title + " - book cover");
+/* ---------- Build the shelves ---------- */
+function bookHtml(b, key){
+  var alt = b.author ? (b.title + " by " + b.author + ", book cover") : (b.title + ", book cover");
   var h = '<article class="book">';
 
   if (b.ribbon){
@@ -193,12 +200,12 @@ function bookHtml(b){
     h += '<span class="ribbon' + gold + '">' + esc(b.ribbon) + '</span>';
   }
 
-  h += '<div class="cover" data-slot>';
-  h += '<img src="' + esc(b.img) + '" alt="' + esc(alt) + '" loading="lazy">';
+  h += '<div class="cover" id="cv-' + key + '">';
+  h += '<img alt="' + esc(alt) + '" loading="lazy">';
   h += '<div class="ph" aria-hidden="true"><div>';
   h += '<div class="pt">' + esc(b.title) + '</div>';
   if (b.author) h += '<div class="pa">' + esc(b.author) + '</div>';
-  h += '</div><div class="pf">' + esc(b.img) + '</div></div>';
+  h += '</div><div class="pf">looking up cover&hellip;</div></div>';
   h += '</div>';
 
   h += '<div class="cap">';
@@ -206,41 +213,112 @@ function bookHtml(b){
   if (b.author) h += '<div class="a">' + esc(b.author) + '</div>';
   if (b.note)   h += '<div class="n">' + esc(b.note) + '</div>';
   h += '</div></article>';
-
   return h;
 }
 
-function shelfHtml(s){
-  var n = s.books.length;
-  var h = '<section id="' + esc(s.id) + '">';
-  h += '<div class="sechead"><h2 class="sec">' + esc(s.title) + '</h2>';
-  h += '<span class="count">' + n + (n === 1 ? " book" : " books") + '</span></div>';
-  if (s.note) h += '<p class="secnote">' + esc(s.note) + '</p>';
+/* ---------- Cover lookup ---------- */
+var CACHE_KEY = "ol-covers-v1";
+var cache = {};
+try { cache = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}"); } catch (ignore) { cache = {}; }
 
-  h += '<div class="shelf">';
-  for (var i = 0; i < s.books.length; i++){
-    h += bookHtml(s.books[i]);
+function saveCache(){
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(cache)); } catch (ignore) {}
+}
+
+function showCover(key, url){
+  var wrap = document.getElementById("cv-" + key);
+  if (!wrap) return;
+  var img = wrap.querySelector("img");
+  img.onload = function(){
+    if (img.naturalWidth < 20) return;   /* guard against tiny blank images */
+    img.className = "loaded";
+    wrap.className = "cover filled";
+  };
+  img.onerror = function(){
+    var pf = wrap.querySelector(".pf");
+    if (pf) pf.textContent = "cover not found";
+  };
+  img.src = url;
+}
+
+function noCover(key){
+  var wrap = document.getElementById("cv-" + key);
+  if (!wrap) return;
+  var pf = wrap.querySelector(".pf");
+  if (pf) pf.textContent = "cover not found";
+}
+
+function coverUrlFromId(id){
+  return "https://covers.openlibrary.org/b/id/" + id + "-L.jpg?default=false";
+}
+
+function loadCover(b, key){
+  /* 1. Manual override wins */
+  if (b.img){ showCover(key, b.img); return; }
+
+  /* 2. Explicit ISBN wins over search */
+  if (b.isbn){
+    showCover(key, "https://covers.openlibrary.org/b/isbn/" + b.isbn + "-L.jpg?default=false");
+    return;
   }
-  h += '</div></section>';
-  return h;
+
+  /* 3. Cached result from a previous visit */
+  if (cache[key] !== undefined){
+    if (cache[key]) showCover(key, coverUrlFromId(cache[key]));
+    else noCover(key);
+    return;
+  }
+
+  /* 4. Search Open Library by title and author */
+  var url = "https://openlibrary.org/search.json?limit=1&fields=cover_i&title=" +
+            encodeURIComponent(b.title);
+  if (b.author) url += "&author=" + encodeURIComponent(b.author);
+
+  fetch(url)
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(data){
+      var id = null;
+      if (data && data.docs && data.docs.length && data.docs[0].cover_i){
+        id = data.docs[0].cover_i;
+      }
+      cache[key] = id;
+      saveCache();
+      if (id) showCover(key, coverUrlFromId(id));
+      else noCover(key);
+    })
+    .catch(function(){ noCover(key); });
 }
 
+/* ---------- Render ---------- */
 try {
   var out = [];
-  for (var i = 0; i < SHELVES.length; i++){
-    out.push(shelfHtml(SHELVES[i]));
+  var jobs = [];
+
+  for (var s = 0; s < SHELVES.length; s++){
+    var sh = SHELVES[s];
+    var n = sh.books.length;
+    var h = '<section id="' + esc(sh.id) + '">';
+    h += '<div class="sechead"><h2 class="sec">' + esc(sh.title) + '</h2>';
+    h += '<span class="count">' + n + (n === 1 ? " book" : " books") + '</span></div>';
+    if (sh.note) h += '<p class="secnote">' + esc(sh.note) + '</p>';
+    h += '<div class="shelf">';
+
+    for (var i = 0; i < n; i++){
+      var key = s + "-" + i;
+      h += bookHtml(sh.books[i], key);
+      jobs.push({ book: sh.books[i], key: key });
+    }
+    h += '</div></section>';
+    out.push(h);
   }
+
   document.getElementById("shelves").innerHTML = out.join("");
 
-  /* Missing cover file: show the placeholder instead of a broken icon */
-  var covers = document.querySelectorAll(".cover[data-slot]");
-  for (var c = 0; c < covers.length; c++){
-    (function(slot){
-      var img = slot.querySelector("img");
-      if (!img) return;
-      img.onerror = function(){ slot.className = "cover empty"; };
-      if (img.complete && img.naturalWidth === 0) slot.className = "cover empty";
-    })(covers[c]);
+  /* Stagger the lookups slightly to be polite to the API */
+  for (var j = 0; j < jobs.length; j++){
+    (function(job, delay){
+      setTimeout(function(){ loadCover(job.book, job.key); }, delay);
+    })(jobs[j], j * 120);
   }
 
   var root = document.documentElement;
@@ -255,8 +333,7 @@ try {
 } catch (err) {
   var box = document.getElementById("err");
   box.style.display = "block";
-  box.textContent = "Script error: " + (err && err.message ? err.message : err) +
-    "\n\nCopy this message and send it over.";
+  box.textContent = "Script error: " + (err && err.message ? err.message : err);
 }
 </script>
 </body>
